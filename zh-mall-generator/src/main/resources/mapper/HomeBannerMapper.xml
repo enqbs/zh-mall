@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enqbs.generator.dao.HomeBannerMapper">
+  <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.HomeBanner">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="picture" jdbcType="VARCHAR" property="picture" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, product_id, picture, status, delete_status, create_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_home_banner
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_home_banner
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.enqbs.generator.pojo.HomeBanner">
+    insert into tb_home_banner (id, product_id, picture, 
+      status, delete_status, create_time, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, #{picture,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.HomeBanner">
+    insert into tb_home_banner
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="picture != null">
+        picture,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="deleteStatus != null">
+        delete_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="picture != null">
+        #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.enqbs.generator.pojo.HomeBanner">
+    update tb_home_banner
+    <set>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="picture != null">
+        picture = #{picture,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.HomeBanner">
+    update tb_home_banner
+    set product_id = #{productId,jdbcType=INTEGER},
+      picture = #{picture,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      delete_status = #{deleteStatus,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enqbs.generator.dao.PayInfoMapper">
+  <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.PayInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_no" jdbcType="BIGINT" property="orderNo" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="consume_version" jdbcType="INTEGER" property="consumeVersion" />
+    <result column="sharding" jdbcType="INTEGER" property="sharding" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, order_no, user_id, nick_name, photo, pay_amount, status, delete_status, consume_version, 
+    sharding, create_time, payment_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_pay_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from tb_pay_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.enqbs.generator.pojo.PayInfo">
+    insert into tb_pay_info (id, order_no, user_id, 
+      nick_name, photo, pay_amount, 
+      status, delete_status, consume_version, 
+      sharding, create_time, payment_time, 
+      update_time)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, 
+      #{nickName,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, #{payAmount,jdbcType=DECIMAL}, 
+      #{status,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{consumeVersion,jdbcType=INTEGER}, 
+      #{sharding,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{paymentTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.PayInfo">
+    insert into tb_pay_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="photo != null">
+        photo,
+      </if>
+      <if test="payAmount != null">
+        pay_amount,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="deleteStatus != null">
+        delete_status,
+      </if>
+      <if test="consumeVersion != null">
+        consume_version,
+      </if>
+      <if test="sharding != null">
+        sharding,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="paymentTime != null">
+        payment_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null">
+        #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmount != null">
+        #{payAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="consumeVersion != null">
+        #{consumeVersion,jdbcType=INTEGER},
+      </if>
+      <if test="sharding != null">
+        #{sharding,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentTime != null">
+        #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.enqbs.generator.pojo.PayInfo">
+    update tb_pay_info
+    <set>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null">
+        photo = #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmount != null">
+        pay_amount = #{payAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="consumeVersion != null">
+        consume_version = #{consumeVersion,jdbcType=INTEGER},
+      </if>
+      <if test="sharding != null">
+        sharding = #{sharding,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentTime != null">
+        payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.PayInfo">
+    update tb_pay_info
+    set order_no = #{orderNo,jdbcType=BIGINT},
+      user_id = #{userId,jdbcType=INTEGER},
+      nick_name = #{nickName,jdbcType=VARCHAR},
+      photo = #{photo,jdbcType=VARCHAR},
+      pay_amount = #{payAmount,jdbcType=DECIMAL},
+      status = #{status,jdbcType=INTEGER},
+      delete_status = #{deleteStatus,jdbcType=INTEGER},
+      consume_version = #{consumeVersion,jdbcType=INTEGER},
+      sharding = #{sharding,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

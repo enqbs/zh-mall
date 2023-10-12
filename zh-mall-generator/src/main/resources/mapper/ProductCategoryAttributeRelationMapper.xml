@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enqbs.generator.dao.ProductCategoryAttributeRelationMapper">
+  <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.ProductCategoryAttributeRelation">
+    <id column="product_category_id" jdbcType="INTEGER" property="productCategoryId" />
+    <id column="product_category_attribute_id" jdbcType="INTEGER" property="productCategoryAttributeId" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from tb_product_category_attribute_relation
+    where product_category_id = #{productCategoryId,jdbcType=INTEGER}
+      and product_category_attribute_id = #{productCategoryAttributeId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.enqbs.generator.pojo.ProductCategoryAttributeRelation">
+    insert into tb_product_category_attribute_relation (product_category_id, product_category_attribute_id
+      )
+    values (#{productCategoryId,jdbcType=INTEGER}, #{productCategoryAttributeId,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.ProductCategoryAttributeRelation">
+    insert into tb_product_category_attribute_relation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productCategoryId != null">
+        product_category_id,
+      </if>
+      <if test="productCategoryAttributeId != null">
+        product_category_attribute_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="productCategoryId != null">
+        #{productCategoryId,jdbcType=INTEGER},
+      </if>
+      <if test="productCategoryAttributeId != null">
+        #{productCategoryAttributeId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enqbs.generator.dao.SkuStockLockMapper">
+  <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.SkuStockLock">
+    <id column="order_no" jdbcType="BIGINT" property="orderNo" />
+    <id column="sku_id" jdbcType="INTEGER" property="skuId" />
+    <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="count" jdbcType="INTEGER" property="count" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="consume_version" jdbcType="INTEGER" property="consumeVersion" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    order_no, sku_id, product_id, count, status, consume_version, create_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_sku_stock_lock
+    where order_no = #{orderNo,jdbcType=BIGINT}
+      and sku_id = #{skuId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from tb_sku_stock_lock
+    where order_no = #{orderNo,jdbcType=BIGINT}
+      and sku_id = #{skuId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.enqbs.generator.pojo.SkuStockLock">
+    insert into tb_sku_stock_lock (order_no, sku_id, product_id, 
+      count, status, consume_version, 
+      create_time, update_time)
+    values (#{orderNo,jdbcType=BIGINT}, #{skuId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, 
+      #{count,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{consumeVersion,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.SkuStockLock">
+    insert into tb_sku_stock_lock
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="skuId != null">
+        sku_id,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="count != null">
+        count,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="consumeVersion != null">
+        consume_version,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=BIGINT},
+      </if>
+      <if test="skuId != null">
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="count != null">
+        #{count,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="consumeVersion != null">
+        #{consumeVersion,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.enqbs.generator.pojo.SkuStockLock">
+    update tb_sku_stock_lock
+    <set>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="count != null">
+        count = #{count,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="consumeVersion != null">
+        consume_version = #{consumeVersion,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where order_no = #{orderNo,jdbcType=BIGINT}
+      and sku_id = #{skuId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.SkuStockLock">
+    update tb_sku_stock_lock
+    set product_id = #{productId,jdbcType=INTEGER},
+      count = #{count,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
+      consume_version = #{consumeVersion,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where order_no = #{orderNo,jdbcType=BIGINT}
+      and sku_id = #{skuId,jdbcType=INTEGER}
+  </update>
+</mapper>
