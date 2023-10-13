@@ -33,7 +33,6 @@ public class ProductServiceImpl implements ProductService {
         if (ObjectUtils.isEmpty(product) || Constants.IS_DELETE.equals(product.getDeleteStatus())) {
             throw new ServiceException("商品不存在");
         }
-
         List<Sku> skuList = skuMapper.selectListByProductId(productId);
         List<SkuVO> skuVOList = skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
         ProductVO productVO = product2ProductVO(product);

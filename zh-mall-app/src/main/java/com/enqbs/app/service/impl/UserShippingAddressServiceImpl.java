@@ -48,7 +48,6 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
                 Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
             throw new ServiceException("收货地址不存在");
         }
-
         shippingAddress.setName(form.getName());
         shippingAddress.setTelNo(form.getTelNo());
         shippingAddress.setAddress(form.getAddress());
@@ -66,7 +65,6 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
                 Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
             throw new ServiceException("收货地址不存在");
         }
-
         shippingAddress.setDeleteStatus(Constants.IS_DELETE);
         return userShippingAddressMapper.updateByPrimaryKeySelective(shippingAddress);
     }
@@ -81,7 +79,6 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
                 Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
             throw new ServiceException("收货地址不存在");
         }
-
         return userShippingAddress2UserShippingAddressVO(shippingAddress);
     }
 

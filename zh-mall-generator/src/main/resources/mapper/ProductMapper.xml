@@ -218,13 +218,6 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectList" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from tb_product
-    where saleable_status = 1 and delete_status = 0
-  </select>
-
   <select id="selectListByCategoryId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

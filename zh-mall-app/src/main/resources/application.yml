@@ -28,3 +28,5 @@ mybatis:
 jwt:
   secret: 2a323d19c4c1434893dcdc5defb305c5
   expire: 1
+redisson:
+  address: redis://192.168.43.2:6379
