@@ -217,4 +217,23 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product
+    where saleable_status = 1 and delete_status = 0
+  </select>
+
+  <select id="selectListByCategoryId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product
+    where
+    product_category_id = #{productCategoryId,jdbcType=INTEGER}
+    and saleable_status = 1
+    and delete_status = 0
+    order by create_time desc
+    limit 0, 30
+  </select>
 </mapper>

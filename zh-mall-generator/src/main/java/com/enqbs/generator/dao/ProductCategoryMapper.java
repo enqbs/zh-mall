@@ -2,6 +2,8 @@ package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.ProductCategory;
 
+import java.util.List;
+
 public interface ProductCategoryMapper {
 
     int deleteByPrimaryKey(Integer id);
@@ -15,5 +17,7 @@ public interface ProductCategoryMapper {
     int updateByPrimaryKeySelective(ProductCategory record);
 
     int updateByPrimaryKey(ProductCategory record);
+
+    List<ProductCategory> selectList();
 
 }

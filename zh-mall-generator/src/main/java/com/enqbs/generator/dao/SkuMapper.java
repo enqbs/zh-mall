@@ -2,6 +2,8 @@ package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.Sku;
 
+import java.util.List;
+
 public interface SkuMapper {
 
     int deleteByPrimaryKey(Integer id);
@@ -15,5 +17,7 @@ public interface SkuMapper {
     int updateByPrimaryKeySelective(Sku record);
 
     int updateByPrimaryKey(Sku record);
+
+    List<Sku> selectListByProductId(Integer productId);
 
 }

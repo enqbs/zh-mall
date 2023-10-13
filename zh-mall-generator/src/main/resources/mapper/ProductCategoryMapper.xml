@@ -121,4 +121,11 @@
       delete_status = #{deleteStatus,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product_category
+    where delete_status = 0
+  </select>
 </mapper>

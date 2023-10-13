@@ -34,9 +34,9 @@ public class UserShippingAddressController {
         return R.ok("新增收货地址成功");
     }
 
-    @PutMapping("/shipping/{userShippingAddressId}")
-    public R<Void> updateShippingAddress(@PathVariable Integer userShippingAddressId, @Valid @RequestBody UserShippingAddressForm form) {
-        int updateRow = userShippingAddressService.updateUserShippingAddress(userShippingAddressId, form);
+    @PutMapping("/shipping/{shippingAddressId}")
+    public R<Void> updateShippingAddress(@PathVariable Integer shippingAddressId, @Valid @RequestBody UserShippingAddressForm form) {
+        int updateRow = userShippingAddressService.updateUserShippingAddress(shippingAddressId, form);
 
         if (updateRow <= 0) {
             throw new ServiceException("修改收货地址失败");
@@ -45,9 +45,9 @@ public class UserShippingAddressController {
         return R.ok("修改收货地址成功");
     }
 
-    @DeleteMapping("/shipping/{userShippingAddressId}")
-    public R<Void> deleteShippingAddress(@PathVariable Integer userShippingAddressId) {
-        int deleteRow = userShippingAddressService.deleteUserShippingAddress(userShippingAddressId);
+    @DeleteMapping("/shipping/{shippingAddressId}")
+    public R<Void> deleteShippingAddress(@PathVariable Integer shippingAddressId) {
+        int deleteRow = userShippingAddressService.deleteUserShippingAddress(shippingAddressId);
 
         if (deleteRow <= 0) {
             throw new ServiceException("删除收货地址失败");
@@ -56,16 +56,16 @@ public class UserShippingAddressController {
         return R.ok("删除收货地址成功");
     }
 
-    @GetMapping("/shipping/{userShippingAddressId}")
-    public R<UserShippingAddressVO> getShippingAddress(@PathVariable Integer userShippingAddressId) {
-        UserShippingAddressVO userShippingAddressVO = userShippingAddressService.getUserShippingAddressVO(userShippingAddressId);
-        return R.ok(userShippingAddressVO);
+    @GetMapping("/shipping/{shippingAddressId}")
+    public R<UserShippingAddressVO> shippingAddressDetail(@PathVariable Integer shippingAddressId) {
+        UserShippingAddressVO shippingAddressVO = userShippingAddressService.getUserShippingAddressVO(shippingAddressId);
+        return R.ok(shippingAddressVO);
     }
 
     @GetMapping("/shipping/list")
-    public R<List<UserShippingAddressVO>> getShippingAddressList() {
-        List<UserShippingAddressVO> userShippingAddressVOList = userShippingAddressService.getUserShippingAddressVOList();
-        return R.ok(userShippingAddressVOList);
+    public R<List<UserShippingAddressVO>> shippingAddressList() {
+        List<UserShippingAddressVO> shippingAddressVOList = userShippingAddressService.getUserShippingAddressVOList();
+        return R.ok(shippingAddressVOList);
     }
 
 }

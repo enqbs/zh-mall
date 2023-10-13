@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()       // 不需要 session
                 .authorizeRequests()
-                .antMatchers("/login", "/admin/login", "/register/**").anonymous()          // 只允许未登录访问 url
+                .antMatchers("/favicon.ico", "/login", "/admin/login", "/register/**", "/product/**").anonymous()          // 只允许未登录访问 url
                 .antMatchers("/hello").permitAll()          // 允许匿名访问 url
                 .anyRequest().authenticated().and()                     // 所有接口拦截
                 .exceptionHandling()

@@ -15,17 +15,17 @@ public interface UserShippingAddressService {
     /*
     * 修改收货地址
     * */
-    int updateUserShippingAddress(Integer userShippingAddressId, UserShippingAddressForm form);
+    int updateUserShippingAddress(Integer shippingAddressId, UserShippingAddressForm form);
 
     /*
     * 删除收货地址
     * */
-    int deleteUserShippingAddress(Integer userShippingAddressId);
+    int deleteUserShippingAddress(Integer shippingAddressId);
 
     /*
     * 收货地址信息
     * */
-    UserShippingAddressVO getUserShippingAddressVO(Integer userShippingAddressId);
+    UserShippingAddressVO getUserShippingAddressVO(Integer shippingAddressId);
 
     /*
     * 收货地址列表

@@ -1,0 +1,19 @@
+package com.enqbs.app.service;
+
+import com.enqbs.app.vo.ProductCategoryVO;
+
+import java.util.List;
+
+public interface ProductCategoryService {
+
+    /*
+    * 商品分类
+    * */
+    ProductCategoryVO getProductCategoryVO(Integer categoryId);
+
+    /*
+    * 商品分类列表
+    * */
+    List<ProductCategoryVO> getProductCategoryVOList();
+
+}

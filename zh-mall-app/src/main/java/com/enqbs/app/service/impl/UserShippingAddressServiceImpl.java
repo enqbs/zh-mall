@@ -29,60 +29,60 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
     @Override
     public int insertUserShippingAddress(UserShippingAddressForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        UserShippingAddress userShippingAddress = new UserShippingAddress();
-        userShippingAddress.setUserId(userInfoVO.getUserId());
-        userShippingAddress.setName(form.getName());
-        userShippingAddress.setTelNo(form.getTelNo());
-        userShippingAddress.setAddress(form.getAddress());
-        userShippingAddress.setDetailAddress(form.getDetailAddress());
-        return userShippingAddressMapper.insertSelective(userShippingAddress);
+        UserShippingAddress shippingAddress = new UserShippingAddress();
+        shippingAddress.setUserId(userInfoVO.getUserId());
+        shippingAddress.setName(form.getName());
+        shippingAddress.setTelNo(form.getTelNo());
+        shippingAddress.setAddress(form.getAddress());
+        shippingAddress.setDetailAddress(form.getDetailAddress());
+        return userShippingAddressMapper.insertSelective(shippingAddress);
     }
 
     @Override
-    public int updateUserShippingAddress(Integer userShippingAddressId, UserShippingAddressForm form) {
+    public int updateUserShippingAddress(Integer shippingAddressId, UserShippingAddressForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        UserShippingAddress userShippingAddress = userShippingAddressMapper.selectByPrimaryKey(userShippingAddressId);
+        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKey(shippingAddressId);
 
-        if (ObjectUtils.isEmpty(userShippingAddress) ||
-                !userShippingAddress.getUserId().equals(userInfoVO.getUserId()) ||
-                userShippingAddress.getDeleteStatus().equals(Constants.IS_DELETE)) {
+        if (ObjectUtils.isEmpty(shippingAddress) ||
+                !userInfoVO.getUserId().equals(shippingAddress.getUserId()) ||
+                Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
             throw new ServiceException("收货地址不存在");
         }
 
-        userShippingAddress.setName(form.getName());
-        userShippingAddress.setTelNo(form.getTelNo());
-        userShippingAddress.setAddress(form.getAddress());
-        userShippingAddress.setDetailAddress(form.getDetailAddress());
-        return userShippingAddressMapper.updateByPrimaryKeySelective(userShippingAddress);
+        shippingAddress.setName(form.getName());
+        shippingAddress.setTelNo(form.getTelNo());
+        shippingAddress.setAddress(form.getAddress());
+        shippingAddress.setDetailAddress(form.getDetailAddress());
+        return userShippingAddressMapper.updateByPrimaryKeySelective(shippingAddress);
     }
 
     @Override
-    public int deleteUserShippingAddress(Integer userShippingAddressId) {
+    public int deleteUserShippingAddress(Integer shippingAddressId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        UserShippingAddress userShippingAddress = userShippingAddressMapper.selectByPrimaryKey(userShippingAddressId);
+        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKey(shippingAddressId);
 
-        if (ObjectUtils.isEmpty(userShippingAddress) ||
-                !userShippingAddress.getUserId().equals(userInfoVO.getUserId()) ||
-                userShippingAddress.getDeleteStatus().equals(Constants.IS_DELETE)) {
+        if (ObjectUtils.isEmpty(shippingAddress) ||
+                !userInfoVO.getUserId().equals(shippingAddress.getUserId()) ||
+                Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
             throw new ServiceException("收货地址不存在");
         }
 
-        userShippingAddress.setDeleteStatus(Constants.IS_DELETE);
-        return userShippingAddressMapper.updateByPrimaryKeySelective(userShippingAddress);
+        shippingAddress.setDeleteStatus(Constants.IS_DELETE);
+        return userShippingAddressMapper.updateByPrimaryKeySelective(shippingAddress);
     }
 
     @Override
-    public UserShippingAddressVO getUserShippingAddressVO(Integer userShippingAddressId) {
+    public UserShippingAddressVO getUserShippingAddressVO(Integer shippingAddressId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        UserShippingAddress userShippingAddress = userShippingAddressMapper.selectByPrimaryKey(userShippingAddressId);
+        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKey(shippingAddressId);
 
-        if (ObjectUtils.isEmpty(userShippingAddress) ||
-                !userShippingAddress.getUserId().equals(userInfoVO.getUserId()) ||
-                userShippingAddress.getDeleteStatus().equals(Constants.IS_DELETE)) {
+        if (ObjectUtils.isEmpty(shippingAddress) ||
+                !userInfoVO.getUserId().equals(shippingAddress.getUserId()) ||
+                Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
             throw new ServiceException("收货地址不存在");
         }
 
-        return userShippingAddress2UserShippingAddressVO(userShippingAddress);
+        return userShippingAddress2UserShippingAddressVO(shippingAddress);
     }
 
     @Override
@@ -92,10 +92,10 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
         return userShippingAddressList.stream().map(this::userShippingAddress2UserShippingAddressVO).collect(Collectors.toList());
     }
 
-    private UserShippingAddressVO userShippingAddress2UserShippingAddressVO(UserShippingAddress userShippingAddress) {
-        UserShippingAddressVO userShippingAddressVO = new UserShippingAddressVO();
-        BeanUtils.copyProperties(userShippingAddress, userShippingAddressVO);
-        return userShippingAddressVO;
+    private UserShippingAddressVO userShippingAddress2UserShippingAddressVO(UserShippingAddress shippingAddress) {
+        UserShippingAddressVO shippingAddressVO = new UserShippingAddressVO();
+        BeanUtils.copyProperties(shippingAddress, shippingAddressVO);
+        return shippingAddressVO;
     }
 
 }
