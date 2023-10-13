@@ -1,5 +1,7 @@
 package com.enqbs.app.vo;
 
+import java.math.BigDecimal;
+
 public class UserInfoVO {
 
     private String userToken;
@@ -16,7 +18,13 @@ public class UserInfoVO {
 
     private Integer experience;
 
-    private Integer levelId;
+    private Integer level;
+
+    private String levelTitle;
+
+    private Integer levelExperience;
+
+    private BigDecimal discount;
 
     public String getUserToken() {
         return userToken;
@@ -74,12 +82,36 @@ public class UserInfoVO {
         this.experience = experience;
     }
 
-    public Integer getLevelId() {
-        return levelId;
+    public Integer getLevel() {
+        return level;
     }
 
-    public void setLevelId(Integer levelId) {
-        this.levelId = levelId;
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public String getLevelTitle() {
+        return levelTitle;
+    }
+
+    public void setLevelTitle(String levelTitle) {
+        this.levelTitle = levelTitle;
+    }
+
+    public Integer getLevelExperience() {
+        return levelExperience;
+    }
+
+    public void setLevelExperience(Integer levelExperience) {
+        this.levelExperience = levelExperience;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
     }
 
     @Override
@@ -92,7 +124,10 @@ public class UserInfoVO {
                 ", photo='" + photo + '\'' +
                 ", gender=" + gender +
                 ", experience=" + experience +
-                ", levelId=" + levelId +
+                ", level=" + level +
+                ", levelTitle='" + levelTitle + '\'' +
+                ", levelExperience=" + levelExperience +
+                ", discount=" + discount +
                 '}';
     }
 

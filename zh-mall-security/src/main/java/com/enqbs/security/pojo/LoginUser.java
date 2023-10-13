@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +33,13 @@ public class LoginUser implements UserDetails {
 
     private Integer experience;
 
-    private Integer levelId;
+    private Integer level;
+
+    private String levelTitle;
+
+    private Integer levelExperience;
+
+    private BigDecimal discount;
 
     private List<String> permissionList;
 
@@ -149,12 +156,36 @@ public class LoginUser implements UserDetails {
         this.experience = experience;
     }
 
-    public Integer getLevelId() {
-        return levelId;
+    public Integer getLevel() {
+        return level;
     }
 
-    public void setLevelId(Integer levelId) {
-        this.levelId = levelId;
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public String getLevelTitle() {
+        return levelTitle;
+    }
+
+    public void setLevelTitle(String title) {
+        this.levelTitle = title;
+    }
+
+    public Integer getLevelExperience() {
+        return levelExperience;
+    }
+
+    public void setLevelExperience(Integer levelExperience) {
+        this.levelExperience = levelExperience;
+    }
+
+    public BigDecimal getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(BigDecimal discount) {
+        this.discount = discount;
     }
 
     public List<String> getPermissionList() {

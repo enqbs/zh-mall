@@ -2,6 +2,8 @@ package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.UserShippingAddress;
 
+import java.util.List;
+
 public interface UserShippingAddressMapper {
 
     int deleteByPrimaryKey(Integer id);
@@ -15,5 +17,7 @@ public interface UserShippingAddressMapper {
     int updateByPrimaryKeySelective(UserShippingAddress record);
 
     int updateByPrimaryKey(UserShippingAddress record);
+
+    List<UserShippingAddress> selectListByUserId(Integer userId);
 
 }

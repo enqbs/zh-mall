@@ -9,9 +9,11 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.common.util.RedisUtil;
 import com.enqbs.generator.dao.UserAuthsMapper;
+import com.enqbs.generator.dao.UserLevelMapper;
 import com.enqbs.generator.dao.UserMapper;
 import com.enqbs.generator.pojo.User;
 import com.enqbs.generator.pojo.UserAuths;
+import com.enqbs.generator.pojo.UserLevel;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
@@ -36,6 +38,9 @@ public class UserServiceImpl implements UserService {
     private UserAuthsMapper userAuthsMapper;
 
     @Resource
+    private UserLevelMapper userLevelMapper;
+
+    @Resource
     private RedisUtil redisUtil;
 
     @Resource
@@ -57,7 +62,8 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userMapper.selectByPrimaryKey(userAuths.getUserId());
-        LoginUser loginUser = getLoginUser(user, userAuths);
+        UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getLevelId());
+        LoginUser loginUser = getLoginUser(user, userAuths, userLevel);
         cacheLoginUser(loginUser);
         String token = tokenService.getToken(loginUser);
         Map<String, String> map = new HashMap<>();
@@ -110,7 +116,7 @@ public class UserServiceImpl implements UserService {
         SecurityContextHolder.clearContext();
     }
 
-    private LoginUser getLoginUser(User user, UserAuths userAuths) {
+    private LoginUser getLoginUser(User user, UserAuths userAuths, UserLevel userLevel) {
         LoginUser loginUser = new LoginUser();
         loginUser.setUserToken(IDUtil.getUUID());
         loginUser.setUserType(Constants.USER_TOKEN);
@@ -122,6 +128,14 @@ public class UserServiceImpl implements UserService {
         loginUser.setPhoto(user.getPhoto());
         loginUser.setGender(user.getGender());
         loginUser.setExperience(user.getExperience());
+
+        if (ObjectUtils.isNotEmpty(userLevel)) {
+            loginUser.setLevel(userLevel.getLevel());
+            loginUser.setLevelTitle(userLevel.getTitle());
+            loginUser.setLevelExperience(userLevel.getExperience());
+            loginUser.setDiscount(userLevel.getDiscount());
+        }
+
         return loginUser;
     }
 
@@ -141,7 +155,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUid(uid);
         user.setNickName("用户:" + uid);
-        user.setPhoto("https://zh-product.oss-cn-shenzhen.aliyuncs.com/user-photo/photo.png");
+        user.setPhoto("用户默认头像URL");
         return user;
     }
 
