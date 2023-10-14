@@ -1,8 +1,10 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.Sku;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface SkuMapper {
 
@@ -19,5 +21,7 @@ public interface SkuMapper {
     int updateByPrimaryKey(Sku record);
 
     List<Sku> selectListByProductId(Integer productId);
+
+    List<Sku> selectListByProductIdSet(@Param("productIdSet") Set<Integer> productIdSet);
 
 }

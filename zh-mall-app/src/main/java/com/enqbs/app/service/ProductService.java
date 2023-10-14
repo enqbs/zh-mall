@@ -3,6 +3,7 @@ package com.enqbs.app.service;
 import com.enqbs.app.vo.ProductVO;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProductService {
 
@@ -15,5 +16,10 @@ public interface ProductService {
     * 分类 id 获取商品列表
     * */
     List<ProductVO> getProductVOList(Integer categoryId);
+
+    /*
+     * 批量获取商品列表
+     * */
+    List<ProductVO> getProductVOList(Set<Integer> productIdSet);
 
 }

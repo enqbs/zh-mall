@@ -162,6 +162,21 @@
     select
     <include refid="Base_Column_List" />
     from tb_sku
-    where product_id = #{productId,jdbcType=INTEGER} and saleable_status = 1 and delete_status = 0
+    where product_id = #{productId,jdbcType=INTEGER}
+    and saleable_status = 1
+    and delete_status = 0
+    order by create_time desc
+  </select>
+
+  <select id="selectListByProductIdSet" parameterType="java.util.Set" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_sku
+    where
+    <foreach collection="productIdSet" item="item" separator="or">
+      product_id = #{item,jdbcType=INTEGER}
+    </foreach>
+    and saleable_status = 1
+    and delete_status = 0
   </select>
 </mapper>

@@ -229,4 +229,16 @@
     order by create_time desc
     limit 0, 30
   </select>
+
+  <select id="selectListByProductIdSet" parameterType="java.util.Set" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product
+    where
+    <foreach collection="productIdSet" item="item" separator="or">
+      product_category_id = #{item,jdbcType=INTEGER}
+    </foreach>
+    and saleable_status = 1
+    and delete_status = 0
+  </select>
 </mapper>

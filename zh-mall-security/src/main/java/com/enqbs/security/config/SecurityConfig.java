@@ -22,6 +22,9 @@ import javax.annotation.Resource;
 public class SecurityConfig {
 
     @Resource
+    private IgnoreUrlsConfig ignoreUrlsConfig;
+
+    @Resource
     private AuthenticationEntryPoint authenticationEntryPoint;
 
     @Resource
@@ -32,13 +35,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String[] anonymous = ignoreUrlsConfig.getAnonymous().toArray(new String[0]);
+        String[] permit = ignoreUrlsConfig.getPermit().toArray(new String[0]);
         return http
-                .csrf().disable()       // 关闭 csrf
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()       // 不需要 session
+                .csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()       // 不需要 session
                 .authorizeRequests()
-                .antMatchers("/favicon.ico", "/login", "/admin/login", "/register/**", "/product/**").anonymous()          // 只允许未登录访问 url
-                .antMatchers("/hello").permitAll()          // 允许匿名访问 url
+                .antMatchers(anonymous).anonymous()                     // 只允许未登录访问 url
+                .antMatchers(permit).permitAll()                        // 允许匿名访问 url
                 .anyRequest().authenticated().and()                     // 所有接口拦截
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)     // 自定义认证异常处理

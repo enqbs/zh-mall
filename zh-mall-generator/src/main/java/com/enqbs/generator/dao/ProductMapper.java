@@ -1,8 +1,10 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.Product;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProductMapper {
 
@@ -19,5 +21,7 @@ public interface ProductMapper {
     int updateByPrimaryKey(Product record);
 
     List<Product> selectListByCategoryId(Integer productCategoryId);
+
+    List<Product> selectListByProductIdSet(@Param("productIdSet") Set<Integer> productIdSet);
 
 }

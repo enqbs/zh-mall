@@ -7,6 +7,10 @@ public class Constants {
 
     public static final Integer IS_NOT_DELETE = 0;
 
+    public static final Integer PRODUCT_SHELVES = 1;
+
+    public static final Integer PRODUCT_NOT_SHELVES = 0;
+
     /* web */
     public static final String SUCCESS = "success";
 

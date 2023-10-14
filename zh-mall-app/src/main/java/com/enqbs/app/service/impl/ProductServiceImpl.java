@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,6 +45,22 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductVO> getProductVOList(Integer categoryId) {
         List<Product> productList = productMapper.selectListByCategoryId(categoryId);
         return productList.stream().map(this::product2ProductVO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductVO> getProductVOList(Set<Integer> productIdSet) {
+        List<ProductVO> productVOList;
+        List<Sku> skuList = skuMapper.selectListByProductIdSet(productIdSet);
+        List<Product> productList = productMapper.selectListByProductIdSet(productIdSet);
+        productVOList = productList.stream().map(this::product2ProductVO).collect(Collectors.toList());
+
+        for (ProductVO productVO : productVOList) {
+            List<SkuVO> skuVOList = skuList.stream()
+                    .filter(sku -> productVO.getId().equals(sku.getProductId()))
+                    .map(this::sku2SkuVO).collect(Collectors.toList());
+            productVO.setSkuList(skuVOList);
+        }
+        return productVOList;
     }
 
     private SkuVO sku2SkuVO(Sku sku) {
