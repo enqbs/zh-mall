@@ -38,6 +38,15 @@ public class Constants {
 
     public static final String PRODUCT_CATEGORY_LIST_LOCK = "product-category-list-lock";
 
+    /* rabbitmq */
+    public static final String EXCHANGE_TYPE_DELAYED = "x-delayed-message";
+
+    public static final String EXCHANGE_TYPE_DIRECT = "direct";
+
+    public static final Integer MESSAGE_SEND_SUCCESS = 1;
+
+    public static final Integer MESSAGE_SEND_ERROR = -1;
+
     /* 登录方式标识 */
     public static final String LOGIN_TYPE_USERNAME = "username";
 

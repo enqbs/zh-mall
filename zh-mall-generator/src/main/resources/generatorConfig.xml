@@ -187,5 +187,10 @@
             <columnOverride column="default_status" jdbcType="INTEGER" javaType="Integer" />
             <columnOverride column="delete_status" jdbcType="INTEGER" javaType="Integer" />
         </table>
+
+        <table tableName="tb_message_queue_log" domainObjectName="MessageQueueLog" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
+            <columnOverride column="content" jdbcType="VARCHAR" javaType="String" />
+            <columnOverride column="status" jdbcType="INTEGER" javaType="Integer" />
+        </table>
     </context>
 </generatorConfiguration>
