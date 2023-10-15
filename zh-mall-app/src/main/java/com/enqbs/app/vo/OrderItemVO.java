@@ -1,9 +1,9 @@
-package com.enqbs.generator.pojo;
+package com.enqbs.app.vo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class OrderRefundItem implements Serializable {
+public class OrderItemVO implements Serializable {
 
     private Long orderNo;
 
@@ -26,12 +26,6 @@ public class OrderRefundItem implements Serializable {
     private BigDecimal actualPrice;
 
     private BigDecimal totalPrice;
-
-    private BigDecimal refundAmount;
-
-    private Integer sharding;
-
-    private static final long serialVersionUID = 1L;
 
     public Long getOrderNo() {
         return orderNo;
@@ -62,7 +56,7 @@ public class OrderRefundItem implements Serializable {
     }
 
     public void setSkuTitle(String skuTitle) {
-        this.skuTitle = skuTitle == null ? null : skuTitle.trim();
+        this.skuTitle = skuTitle;
     }
 
     public String getSkuParam() {
@@ -78,7 +72,7 @@ public class OrderRefundItem implements Serializable {
     }
 
     public void setSkuPicture(String skuPicture) {
-        this.skuPicture = skuPicture == null ? null : skuPicture.trim();
+        this.skuPicture = skuPicture;
     }
 
     public Integer getNum() {
@@ -121,25 +115,9 @@ public class OrderRefundItem implements Serializable {
         this.totalPrice = totalPrice;
     }
 
-    public BigDecimal getRefundAmount() {
-        return refundAmount;
-    }
-
-    public void setRefundAmount(BigDecimal refundAmount) {
-        this.refundAmount = refundAmount;
-    }
-
-    public Integer getSharding() {
-        return sharding;
-    }
-
-    public void setSharding(Integer sharding) {
-        this.sharding = sharding;
-    }
-
     @Override
     public String toString() {
-        return "OrderRefundItem{" +
+        return "OrderItemVO{" +
                 "orderNo=" + orderNo +
                 ", skuId=" + skuId +
                 ", productId=" + productId +
@@ -151,8 +129,6 @@ public class OrderRefundItem implements Serializable {
                 ", discountPrice=" + discountPrice +
                 ", actualPrice=" + actualPrice +
                 ", totalPrice=" + totalPrice +
-                ", refundAmount=" + refundAmount +
-                ", sharding=" + sharding +
                 '}';
     }
 

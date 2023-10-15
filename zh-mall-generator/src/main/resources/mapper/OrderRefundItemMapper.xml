@@ -6,6 +6,7 @@
     <id column="sku_id" jdbcType="INTEGER" property="skuId" />
     <result column="product_id" jdbcType="INTEGER" property="productId" />
     <result column="sku_title" jdbcType="VARCHAR" property="skuTitle" />
+    <result column="sku_param" jdbcType="VARCHAR" property="skuParam" />
     <result column="sku_picture" jdbcType="VARCHAR" property="skuPicture" />
     <result column="num" jdbcType="INTEGER" property="num" />
     <result column="price" jdbcType="DECIMAL" property="price" />
@@ -17,7 +18,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    order_no, sku_id, product_id, sku_title, sku_picture, num, price, discount_price, 
+    order_no, sku_id, product_id, sku_title, sku_param, sku_picture, num, price, discount_price, 
     actual_price, total_price, refund_amount, sharding
   </sql>
 
@@ -37,15 +38,15 @@
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.OrderRefundItem">
     insert into tb_order_refund_item (order_no, sku_id, product_id, 
-      sku_title, sku_picture, num, 
-      price, discount_price, actual_price, 
-      total_price, refund_amount, sharding
-      )
+      sku_title, sku_param, sku_picture, 
+      num, price, discount_price, 
+      actual_price, total_price, refund_amount, 
+      sharding)
     values (#{orderNo,jdbcType=BIGINT}, #{skuId,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, 
-      #{skuTitle,jdbcType=VARCHAR}, #{skuPicture,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER}, 
-      #{price,jdbcType=DECIMAL}, #{discountPrice,jdbcType=DECIMAL}, #{actualPrice,jdbcType=DECIMAL}, 
-      #{totalPrice,jdbcType=DECIMAL}, #{refundAmount,jdbcType=DECIMAL}, #{sharding,jdbcType=INTEGER}
-      )
+      #{skuTitle,jdbcType=VARCHAR}, #{skuParam,jdbcType=VARCHAR}, #{skuPicture,jdbcType=VARCHAR}, 
+      #{num,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{discountPrice,jdbcType=DECIMAL}, 
+      #{actualPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, #{refundAmount,jdbcType=DECIMAL}, 
+      #{sharding,jdbcType=INTEGER})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.OrderRefundItem">
@@ -62,6 +63,9 @@
       </if>
       <if test="skuTitle != null">
         sku_title,
+      </if>
+      <if test="skuParam != null">
+        sku_param,
       </if>
       <if test="skuPicture != null">
         sku_picture,
@@ -101,6 +105,9 @@
       <if test="skuTitle != null">
         #{skuTitle,jdbcType=VARCHAR},
       </if>
+      <if test="skuParam != null">
+        #{skuParam,jdbcType=VARCHAR},
+      </if>
       <if test="skuPicture != null">
         #{skuPicture,jdbcType=VARCHAR},
       </if>
@@ -137,6 +144,9 @@
       <if test="skuTitle != null">
         sku_title = #{skuTitle,jdbcType=VARCHAR},
       </if>
+      <if test="skuParam != null">
+        sku_param = #{skuParam,jdbcType=VARCHAR},
+      </if>
       <if test="skuPicture != null">
         sku_picture = #{skuPicture,jdbcType=VARCHAR},
       </if>
@@ -170,6 +180,7 @@
     update tb_order_refund_item
     set product_id = #{productId,jdbcType=INTEGER},
       sku_title = #{skuTitle,jdbcType=VARCHAR},
+      sku_param = #{skuParam,jdbcType=VARCHAR},
       sku_picture = #{skuPicture,jdbcType=VARCHAR},
       num = #{num,jdbcType=INTEGER},
       price = #{price,jdbcType=DECIMAL},

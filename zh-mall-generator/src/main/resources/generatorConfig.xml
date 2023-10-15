@@ -86,7 +86,9 @@
             <columnOverride column="delete_status" jdbcType="INTEGER" javaType="Integer" />
         </table>
 
-        <table tableName="tb_order_item" domainObjectName="OrderItem" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" />
+        <table tableName="tb_order_item" domainObjectName="OrderItem" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
+            <columnOverride column="sku_param" jdbcType="VARCHAR" javaType="String" />
+        </table>
 
         <table tableName="tb_order_logistics_info" domainObjectName="OrderLogisticsInfo" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" />
 
@@ -96,7 +98,9 @@
             <columnOverride column="delete_status" jdbcType="INTEGER" javaType="Integer" />
         </table>
 
-        <table tableName="tb_order_refund_item" domainObjectName="OrderRefundItem" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" />
+        <table tableName="tb_order_refund_item" domainObjectName="OrderRefundItem" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
+            <columnOverride column="sku_param" jdbcType="VARCHAR" javaType="String" />
+        </table>
 
         <table tableName="tb_order_shipping_address" domainObjectName="OrderShippingAddress" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" />
 

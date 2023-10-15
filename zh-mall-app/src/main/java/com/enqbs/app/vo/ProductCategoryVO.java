@@ -1,8 +1,9 @@
 package com.enqbs.app.vo;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ProductCategoryVO {
+public class ProductCategoryVO implements Serializable {
 
     private Integer id;
 

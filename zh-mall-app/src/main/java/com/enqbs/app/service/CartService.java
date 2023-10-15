@@ -1,7 +1,10 @@
 package com.enqbs.app.service;
 
 import com.enqbs.app.form.CartForm;
+import com.enqbs.app.vo.CartProductVO;
 import com.enqbs.app.vo.CartVO;
+
+import java.util.List;
 
 public interface CartService {
 
@@ -39,5 +42,10 @@ public interface CartService {
     * 清空购物车
     * */
     CartVO clear();
+
+    /*
+    * 获取购物车中选中的商品
+    * */
+    List<CartProductVO> getCartProductVOListBySelected();
 
 }

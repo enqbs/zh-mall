@@ -1,8 +1,9 @@
 package com.enqbs.app.vo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class SkuVO {
+public class SkuVO implements Serializable {
 
     private Integer id;
 

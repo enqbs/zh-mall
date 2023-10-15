@@ -1,8 +1,9 @@
 package com.enqbs.app.vo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class CartProductVO {
+public class CartProductVO implements Serializable {
 
     private Integer productId;
 

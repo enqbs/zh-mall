@@ -47,3 +47,9 @@ secure:
       - "/favicon.ico"
       - "/register/**"
       - "/product/**"
+
+thread-pool:
+  core-pool-size: 12
+  max-pool-size: 24
+  work-queue-size: 1000
+  keep-alive-seconds: 300

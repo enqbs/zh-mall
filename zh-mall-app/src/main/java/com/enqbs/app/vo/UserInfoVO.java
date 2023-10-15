@@ -1,8 +1,9 @@
 package com.enqbs.app.vo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class UserInfoVO {
+public class UserInfoVO implements Serializable {
 
     private String userToken;
 

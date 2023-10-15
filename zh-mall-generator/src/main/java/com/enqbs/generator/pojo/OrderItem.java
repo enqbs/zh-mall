@@ -13,6 +13,8 @@ public class OrderItem implements Serializable {
 
     private String skuTitle;
 
+    private String skuParam;
+
     private String skuPicture;
 
     private Integer num;
@@ -59,6 +61,14 @@ public class OrderItem implements Serializable {
 
     public void setSkuTitle(String skuTitle) {
         this.skuTitle = skuTitle == null ? null : skuTitle.trim();
+    }
+
+    public String getSkuParam() {
+        return skuParam;
+    }
+
+    public void setSkuParam(String skuParam) {
+        this.skuParam = skuParam;
     }
 
     public String getSkuPicture() {
@@ -124,6 +134,7 @@ public class OrderItem implements Serializable {
                 ", skuId=" + skuId +
                 ", productId=" + productId +
                 ", skuTitle='" + skuTitle + '\'' +
+                ", skuParam='" + skuParam + '\'' +
                 ", skuPicture='" + skuPicture + '\'' +
                 ", num=" + num +
                 ", price=" + price +

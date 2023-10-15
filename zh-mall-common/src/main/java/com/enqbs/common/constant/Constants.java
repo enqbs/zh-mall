@@ -38,6 +38,8 @@ public class Constants {
 
     public static final String PRODUCT_CATEGORY_LIST_LOCK = "product-category-list-lock";
 
+    public static final String ORDER_TOKEN_REDIS_KEY = "order-token:%s";
+
     /* rabbitmq */
     public static final String EXCHANGE_TYPE_DELAYED = "x-delayed-message";
 

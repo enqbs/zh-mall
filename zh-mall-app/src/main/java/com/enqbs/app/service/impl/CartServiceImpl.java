@@ -190,6 +190,11 @@ public class CartServiceImpl implements CartService {
         return getCartVO();
     }
 
+    @Override
+    public List<CartProductVO> getCartProductVOListBySelected() {
+        return getCartVO().getProductVOList().stream().filter(CartProductVO::getSelected).collect(Collectors.toList());
+    }
+
     private List<Cart> getCartList() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());

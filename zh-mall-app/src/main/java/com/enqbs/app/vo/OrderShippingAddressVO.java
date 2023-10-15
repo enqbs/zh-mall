@@ -1,13 +1,10 @@
 package com.enqbs.app.vo;
 
 import java.io.Serializable;
-import java.util.Date;
 
-public class UserShippingAddressVO implements Serializable {
+public class OrderShippingAddressVO implements Serializable {
 
-    private Integer id;
-
-    private Integer userId;
+    private Long orderNo;
 
     private String name;
 
@@ -17,24 +14,12 @@ public class UserShippingAddressVO implements Serializable {
 
     private String detailAddress;
 
-    private Integer defaultStatus;
-
-    private Date createTime;
-
-    public Integer getId() {
-        return id;
+    public Long getOrderNo() {
+        return orderNo;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
+    public void setOrderNo(Long orderNo) {
+        this.orderNo = orderNo;
     }
 
     public String getName() {
@@ -69,33 +54,14 @@ public class UserShippingAddressVO implements Serializable {
         this.detailAddress = detailAddress;
     }
 
-    public Integer getDefaultStatus() {
-        return defaultStatus;
-    }
-
-    public void setDefaultStatus(Integer defaultStatus) {
-        this.defaultStatus = defaultStatus;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
     @Override
     public String toString() {
-        return "UserShippingAddressVO{" +
-                "id=" + id +
-                ", userId=" + userId +
+        return "OrderShippingAddressVO{" +
+                "orderNo=" + orderNo +
                 ", name='" + name + '\'' +
                 ", telNo='" + telNo + '\'' +
                 ", address='" + address + '\'' +
                 ", detailAddress='" + detailAddress + '\'' +
-                ", defaultStatus=" + defaultStatus +
-                ", createTime=" + createTime +
                 '}';
     }
 
