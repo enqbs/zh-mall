@@ -44,8 +44,8 @@ public class OrderController {
 
     @GetMapping("/order/list")
     public R<PageUtil<OrderVO>> orderList(@RequestParam(required = false) Integer status,
-                                      @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                      @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+                                          @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                          @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         if (pageNum <= 0) {
             pageNum = 1;
         }
