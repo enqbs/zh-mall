@@ -1,9 +1,11 @@
 package com.enqbs.common.util;
 
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +61,10 @@ public class RedisUtil {
 
     public Boolean isExist(String key) {
         return redisTemplate.hasKey(key);
+    }
+
+    public Long executeScript(String script, String key, Object value) {
+        return redisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Collections.singletonList(key), value);
     }
 
 }

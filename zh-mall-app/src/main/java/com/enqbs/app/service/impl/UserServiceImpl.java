@@ -3,7 +3,7 @@ package com.enqbs.app.service.impl;
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
 import com.enqbs.app.service.UserService;
-import com.enqbs.app.vo.UserInfoVO;
+import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.IDUtil;

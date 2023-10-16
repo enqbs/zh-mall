@@ -1,6 +1,10 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.SkuStock;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Set;
 
 public interface SkuStockMapper {
 
@@ -15,5 +19,9 @@ public interface SkuStockMapper {
     int updateByPrimaryKeySelective(SkuStock record);
 
     int updateByPrimaryKey(SkuStock record);
+
+    List<SkuStock> selectListBySkuIdSet(@Param("skuIdSet") Set<Integer> skuIdSet);
+
+    int batchUpdateBySkuStockList(@Param("stockList") List<SkuStock> stockList);
 
 }

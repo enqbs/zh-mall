@@ -1,6 +1,6 @@
 package com.enqbs.app.service;
 
-import com.enqbs.app.vo.ProductCategoryVO;
+import com.enqbs.app.pojo.vo.ProductCategoryVO;
 
 import java.util.List;
 

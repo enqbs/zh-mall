@@ -13,7 +13,7 @@ public class ThreadPoolPramConfig {
 
     private int workQueueSize;  // 阻塞队列数量
 
-    private long keepAliveSeconds;  // 空闲线程存活时间(秒)
+    private int keepAliveSeconds;  // 空闲线程存活时间(秒)
 
     public int getCorePoolSize() {
         return corePoolSize;
@@ -39,11 +39,11 @@ public class ThreadPoolPramConfig {
         this.workQueueSize = workQueueSize;
     }
 
-    public long getKeepAliveSeconds() {
+    public int getKeepAliveSeconds() {
         return keepAliveSeconds;
     }
 
-    public void setKeepAliveSeconds(long keepAliveSeconds) {
+    public void setKeepAliveSeconds(int keepAliveSeconds) {
         this.keepAliveSeconds = keepAliveSeconds;
     }
 

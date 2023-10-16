@@ -30,6 +30,11 @@
       and sku_id = #{skuId,jdbcType=INTEGER}
   </delete>
 
+  <delete id="deleteByOrderNo" parameterType="java.lang.Long">
+    delete from tb_sku_stock_lock
+    where order_no = #{orderNo,jdbcType=BIGINT}
+  </delete>
+
   <insert id="insert" parameterType="com.enqbs.generator.pojo.SkuStockLock">
     insert into tb_sku_stock_lock (order_no, sku_id, product_id, 
       count, status, consume_version, 
@@ -132,4 +137,61 @@
     where order_no = #{orderNo,jdbcType=BIGINT}
       and sku_id = #{skuId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectListByOrderNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_sku_stock_lock
+    where order_no = #{orderNo,jdbcType=BIGINT}
+  </select>
+
+  <insert id="batchInsertBySkuStockLockList" parameterType="com.enqbs.generator.pojo.SkuStockLock">
+    insert into tb_sku_stock_lock (order_no, sku_id, product_id,
+    count, status, consume_version,
+    create_time, update_time)
+    values
+    <foreach collection="skuStockLockList" item="item" index="index" separator=",">
+      (#{item.orderNo,jdbcType=BIGINT}, #{item.skuId,jdbcType=INTEGER}, #{item.productId,jdbcType=INTEGER},
+      #{item.count,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, #{item.consumeVersion,jdbcType=INTEGER},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+
+  <update id="batchUpdateBySkuStockLockList" parameterType="java.util.List">
+    <foreach collection="skuStockLockList" item="item" index="index" separator=";">
+      update tb_sku_stock_lock
+      <set>
+        <if test="item.productId != null">
+          product_id = #{item.productId,jdbcType=INTEGER},
+        </if>
+        <if test="item.count != null">
+          count = #{item.count,jdbcType=INTEGER},
+        </if>
+        <if test="item.status != null">
+          status = #{item.status,jdbcType=INTEGER},
+        </if>
+        <if test="item.consumeVersion != null">
+          consume_version = #{item.consumeVersion,jdbcType=INTEGER},
+        </if>
+        <if test="item.createTime != null">
+          create_time = #{item.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.updateTime != null">
+          update_time = #{item.updateTime,jdbcType=TIMESTAMP},
+        </if>
+      </set>
+      where order_no = #{item.orderNo,jdbcType=BIGINT}
+      and sku_id = #{item.skuId,jdbcType=INTEGER}
+    </foreach>
+  </update>
+
+  <select id="selectListByOrderNoSet" parameterType="java.util.Set" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_sku_stock_lock
+    where
+    <foreach collection="orderNoSet" item="item" index="index" separator="or">
+      order_no = #{item,jdbcType=BIGINT}
+    </foreach>
+  </select>
 </mapper>

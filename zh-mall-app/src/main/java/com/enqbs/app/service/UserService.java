@@ -2,7 +2,7 @@ package com.enqbs.app.service;
 
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
-import com.enqbs.app.vo.UserInfoVO;
+import com.enqbs.app.pojo.vo.UserInfoVO;
 
 import java.util.Map;
 

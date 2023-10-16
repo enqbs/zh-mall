@@ -37,17 +37,18 @@ public class RabbitMQCallbackConfig {
     private void confirmCallback() {
         rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
             if (ObjectUtils.isNotEmpty(correlationData)) {
-                String messageId = correlationData.getId();
-                MessageQueueLog messageQueueLog = rabbitMQService.getMessageQueueLog(Long.valueOf(messageId));
+                MessageQueueLog messageQueueLog = rabbitMQService.getMessageQueueLog(Long.valueOf(correlationData.getId()));
 
-                if (ack) {
-                    messageQueueLog.setStatus(Constants.MESSAGE_SEND_SUCCESS);
-                } else {
-                    /* TODO 发送失败消息处理 */
-                    messageQueueLog.setStatus(Constants.MESSAGE_SEND_ERROR);
+                if (ObjectUtils.isNotEmpty(messageQueueLog)) {
+                    if (ack) {
+                        messageQueueLog.setStatus(Constants.MESSAGE_SEND_SUCCESS);
+                    } else {
+                        /* TODO 发送失败消息处理 */
+                        messageQueueLog.setStatus(Constants.MESSAGE_SEND_ERROR);
+                    }
+                    rabbitMQService.updateMessageQueueLog(messageQueueLog);
+                    log.info("ConfirmCallback:{}", messageQueueLog);
                 }
-                rabbitMQService.updateMessageQueueLog(messageQueueLog);
-                log.info("ConfirmCallback:{}", messageQueueLog);
             }
         });
     }

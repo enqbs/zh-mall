@@ -181,4 +181,37 @@
     where order_no = #{orderNo,jdbcType=BIGINT}
       and sku_id = #{skuId,jdbcType=INTEGER}
   </update>
+
+  <insert id="batchInsertByOrderItemList" parameterType="com.enqbs.generator.pojo.OrderItem">
+    insert into tb_order_item (order_no, sku_id, product_id,
+    sku_title, sku_param, sku_picture,
+    num, price, discount_price,
+    actual_price, total_price, sharding
+    )
+    values
+    <foreach collection="orderItemList" item="item" index="index" separator=",">
+      (#{item.orderNo,jdbcType=BIGINT}, #{item.skuId,jdbcType=INTEGER}, #{item.productId,jdbcType=INTEGER},
+      #{item.skuTitle,jdbcType=VARCHAR}, #{item.skuParam,jdbcType=VARCHAR}, #{item.skuPicture,jdbcType=VARCHAR},
+      #{item.num,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL}, #{item.discountPrice,jdbcType=DECIMAL},
+      #{item.actualPrice,jdbcType=DECIMAL}, #{item.totalPrice,jdbcType=DECIMAL}, #{item.sharding,jdbcType=INTEGER}
+      )
+    </foreach>
+  </insert>
+
+  <select id="selectListByOrderNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_order_item
+    where order_no = #{orderNo,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectListByOrderNoSet" parameterType="java.util.Set" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_order_item
+    where
+    <foreach collection="orderNoSet" item="item" index="index" separator="or">
+      order_no = #{item,jdbcType=BIGINT}
+    </foreach>
+  </select>
 </mapper>

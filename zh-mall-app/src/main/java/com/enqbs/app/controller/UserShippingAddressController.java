@@ -2,7 +2,7 @@ package com.enqbs.app.controller;
 
 import com.enqbs.app.form.UserShippingAddressForm;
 import com.enqbs.app.service.UserShippingAddressService;
-import com.enqbs.app.vo.UserShippingAddressVO;
+import com.enqbs.app.pojo.vo.UserShippingAddressVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,11 +21,11 @@ import java.util.List;
 public class UserShippingAddressController {
 
     @Resource
-    private UserShippingAddressService userShippingAddressService;
+    private UserShippingAddressService shippingAddressService;
 
     @PostMapping("/shipping")
     public R<Void> addShippingAddress(@Valid @RequestBody UserShippingAddressForm form) {
-        int insertRow = userShippingAddressService.insertUserShippingAddress(form);
+        int insertRow = shippingAddressService.insertUserShippingAddress(form);
 
         if (insertRow <= 0) {
             throw new ServiceException("新增收货地址失败");
@@ -36,7 +36,7 @@ public class UserShippingAddressController {
 
     @PutMapping("/shipping/{shippingAddressId}")
     public R<Void> updateShippingAddress(@PathVariable Integer shippingAddressId, @Valid @RequestBody UserShippingAddressForm form) {
-        int updateRow = userShippingAddressService.updateUserShippingAddress(shippingAddressId, form);
+        int updateRow = shippingAddressService.updateUserShippingAddress(shippingAddressId, form);
 
         if (updateRow <= 0) {
             throw new ServiceException("修改收货地址失败");
@@ -47,7 +47,7 @@ public class UserShippingAddressController {
 
     @DeleteMapping("/shipping/{shippingAddressId}")
     public R<Void> deleteShippingAddress(@PathVariable Integer shippingAddressId) {
-        int deleteRow = userShippingAddressService.deleteUserShippingAddress(shippingAddressId);
+        int deleteRow = shippingAddressService.deleteUserShippingAddress(shippingAddressId);
 
         if (deleteRow <= 0) {
             throw new ServiceException("删除收货地址失败");
@@ -58,13 +58,13 @@ public class UserShippingAddressController {
 
     @GetMapping("/shipping/{shippingAddressId}")
     public R<UserShippingAddressVO> shippingAddressDetail(@PathVariable Integer shippingAddressId) {
-        UserShippingAddressVO shippingAddressVO = userShippingAddressService.getUserShippingAddressVO(shippingAddressId);
+        UserShippingAddressVO shippingAddressVO = shippingAddressService.getUserShippingAddressVO(shippingAddressId);
         return R.ok(shippingAddressVO);
     }
 
     @GetMapping("/shipping/list")
     public R<List<UserShippingAddressVO>> shippingAddressList() {
-        List<UserShippingAddressVO> shippingAddressVOList = userShippingAddressService.getUserShippingAddressVOList();
+        List<UserShippingAddressVO> shippingAddressVOList = shippingAddressService.getUserShippingAddressVOList();
         return R.ok(shippingAddressVOList);
     }
 

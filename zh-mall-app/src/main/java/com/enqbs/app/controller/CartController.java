@@ -2,7 +2,7 @@ package com.enqbs.app.controller;
 
 import com.enqbs.app.form.CartForm;
 import com.enqbs.app.service.CartService;
-import com.enqbs.app.vo.CartVO;
+import com.enqbs.app.pojo.vo.CartVO;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

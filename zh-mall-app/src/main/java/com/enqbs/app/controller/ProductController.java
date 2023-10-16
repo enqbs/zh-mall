@@ -2,8 +2,8 @@ package com.enqbs.app.controller;
 
 import com.enqbs.app.service.ProductCategoryService;
 import com.enqbs.app.service.ProductService;
-import com.enqbs.app.vo.ProductCategoryVO;
-import com.enqbs.app.vo.ProductVO;
+import com.enqbs.app.pojo.vo.ProductCategoryVO;
+import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

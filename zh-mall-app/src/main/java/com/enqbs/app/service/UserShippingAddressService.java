@@ -1,7 +1,7 @@
 package com.enqbs.app.service;
 
 import com.enqbs.app.form.UserShippingAddressForm;
-import com.enqbs.app.vo.UserShippingAddressVO;
+import com.enqbs.app.pojo.vo.UserShippingAddressVO;
 
 import java.util.List;
 

@@ -5,11 +5,11 @@ import com.enqbs.app.pojo.Cart;
 import com.enqbs.app.service.CartService;
 import com.enqbs.app.service.ProductService;
 import com.enqbs.app.service.UserService;
-import com.enqbs.app.vo.CartProductVO;
-import com.enqbs.app.vo.CartVO;
-import com.enqbs.app.vo.ProductVO;
-import com.enqbs.app.vo.SkuVO;
-import com.enqbs.app.vo.UserInfoVO;
+import com.enqbs.app.pojo.vo.CartProductVO;
+import com.enqbs.app.pojo.vo.CartVO;
+import com.enqbs.app.pojo.vo.ProductVO;
+import com.enqbs.app.pojo.vo.SkuVO;
+import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.RedisUtil;
@@ -193,6 +193,16 @@ public class CartServiceImpl implements CartService {
     @Override
     public List<CartProductVO> getCartProductVOListBySelected() {
         return getCartVO().getProductVOList().stream().filter(CartProductVO::getSelected).collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteCartProductVOListBySelected() {
+        List<CartProductVO> cartProductVOList = getCartVO().getProductVOList().stream()
+                .filter(CartProductVO::getSelected).collect(Collectors.toList());
+
+        for (CartProductVO cartProductVO : cartProductVOList) {
+            delete(cartProductVO.getSkuId());
+        }
     }
 
     private List<Cart> getCartList() {

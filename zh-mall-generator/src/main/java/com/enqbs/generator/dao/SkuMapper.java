@@ -22,6 +22,8 @@ public interface SkuMapper {
 
     List<Sku> selectListByProductId(Integer productId);
 
+    List<Sku> selectListByIdSet(@Param("idSet") Set<Integer> idSet);
+
     List<Sku> selectListByProductIdSet(@Param("productIdSet") Set<Integer> productIdSet);
 
 }

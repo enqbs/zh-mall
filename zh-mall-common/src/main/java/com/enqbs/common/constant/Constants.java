@@ -27,7 +27,9 @@ public class Constants {
 
     public static final String SYS_USER_TOKEN = "sys_user_token";
 
-    /* redis key */
+    /* redis key、script */
+    public static final String REDIS_SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
+
     public static final String USER_REDIS_KEY = "user-token:%s";
 
     public static final String USER_CART_REDIS_KEY = "user-cart:%s";
@@ -37,6 +39,8 @@ public class Constants {
     public static final String PRODUCT_CATEGORY_LIST = "product-category-list";
 
     public static final String PRODUCT_CATEGORY_LIST_LOCK = "product-category-list-lock";
+
+    public static final String SKU_STOCK_LOCK = "sku-stock-lock";
 
     public static final String ORDER_TOKEN_REDIS_KEY = "order-token:%s";
 

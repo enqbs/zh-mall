@@ -1,8 +1,8 @@
 package com.enqbs.app.service.impl;
 
 import com.enqbs.app.service.ProductService;
-import com.enqbs.app.vo.ProductVO;
-import com.enqbs.app.vo.SkuVO;
+import com.enqbs.app.pojo.vo.ProductVO;
+import com.enqbs.app.pojo.vo.SkuVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.dao.ProductMapper;
@@ -61,6 +61,11 @@ public class ProductServiceImpl implements ProductService {
             productVO.setSkuList(skuVOList);
         }
         return productVOList;
+    }
+
+    @Override
+    public List<Sku> getSkuList(Set<Integer> skuIdSet) {
+        return skuMapper.selectListByIdSet(skuIdSet);
     }
 
     private SkuVO sku2SkuVO(Sku sku) {

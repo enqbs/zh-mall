@@ -3,15 +3,18 @@ package com.enqbs.app.controller;
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
 import com.enqbs.app.service.UserService;
-import com.enqbs.app.vo.UserInfoVO;
+import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.common.util.R;
+import com.enqbs.security.service.TokenService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -19,6 +22,9 @@ public class UserController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private TokenService tokenService;
 
     @PostMapping("/login")
     public R<Map<String, String>> login(@Valid @RequestBody LoginForm form) {
@@ -33,9 +39,13 @@ public class UserController {
     }
 
     @GetMapping("/user-info")
-    public R<UserInfoVO> userInfo() {
+    public R<Map<String, Object>> userInfo(@RequestHeader String token) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        return R.ok(userInfoVO);
+        String newToken = tokenService.refreshToken(token);
+        Map<String, Object> map = new HashMap<>();
+        map.put("userInfo", userInfoVO);
+        map.put("token", newToken);
+        return R.ok(map);
     }
 
     @PostMapping("/sign-out")

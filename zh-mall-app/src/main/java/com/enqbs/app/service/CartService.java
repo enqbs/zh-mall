@@ -1,8 +1,8 @@
 package com.enqbs.app.service;
 
 import com.enqbs.app.form.CartForm;
-import com.enqbs.app.vo.CartProductVO;
-import com.enqbs.app.vo.CartVO;
+import com.enqbs.app.pojo.vo.CartProductVO;
+import com.enqbs.app.pojo.vo.CartVO;
 
 import java.util.List;
 
@@ -47,5 +47,10 @@ public interface CartService {
     * 获取购物车中选中的商品
     * */
     List<CartProductVO> getCartProductVOListBySelected();
+
+    /*
+     * 删除购物车选中商品
+     * */
+    void deleteCartProductVOListBySelected();
 
 }
