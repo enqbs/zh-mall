@@ -1,9 +1,35 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
-    username: root
-    password: root
+  shardingsphere:
+    datasource:
+      names: master, slave-01
+      master:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://master.com:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+        username: root
+        password: 0508@qq.com
+        data-source-properties:
+          useLocalSessionState: false
+      slave-01:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://slave.com:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+        username: root
+        password: root
+    rules:
+      readwrite-splitting:
+        data-sources:
+          readwrite01:
+            type: Static
+            props:
+              write-data-source-name: master
+              read-data-source-names: slave-01
+              load-balancer-name: readwrite-lb
+        load-balancers:
+          readwrite-lb:
+            type: ROUND_ROBIN
+    props:
+      sql-show: true
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -30,7 +56,6 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath*:mapper/*.xml
 
 jwt:
