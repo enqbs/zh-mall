@@ -30,12 +30,11 @@ import com.enqbs.generator.dao.OrderShippingAddressMapper;
 import com.enqbs.generator.pojo.Order;
 import com.enqbs.generator.pojo.OrderItem;
 import com.enqbs.generator.pojo.OrderShippingAddress;
+import com.enqbs.generator.pojo.PayInfo;
 import com.enqbs.generator.pojo.Sku;
 import com.enqbs.generator.pojo.SkuStock;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,8 +60,6 @@ public class OrderServiceImpl implements OrderService {
     private OrderShippingAddressMapper orderShippingAddressMapper;
     @Resource
     private RedisUtil redisUtil;
-    @Resource
-    private RedissonClient redissonClient;
     @Resource
     private UserService userService;
     @Resource
@@ -176,14 +173,7 @@ public class OrderServiceImpl implements OrderService {
         insertOrder(order);
         batchInsertOrderItem(orderItemList);
         insertOrderShippingAddress(orderShippingAddress);
-        RLock lock = redissonClient.getLock(Constants.SKU_STOCK_LOCK);
-        lock.lock();
-
-        try {
-            skuStockService.lockSkuStock(skuStockDTOList);      // 锁定库存
-        } finally {
-            lock.unlock();
-        }
+        skuStockService.lockSkuStock(skuStockDTOList);      // 锁定库存
         /* 发送延迟消息。15分钟订单超时 */
         rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), order, ORDER_TIMEOUT);
         cartService.deleteCartProductVOListBySelected();
@@ -240,7 +230,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int cancelOrder(Long orderNo) {
+    @Transactional(rollbackFor = Exception.class)
+    public void cancelOrder(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         Order order = orderMapper.selectByOrderNo(orderNo);
 
@@ -250,10 +241,16 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("无法取消该订单");
         }
         order.setDeleteStatus(Constants.IS_DELETE);
-        return orderMapper.updateByPrimaryKeySelective(order);
+        int updateRow = orderMapper.updateByPrimaryKeySelective(order);
+
+        if (updateRow <= 0) {
+            throw new ServiceException("订单取消失败");
+        }
+        skuStockService.unLockSkuStock(orderNo);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void handleTimeoutOrder(Order order) {
         Order timeoutOrder = orderMapper.selectByOrderNo(order.getOrderNo());
 
@@ -263,7 +260,31 @@ public class OrderServiceImpl implements OrderService {
             timeoutOrder.setStatus(OrderStatusEnum.TIMEOUT.getCode());
             timeoutOrder.setDeleteStatus(Constants.IS_DELETE);
             timeoutOrder.setConsumeVersion(1);
-            orderMapper.updateByPrimaryKeySelective(timeoutOrder);
+            int updateRow = orderMapper.updateByPrimaryKeySelective(timeoutOrder);
+
+            if (updateRow <= 0) {
+                throw new ServiceException("订单关闭失败");
+            }
+            skuStockService.unLockSkuStock(order.getOrderNo());
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void handlePaySuccessOrder(PayInfo payInfo) {
+        Order paySuccessOrder = orderMapper.selectByOrderNo(payInfo.getOrderNo());
+
+        if (ObjectUtils.isNotEmpty(paySuccessOrder) &&
+                OrderStatusEnum.NOT_PAY.getCode().equals(paySuccessOrder.getStatus()) &&
+                ObjectUtils.isEmpty(paySuccessOrder.getConsumeVersion())) {
+            paySuccessOrder.setStatus(OrderStatusEnum.PAY_SUCCESS.getCode());
+            paySuccessOrder.setConsumeVersion(1);
+            int updateRow = orderMapper.updateByPrimaryKeySelective(paySuccessOrder);
+
+            if (updateRow <= 0) {
+                throw new ServiceException("订单确认支付失败");
+            }
+            skuStockService.deleteSkuStock(payInfo.getOrderNo());
         }
     }
 

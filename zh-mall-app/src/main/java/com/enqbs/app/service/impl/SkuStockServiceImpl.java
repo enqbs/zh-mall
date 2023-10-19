@@ -39,25 +39,10 @@ public class SkuStockServiceImpl implements SkuStockService {
     @Transactional(rollbackFor = Exception.class)
     public void lockSkuStock(List<SkuStockDTO> skuStockDTOList) {
         Set<Long> orderNoSet = skuStockDTOList.stream().map(SkuStockDTO::getOrderNo).collect(Collectors.toSet());
-        List<SkuStockLock> skuStockLockList = skuStockLockMapper.selectListByOrderNoSet(orderNoSet);
-
-        if (CollectionUtils.isEmpty(skuStockLockList)) {
-            skuStockLockList = skuStockDTOList.stream().map(this::skuStockDTOBuildSkuStockLock).collect(Collectors.toList());
-            batchInsertSkuStockLock(skuStockLockList);
-        } else {
-            Map<Integer, SkuStockLock> skuStockLockMap = skuStockLockList.stream()
-                    .collect(Collectors.toMap(SkuStockLock::getSkuId, skuStockLock -> skuStockLock));
-            skuStockLockList.clear();
-
-            for (SkuStockDTO skuStockDTO : skuStockDTOList) {
-                SkuStockLock skuStockLock = skuStockLockMap.get(skuStockDTO.getSkuId());
-                skuStockLock.setCount(skuStockLock.getCount() + skuStockDTO.getQuantity());
-                skuStockLockList.add(skuStockLock);
-            }
-            batchUpdateSkuStockLock(skuStockLockList);
-        }
         List<SkuStock> stockList = skuStockDTOList.stream().map(this::skuStockDTOBuildSkuStock).collect(Collectors.toList());
+        List<SkuStockLock> skuStockLockList = skuStockDTOList.stream().map(this::skuStockDTOBuildSkuStockLock).collect(Collectors.toList());
         batchUpdateSkuStock(stockList);
+        batchInsertSkuStockLock(skuStockLockList);
         log.info("库存锁定成功,订单号:{}", orderNoSet);
     }
 
@@ -85,10 +70,10 @@ public class SkuStockServiceImpl implements SkuStockService {
                     updateSkuStockList.add(skuStock);
                 }
                 batchUpdateSkuStock(updateSkuStockList);
+                deleteSkuStockLock(orderNo);
+                log.info("库存解锁成功,订单号:{}", orderNo);
             }
         }
-        deleteSkuStockLock(orderNo);
-        log.info("库存解锁成功,订单号:{}", orderNo);
     }
 
     @Override
@@ -116,10 +101,10 @@ public class SkuStockServiceImpl implements SkuStockService {
                     updateSkuStockList.add(skuStock);
                 }
                 batchUpdateSkuStock(updateSkuStockList);
+                deleteSkuStockLock(orderNo);
+                log.info("库存删减成功,订单号:{}", orderNo);
             }
         }
-        deleteSkuStockLock(orderNo);
-        log.info("库存删减成功,订单号:{}", orderNo);
     }
 
     private void batchUpdateSkuStock(List<SkuStock> stockList) {

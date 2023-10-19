@@ -48,9 +48,18 @@ secure:
       - "/favicon.ico"
       - "/register/**"
       - "/product/**"
+      - "/pay/**"
 
 thread-pool:
   core-pool-size: 12
   max-pool-size: 24
   work-queue-size: 1000
   keep-alive-seconds: 300
+
+alipay:
+  gateway: alipayGateway
+  notify-url: notifyUrl
+  return-url: returnUrl
+  app-id: you appId
+  app-private-key: you privateKey
+  alipay-public-key: you alipayPublicKey

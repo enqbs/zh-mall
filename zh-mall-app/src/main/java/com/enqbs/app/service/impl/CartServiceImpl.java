@@ -82,7 +82,7 @@ public class CartServiceImpl implements CartService {
                 totalQuantity += cart.getQuantity();
             }
         }
-        cartVO.setProductVOList(cartProductVOList);
+        cartVO.setProductList(cartProductVOList);
         cartVO.setSelectedAll(selectedAll);
         cartVO.setTotalQuantity(totalQuantity);
         cartVO.setTotalPrice(totalPrice);
@@ -192,12 +192,12 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public List<CartProductVO> getCartProductVOListBySelected() {
-        return getCartVO().getProductVOList().stream().filter(CartProductVO::getSelected).collect(Collectors.toList());
+        return getCartVO().getProductList().stream().filter(CartProductVO::getSelected).collect(Collectors.toList());
     }
 
     @Override
     public void deleteCartProductVOListBySelected() {
-        List<CartProductVO> cartProductVOList = getCartVO().getProductVOList().stream()
+        List<CartProductVO> cartProductVOList = getCartVO().getProductList().stream()
                 .filter(CartProductVO::getSelected).collect(Collectors.toList());
 
         for (CartProductVO cartProductVO : cartProductVOList) {

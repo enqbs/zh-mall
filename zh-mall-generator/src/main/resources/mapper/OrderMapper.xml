@@ -281,6 +281,7 @@
     from tb_order
     where order_no = #{orderNo,jdbcType=BIGINT}
     and delete_status = 0
+    for update
   </select>
 
   <select id="countByUserId" parameterType="map" resultType="java.lang.Long">

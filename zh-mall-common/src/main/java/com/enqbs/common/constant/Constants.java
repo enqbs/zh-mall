@@ -40,7 +40,7 @@ public class Constants {
 
     public static final String PRODUCT_CATEGORY_LIST_LOCK = "product-category-list-lock";
 
-    public static final String SKU_STOCK_LOCK = "sku-stock-lock";
+    public static final String ORDER_LOCK = "order-lock";
 
     public static final String ORDER_TOKEN_REDIS_KEY = "order-token:%s";
 

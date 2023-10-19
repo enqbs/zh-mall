@@ -143,6 +143,7 @@
     <include refid="Base_Column_List" />
     from tb_sku_stock_lock
     where order_no = #{orderNo,jdbcType=BIGINT}
+    for update
   </select>
 
   <insert id="batchInsertBySkuStockLockList" parameterType="com.enqbs.generator.pojo.SkuStockLock">

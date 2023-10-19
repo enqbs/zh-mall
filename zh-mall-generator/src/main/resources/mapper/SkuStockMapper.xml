@@ -142,6 +142,7 @@
       sku_id = #{item,jdbcType=INTEGER}
     </foreach>
     and delete_status = 0
+    for update
   </select>
 
   <update id="batchUpdateBySkuStockList" parameterType="java.util.List">

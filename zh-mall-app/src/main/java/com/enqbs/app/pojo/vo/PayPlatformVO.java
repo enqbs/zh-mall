@@ -1,8 +1,8 @@
-package com.enqbs.generator.pojo;
+package com.enqbs.app.pojo.vo;
 
 import java.io.Serializable;
 
-public class PayPlatform implements Serializable {
+public class PayPlatformVO implements Serializable {
 
     private Long payInfoId;
 
@@ -13,10 +13,6 @@ public class PayPlatform implements Serializable {
     private String platform;
 
     private String platformNumber;
-
-    private Integer sharding;
-
-    private static final long serialVersionUID = 1L;
 
     public Long getPayInfoId() {
         return payInfoId;
@@ -39,7 +35,7 @@ public class PayPlatform implements Serializable {
     }
 
     public void setPayType(String payType) {
-        this.payType = payType == null ? null : payType.trim();
+        this.payType = payType;
     }
 
     public String getPlatform() {
@@ -47,7 +43,7 @@ public class PayPlatform implements Serializable {
     }
 
     public void setPlatform(String platform) {
-        this.platform = platform == null ? null : platform.trim();
+        this.platform = platform;
     }
 
     public String getPlatformNumber() {
@@ -55,26 +51,17 @@ public class PayPlatform implements Serializable {
     }
 
     public void setPlatformNumber(String platformNumber) {
-        this.platformNumber = platformNumber == null ? null : platformNumber.trim();
-    }
-
-    public Integer getSharding() {
-        return sharding;
-    }
-
-    public void setSharding(Integer sharding) {
-        this.sharding = sharding;
+        this.platformNumber = platformNumber;
     }
 
     @Override
     public String toString() {
-        return "PayPlatform{" +
+        return "PayPlatformVO{" +
                 "payInfoId=" + payInfoId +
                 ", orderNo=" + orderNo +
                 ", payType='" + payType + '\'' +
                 ", platform='" + platform + '\'' +
                 ", platformNumber='" + platformNumber + '\'' +
-                ", sharding=" + sharding +
                 '}';
     }
 

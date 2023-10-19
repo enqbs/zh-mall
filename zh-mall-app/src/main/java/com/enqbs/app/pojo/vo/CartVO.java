@@ -6,7 +6,7 @@ import java.util.List;
 
 public class CartVO implements Serializable {
 
-    private List<CartProductVO> productVOList;
+    private List<CartProductVO> productList;
 
     private Boolean selectedAll;
 
@@ -14,12 +14,12 @@ public class CartVO implements Serializable {
 
     private BigDecimal totalPrice;
 
-    public List<CartProductVO> getProductVOList() {
-        return productVOList;
+    public List<CartProductVO> getProductList() {
+        return productList;
     }
 
-    public void setProductVOList(List<CartProductVO> productVOList) {
-        this.productVOList = productVOList;
+    public void setProductList(List<CartProductVO> productList) {
+        this.productList = productList;
     }
 
     public Boolean getSelectedAll() {
@@ -49,7 +49,7 @@ public class CartVO implements Serializable {
     @Override
     public String toString() {
         return "CartVO{" +
-                "productVOList=" + productVOList +
+                "productList=" + productList +
                 ", selectedAll=" + selectedAll +
                 ", totalQuantity=" + totalQuantity +
                 ", totalPrice=" + totalPrice +

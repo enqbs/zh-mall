@@ -5,6 +5,7 @@ import com.enqbs.common.enums.QueueEnum;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.CustomExchange;
+import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -14,8 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*
-* RabbitMQ 交换机、路由、队列绑定配置
-* */
+ * RabbitMQ 交换机、路由、队列绑定配置
+ * */
 @Configuration
 public class RabbitMQConfig {
 
@@ -27,14 +28,30 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public DirectExchange payNotifyExchange() {
+        return new DirectExchange(QueueEnum.PAY_SUCCESS_QUEUE.getExchange());
+    }
+
+    @Bean
     public Queue orderCloseQueue() {
         return new Queue(QueueEnum.ORDER_CLOSE_QUEUE.getQueue());
+    }
+
+    @Bean
+    public Queue paySuccessQueue() {
+        return new Queue(QueueEnum.PAY_SUCCESS_QUEUE.getQueue());
     }
 
     @Bean
     public Binding orderCloseQueueBindingOrderExpiredExchange(@Qualifier("orderCloseQueue") Queue queue,
                                                               @Qualifier("orderExpiredExchange") CustomExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey()).noargs();
+    }
+
+    @Bean
+    public Binding paySuccessQueueBindingPayNotifyExchange(@Qualifier("paySuccessQueue") Queue queue,
+                                                           @Qualifier("payNotifyExchange") DirectExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(QueueEnum.PAY_SUCCESS_QUEUE.getRoutingKey());
     }
 
 }

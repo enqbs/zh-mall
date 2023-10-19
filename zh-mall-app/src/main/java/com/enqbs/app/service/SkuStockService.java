@@ -19,7 +19,7 @@ public interface SkuStockService {
     void lockSkuStock(List<SkuStockDTO> skuStockDTOList);
 
     /*
-    * 删减商品库存
+    * 解锁商品库存
     * */
     void unLockSkuStock(Long orderNo);
 

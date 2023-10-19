@@ -4,7 +4,6 @@ import com.enqbs.app.form.OrderForm;
 import com.enqbs.app.service.OrderService;
 import com.enqbs.app.pojo.vo.OrderConfirmVO;
 import com.enqbs.app.pojo.vo.OrderVO;
-import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,11 +58,7 @@ public class OrderController {
 
     @PutMapping("/order/{orderNo}")
     public R<Void> orderCancel(@PathVariable String orderNo) {
-        int updateRow = orderService.cancelOrder(Long.valueOf(orderNo));
-
-        if (updateRow <= 0) {
-            throw new ServiceException("取消订单失败");
-        }
+        orderService.cancelOrder(Long.valueOf(orderNo));
         return R.ok("取消订单成功");
     }
 

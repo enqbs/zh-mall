@@ -5,6 +5,7 @@ import com.enqbs.app.pojo.vo.OrderConfirmVO;
 import com.enqbs.app.pojo.vo.OrderVO;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.pojo.Order;
+import com.enqbs.generator.pojo.PayInfo;
 
 public interface OrderService {
 
@@ -31,11 +32,16 @@ public interface OrderService {
     /*
     * 取消订单
     * */
-    int cancelOrder(Long orderNo);
+    void cancelOrder(Long orderNo);
 
     /*
     * 处理过期订单
     * */
     void handleTimeoutOrder(Order order);
+
+    /*
+    * 处理支付成功订单
+    * */
+    void handlePaySuccessOrder(PayInfo payInfo);
 
 }

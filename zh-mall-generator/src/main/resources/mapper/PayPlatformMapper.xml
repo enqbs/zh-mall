@@ -5,7 +5,7 @@
     <id column="pay_info_id" jdbcType="BIGINT" property="payInfoId" />
     <id column="order_no" jdbcType="BIGINT" property="orderNo" />
     <result column="pay_type" jdbcType="VARCHAR" property="payType" />
-    <result column="platform" jdbcType="INTEGER" property="platform" />
+    <result column="platform" jdbcType="VARCHAR" property="platform" />
     <result column="platform_number" jdbcType="VARCHAR" property="platformNumber" />
     <result column="sharding" jdbcType="INTEGER" property="sharding" />
   </resultMap>
@@ -33,7 +33,7 @@
       platform, platform_number, sharding
       )
     values (#{payInfoId,jdbcType=BIGINT}, #{orderNo,jdbcType=BIGINT}, #{payType,jdbcType=VARCHAR}, 
-      #{platform,jdbcType=INTEGER}, #{platformNumber,jdbcType=VARCHAR}, #{sharding,jdbcType=INTEGER}
+      #{platform,jdbcType=VARCHAR}, #{platformNumber,jdbcType=VARCHAR}, #{sharding,jdbcType=INTEGER}
       )
   </insert>
 
@@ -70,7 +70,7 @@
         #{payType,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
-        #{platform,jdbcType=INTEGER},
+        #{platform,jdbcType=VARCHAR},
       </if>
       <if test="platformNumber != null">
         #{platformNumber,jdbcType=VARCHAR},
@@ -88,7 +88,7 @@
         pay_type = #{payType,jdbcType=VARCHAR},
       </if>
       <if test="platform != null">
-        platform = #{platform,jdbcType=INTEGER},
+        platform = #{platform,jdbcType=VARCHAR},
       </if>
       <if test="platformNumber != null">
         platform_number = #{platformNumber,jdbcType=VARCHAR},
@@ -104,7 +104,7 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.PayPlatform">
     update tb_pay_platform
     set pay_type = #{payType,jdbcType=VARCHAR},
-      platform = #{platform,jdbcType=INTEGER},
+      platform = #{platform,jdbcType=VARCHAR},
       platform_number = #{platformNumber,jdbcType=VARCHAR},
       sharding = #{sharding,jdbcType=INTEGER}
     where pay_info_id = #{payInfoId,jdbcType=BIGINT}

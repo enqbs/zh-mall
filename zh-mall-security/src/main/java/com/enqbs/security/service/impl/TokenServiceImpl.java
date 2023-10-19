@@ -8,12 +8,14 @@ import com.enqbs.common.util.RedisUtil;
 import com.enqbs.security.config.JwtPramConfig;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @Service
 public class TokenServiceImpl implements TokenService {
 
@@ -85,7 +87,7 @@ public class TokenServiceImpl implements TokenService {
                 String userToken;
                 userToken = getUserToken(token);
 
-                if (!StringUtils.isEmpty(userToken)) {
+                if (StringUtils.isNotEmpty(userToken)) {
                     redisKey = String.format(Constants.USER_REDIS_KEY, userToken);
                 } else {
                     userToken = getSysUserToken(token);
@@ -96,6 +98,7 @@ public class TokenServiceImpl implements TokenService {
                     throw new ServiceException("用户信息已过期,请重新登录");
                 }
             } else {
+                log.info("无效token:{}", token);
                 throw new ServiceException("无效的token");
             }
         }
@@ -106,7 +109,7 @@ public class TokenServiceImpl implements TokenService {
         String userToken;
         userToken = getUserToken(token);
 
-        if (!StringUtils.isEmpty(userToken)) {
+        if (StringUtils.isNotEmpty(userToken)) {
             newToken = JwtUtil.createToken(Constants.USER_TOKEN, userToken,
                     jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
         } else {
