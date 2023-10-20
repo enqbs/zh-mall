@@ -4,7 +4,9 @@ public enum QueueEnum {
 
     ORDER_CLOSE_QUEUE("order.expired", "order.expired.close", "order.close.queue"),
 
-    PAY_SUCCESS_QUEUE("pay.notify", "pay.notify.success", "pay.success.queue");
+    PAY_SUCCESS_QUEUE("pay.notify", "pay.notify.success", "pay.success.queue"),
+
+    CANAL_SYNC_QUEUE("canal.sync", "zh_mall", "canal.sync.queue");
 
     private final String exchange;
 

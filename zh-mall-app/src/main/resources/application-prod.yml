@@ -33,6 +33,7 @@ spring:
 
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
     default-property-inclusion: non_null
 
   redis:
@@ -56,7 +57,6 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath*:mapper/*.xml
 
 jwt:

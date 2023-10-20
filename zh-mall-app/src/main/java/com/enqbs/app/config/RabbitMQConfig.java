@@ -33,6 +33,11 @@ public class RabbitMQConfig {
     }
 
     @Bean
+    public DirectExchange canalSyncExchange() {
+        return new DirectExchange(QueueEnum.CANAL_SYNC_QUEUE.getExchange());
+    }
+
+    @Bean
     public Queue orderCloseQueue() {
         return new Queue(QueueEnum.ORDER_CLOSE_QUEUE.getQueue());
     }
@@ -40,6 +45,11 @@ public class RabbitMQConfig {
     @Bean
     public Queue paySuccessQueue() {
         return new Queue(QueueEnum.PAY_SUCCESS_QUEUE.getQueue());
+    }
+
+    @Bean
+    public Queue canalSyncQueue() {
+        return new Queue(QueueEnum.CANAL_SYNC_QUEUE.getQueue());
     }
 
     @Bean
@@ -52,6 +62,12 @@ public class RabbitMQConfig {
     public Binding paySuccessQueueBindingPayNotifyExchange(@Qualifier("paySuccessQueue") Queue queue,
                                                            @Qualifier("payNotifyExchange") DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(QueueEnum.PAY_SUCCESS_QUEUE.getRoutingKey());
+    }
+
+    @Bean
+    public Binding canalSyncQueueBindingCanalSyncExchange(@Qualifier("canalSyncQueue") Queue queue,
+                                                          @Qualifier("canalSyncExchange") DirectExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with(QueueEnum.CANAL_SYNC_QUEUE.getRoutingKey());
     }
 
 }
