@@ -4,7 +4,7 @@ zh-mall 是本人曾经的毕业设计加以优化、改进而来的电商项目
 
 doc 文件夹中的 json 文件导入 postman 能得到项目的所有接口，前端写的不好暂不开源。
 
-项目技术包括（完成度：90%）
+项目技术包括（完成度：100%）
 - MySQL 主从同步、读写分离
 - 分布式日志收集
 - 单点登录、无感知刷新 Token
@@ -42,7 +42,10 @@ doc 文件夹中的 json 文件导入 postman 能得到项目的所有接口，�
 | Canal                 | 数据库增量日志解析工具   | 1.1.5             |
 | ShardingSphere-JDBC   | 读写分离、数据分片     | 5.1.2             |
 | AliPay-SDK            | 支付宝开源开发工具     | 4.38.105.ALL      |
-| JWT                   | Json Web Token        | -             |
+| JWT                   | Json Web Token      | -                 |
+| ElasticSearch         | 全文检索（搜索引擎）    | 7.17.13           |
+| Logstash              | 日志收集工具           | 7.17.13          |
+| Kibana                | ES 可视化工具          | 7.17.13          |
 
 # 目录结构
 
