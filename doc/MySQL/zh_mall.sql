@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 19/10/2023 15:12:04
+ Date: 24/10/2023 16:02:27
 */
 
 SET NAMES utf8mb4;
@@ -36,7 +36,7 @@ CREATE TABLE `sys_menu`  (
   INDEX `idx_sort`(`sort` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统菜单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统菜单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -58,7 +58,7 @@ CREATE TABLE `sys_role`  (
   INDEX `idx_sort`(`sort` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
@@ -72,7 +72,7 @@ CREATE TABLE `sys_role_menu`  (
   `role_id` int UNSIGNED NOT NULL COMMENT '角色ID',
   `menu_id` int UNSIGNED NOT NULL COMMENT '菜单ID',
   PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统角色菜单关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统角色菜单关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_menu
@@ -95,7 +95,7 @@ CREATE TABLE `sys_user`  (
   UNIQUE INDEX `unq_username`(`username` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
@@ -109,7 +109,7 @@ CREATE TABLE `sys_user_role`  (
   `user_id` int UNSIGNED NOT NULL COMMENT '用户ID',
   `role_id` int UNSIGNED NOT NULL COMMENT '角色ID',
   PRIMARY KEY (`user_id`, `role_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统用户角色关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统用户角色关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_role
@@ -136,7 +136,7 @@ CREATE TABLE `tb_coupon`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_coupon
@@ -159,7 +159,7 @@ CREATE TABLE `tb_home_banner`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页横幅表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页横幅表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_banner
@@ -182,7 +182,7 @@ CREATE TABLE `tb_home_recommend_advertise`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页推荐广告表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页推荐广告表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_recommend_advertise
@@ -205,7 +205,7 @@ CREATE TABLE `tb_home_slide`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页轮播图表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页轮播图表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_slide
@@ -271,7 +271,7 @@ CREATE TABLE `tb_order`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order
@@ -295,7 +295,7 @@ CREATE TABLE `tb_order_item`  (
   `total_price` decimal(10, 2) UNSIGNED NULL DEFAULT NULL COMMENT '商品总价',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
   PRIMARY KEY (`order_no`, `sku_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单项表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单项表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order_item
@@ -311,7 +311,7 @@ CREATE TABLE `tb_order_logistics_info`  (
   `logistics_title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '物流公司名称',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
   PRIMARY KEY (`order_no`, `logistics_no`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单物流表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单物流表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order_logistics_info
@@ -344,7 +344,7 @@ CREATE TABLE `tb_order_refund`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单申请退款表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单申请退款表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order_refund
@@ -369,7 +369,7 @@ CREATE TABLE `tb_order_refund_item`  (
   `refund_amount` decimal(10, 2) UNSIGNED NULL DEFAULT NULL COMMENT '商品退款金额',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
   PRIMARY KEY (`order_no`, `sku_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '退款订单项表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '退款订单项表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order_refund_item
@@ -387,7 +387,7 @@ CREATE TABLE `tb_order_shipping_address`  (
   `detail_address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收件人详细地址',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
   PRIMARY KEY (`order_no`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单收货地址表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单收货地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order_shipping_address
@@ -417,7 +417,7 @@ CREATE TABLE `tb_pay_info`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_info
@@ -436,7 +436,7 @@ CREATE TABLE `tb_pay_platform`  (
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
   PRIMARY KEY (`pay_info_id`, `order_no`) USING BTREE,
   UNIQUE INDEX `unq_platform_number`(`platform_number` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付平台表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付平台表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_platform
@@ -466,7 +466,7 @@ CREATE TABLE `tb_pay_refund`  (
   INDEX `idx_pay_info_id`(`pay_info_id` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_refund
@@ -499,12 +499,12 @@ CREATE TABLE `tb_product`  (
   INDEX `idx_recommend_status`(`recommend_status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product
 -- ----------------------------
-INSERT INTO `tb_product` VALUES (1, 1, 'Xiaomi MIX Fold 2', '超轻薄折叠机身｜小米自研微水滴形态转轴｜内外双旗舰屏幕｜徕卡专业光学镜头｜徕卡原生双画质', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/b63bf6e853524d7c9fe515c7287d8b51.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/78459a521d084739b0d34373f527d23e.jpg\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/6babd6ce1f314cfab32e1da8561df009.jpg\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/a759378a5932435c9e8452868023e3f7.jpg\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-11 18:01:50');
+INSERT INTO `tb_product` VALUES (1, 1, 'Xiaomi MIX Fold 2', '超轻薄折叠机身｜小米自研微水滴形态转轴｜内外双旗舰屏幕｜徕卡专业光学镜头｜徕卡原生双画质', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/b63bf6e853524d7c9fe515c7287d8b51.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/78459a521d084739b0d34373f527d23e.jpg\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/6babd6ce1f314cfab32e1da8561df009.jpg\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/a759378a5932435c9e8452868023e3f7.jpg\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-22 12:34:23');
 INSERT INTO `tb_product` VALUES (2, 1, 'Redmi K50 至尊版', '骁龙8+「狂暴调校」｜ 定制 1.5K 旗舰直屏 ｜ 120W神仙秒充丨1 亿像素光学防抖相机｜ 电竞级 VC 散热 | 屏下指纹', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/db31a83715ae41379b58877670215b4c.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/4244c87bb1bc43c39da621938fb0d2a1.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/b08e21b130d34d1ebd756234832e7f14.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/d269c537a8ab4162ae0d3cbac3aa52f3.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/85dec4b01dee4e8fb102970c01b8d8b9.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/4d6ca860093143819b209201fc150ba1.png\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-11 18:01:50');
 INSERT INTO `tb_product` VALUES (3, 1, 'Xiaomi 12S Ultra', '徕卡专业光学镜头｜骁龙8+ 旗舰处理器｜徕卡原生双画质｜1 英寸大底专业主摄｜小米澎湃 P1 快充芯片｜全场景疾速抓拍｜IP68级防尘防水', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/cae7e8c393884b0eb687b912ff454a2c.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/2e52833835074f2b94d346dca4628959.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/a3576c5d60b4450c916ea4263bb59c31.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/c08f5368353d40bf889dec8cac739be4.png\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-11 18:01:50');
 INSERT INTO `tb_product` VALUES (4, 1, 'Xiaomi 12S Pro', '骁龙8+ 旗舰处理器 | 徕卡光学镜头 | 徕卡原生双画质 | 徕卡水印、大师镜头包 | 全场景疾速抓拍 | 5000万三主摄 | 小米自研澎湃P1芯片 | 120W小米澎湃秒充 | 4600mAh大电量 | 2K AMOLED屏', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/d612969eee074d40845a9aca6ecf707b.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/7d72d2fa7f7c428e8e93c434920ffb3e.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/ad4ec1ae84a940b1a81a7d8530b8bf4f.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/89c1cf4136d8465196974a1aacad7dd0.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/26ba2fdd3557400a91e7455d8e7d5c03.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/69c617b911004be4b76bd1ef227420f9.png\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-11 18:01:50');
@@ -533,7 +533,7 @@ CREATE TABLE `tb_product_category`  (
   INDEX `idx_sort`(`sort` ASC) USING BTREE,
   INDEX `idx_navi_status`(`navi_status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_category
@@ -559,7 +559,7 @@ CREATE TABLE `tb_product_category_attribute`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_category_attribute
@@ -573,7 +573,7 @@ CREATE TABLE `tb_product_category_attribute_relation`  (
   `product_category_id` int UNSIGNED NOT NULL COMMENT '商品分类ID',
   `product_category_attribute_id` int UNSIGNED NOT NULL COMMENT '商品分类属性ID',
   PRIMARY KEY (`product_category_id`, `product_category_attribute_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_category_attribute_relation
@@ -586,8 +586,12 @@ DROP TABLE IF EXISTS `tb_product_comment`;
 CREATE TABLE `tb_product_comment`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `product_id` int UNSIGNED NOT NULL COMMENT '商品ID',
+  `parent_id` int NULL DEFAULT 0 COMMENT '父ID',
+  `order_no` bigint NULL DEFAULT NULL COMMENT '订单号',
   `user_id` int UNSIGNED NULL DEFAULT NULL COMMENT '用户ID',
+  `to_user_id` int NULL DEFAULT NULL COMMENT '被回复的用户ID',
   `nick_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户昵称',
+  `to_nick_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '被回复的用户昵称',
   `photo` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户头像',
   `sku_title` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '购买的商品规格',
   `content` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '评论内容',
@@ -599,12 +603,13 @@ CREATE TABLE `tb_product_comment`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
+  INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE,
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_star`(`star` ASC) USING BTREE,
   INDEX `idx_like`(`like` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_comment
@@ -622,7 +627,7 @@ CREATE TABLE `tb_product_overview`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品概述表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品概述表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_overview
@@ -640,7 +645,7 @@ CREATE TABLE `tb_product_spec`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品参数表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品参数表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_spec
@@ -666,7 +671,7 @@ CREATE TABLE `tb_sku`  (
   INDEX `idx_saleable_status`(`saleable_status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_sku
@@ -749,14 +754,14 @@ CREATE TABLE `tb_sku_stock`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_sku_id`(`sku_id` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格库存表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格库存表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_sku_stock
 -- ----------------------------
-INSERT INTO `tb_sku_stock` VALUES (1, 1, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-19 06:22:52');
-INSERT INTO `tb_sku_stock` VALUES (2, 2, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-19 06:22:52');
-INSERT INTO `tb_sku_stock` VALUES (3, 3, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
+INSERT INTO `tb_sku_stock` VALUES (1, 1, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-22 06:21:10');
+INSERT INTO `tb_sku_stock` VALUES (2, 2, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-22 06:21:10');
+INSERT INTO `tb_sku_stock` VALUES (3, 3, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-22 06:21:10');
 INSERT INTO `tb_sku_stock` VALUES (4, 4, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
 INSERT INTO `tb_sku_stock` VALUES (5, 5, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
 INSERT INTO `tb_sku_stock` VALUES (6, 6, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
@@ -831,7 +836,7 @@ CREATE TABLE `tb_sku_stock_lock`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`order_no`, `sku_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格锁定库存表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格锁定库存表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_sku_stock_lock
@@ -857,7 +862,7 @@ CREATE TABLE `tb_user`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user
@@ -884,7 +889,7 @@ CREATE TABLE `tb_user_auths`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录类型表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录类型表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_auths
@@ -905,7 +910,7 @@ CREATE TABLE `tb_user_coupon`  (
   PRIMARY KEY (`coupon_id`, `user_id`) USING BTREE,
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_coupon
@@ -927,7 +932,7 @@ CREATE TABLE `tb_user_level`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员等级表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员等级表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_level
@@ -952,7 +957,7 @@ CREATE TABLE `tb_user_shipping_address`  (
   INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_shipping_address
