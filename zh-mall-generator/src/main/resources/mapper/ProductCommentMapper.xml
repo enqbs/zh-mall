@@ -4,8 +4,12 @@
   <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.ProductComment">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="product_id" jdbcType="INTEGER" property="productId" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="order_no" jdbcType="BIGINT" property="orderNo" />
     <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="to_user_id" jdbcType="INTEGER" property="toUserId" />
     <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="to_nick_name" jdbcType="VARCHAR" property="toNickName" />
     <result column="photo" jdbcType="VARCHAR" property="photo" />
     <result column="sku_title" jdbcType="VARCHAR" property="skuTitle" />
     <result column="content" jdbcType="VARCHAR" property="content" />
@@ -18,8 +22,8 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, product_id, user_id, nick_name, photo, sku_title, content, picture, star, like, 
-    delete_status, create_time, update_time
+    id, product_id, parent_id, order_no, user_id, to_user_id, nick_name, to_nick_name, 
+    photo, sku_title, content, picture, star, like, delete_status, create_time, update_time
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -35,16 +39,18 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.ProductComment">
-    insert into tb_product_comment (id, product_id, user_id, 
-      nick_name, photo, sku_title, 
-      content, picture, star, 
-      like, delete_status, create_time, 
-      update_time)
-    values (#{id,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
-      #{nickName,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, #{skuTitle,jdbcType=VARCHAR}, 
-      #{content,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, #{star,jdbcType=INTEGER}, 
-      #{like,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into tb_product_comment (id, product_id, parent_id, 
+      order_no, user_id, to_user_id, 
+      nick_name, to_nick_name, photo, 
+      sku_title, content, picture, 
+      star, like, delete_status, 
+      create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{productId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, 
+      #{orderNo,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, #{toUserId,jdbcType=INTEGER}, 
+      #{nickName,jdbcType=VARCHAR}, #{toNickName,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, 
+      #{skuTitle,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, 
+      #{star,jdbcType=INTEGER}, #{like,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.ProductComment">
@@ -56,11 +62,23 @@
       <if test="productId != null">
         product_id,
       </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="orderNo != null">
+        order_no,
+      </if>
       <if test="userId != null">
         user_id,
       </if>
+      <if test="toUserId != null">
+        to_user_id,
+      </if>
       <if test="nickName != null">
         nick_name,
+      </if>
+      <if test="toNickName != null">
+        to_nick_name,
       </if>
       <if test="photo != null">
         photo,
@@ -97,11 +115,23 @@
       <if test="productId != null">
         #{productId,jdbcType=INTEGER},
       </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=BIGINT},
+      </if>
       <if test="userId != null">
         #{userId,jdbcType=INTEGER},
       </if>
+      <if test="toUserId != null">
+        #{toUserId,jdbcType=INTEGER},
+      </if>
       <if test="nickName != null">
         #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="toNickName != null">
+        #{toNickName,jdbcType=VARCHAR},
       </if>
       <if test="photo != null">
         #{photo,jdbcType=VARCHAR},
@@ -139,11 +169,23 @@
       <if test="productId != null">
         product_id = #{productId,jdbcType=INTEGER},
       </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=BIGINT},
+      </if>
       <if test="userId != null">
         user_id = #{userId,jdbcType=INTEGER},
       </if>
+      <if test="toUserId != null">
+        to_user_id = #{toUserId,jdbcType=INTEGER},
+      </if>
       <if test="nickName != null">
         nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="toNickName != null">
+        to_nick_name = #{toNickName,jdbcType=VARCHAR},
       </if>
       <if test="photo != null">
         photo = #{photo,jdbcType=VARCHAR},
@@ -179,8 +221,12 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.ProductComment">
     update tb_product_comment
     set product_id = #{productId,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=BIGINT},
       user_id = #{userId,jdbcType=INTEGER},
+      to_user_id = #{toUserId,jdbcType=INTEGER},
       nick_name = #{nickName,jdbcType=VARCHAR},
+      to_nick_name = #{toNickName,jdbcType=VARCHAR},
       photo = #{photo,jdbcType=VARCHAR},
       sku_title = #{skuTitle,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},

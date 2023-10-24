@@ -11,6 +11,8 @@ public interface PayService {
 
     String pay(PayTypeEnum payTypeEnum, Long orderNo, BigDecimal amount) throws AlipayApiException;
 
+    void closePay(String orderNo, String payPlatformNo);
+
     boolean asyncNotify(HttpServletRequest request, HttpServletResponse response);
 
 }

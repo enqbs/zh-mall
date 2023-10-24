@@ -5,7 +5,7 @@
     <parent>
         <artifactId>zh-mall</artifactId>
         <groupId>com.enqbs</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,7 +20,6 @@
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>zh-mall-common</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

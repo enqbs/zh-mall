@@ -39,7 +39,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -164,7 +163,6 @@ public class OrderServiceImpl implements OrderService {
         UserShippingAddressVO shippingAddressVO = shippingAddressService.getUserShippingAddressVO(form.getShippingAddressId());
         BeanUtils.copyProperties(shippingAddressVO, orderShippingAddress);
         orderShippingAddress.setOrderNo(orderNo);
-
         BigDecimal amount = orderItemList.stream().map(OrderItem::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         order.setOrderNo(orderNo);
         order.setUserId(userInfoVO.getUserId());
@@ -227,6 +225,24 @@ public class OrderServiceImpl implements OrderService {
         pageUtil.setTotal(total);
         pageUtil.setList(orderVOList);
         return pageUtil;
+    }
+
+    @Override
+    public void sign4Order(Long orderNo) {
+        UserInfoVO userInfoVO = userService.getUserInfoVO();
+        Order order = orderMapper.selectByOrderNo(orderNo);
+
+        if (ObjectUtils.isEmpty(order) ||
+                !OrderStatusEnum.NOT_RECEIPT.getCode().equals(order.getStatus()) ||
+                !userInfoVO.getUserId().equals(order.getUserId())) {
+            throw new ServiceException("无法签收该订单");
+        }
+        order.setStatus(OrderStatusEnum.RECEIPT_SUCCESS.getCode());
+        int updateRow = orderMapper.updateByPrimaryKeySelective(order);
+
+        if (updateRow <= 0) {
+            throw new ServiceException("订单签收失败");
+        }
     }
 
     @Override
@@ -307,16 +323,16 @@ public class OrderServiceImpl implements OrderService {
         return orderItemVO;
     }
 
-    private SkuStockDTO getSkuStockDTO(Long orderNo, SkuStock stock, CartProductVO product) {
+    private SkuStockDTO getSkuStockDTO(Long orderNo, SkuStock stock, CartProductVO cartProductVO) {
         SkuStockDTO skuStockDTO = new SkuStockDTO();
         skuStockDTO.setOrderNo(orderNo);
-        skuStockDTO.setSkuId(product.getSkuId());
-        skuStockDTO.setProductId(product.getProductId());
+        skuStockDTO.setSkuId(cartProductVO.getSkuId());
+        skuStockDTO.setProductId(cartProductVO.getProductId());
         skuStockDTO.setSkuStockId(stock.getId());
         skuStockDTO.setActualStock(stock.getActualStock());
-        skuStockDTO.setLockStock(stock.getLockStock() + product.getQuantity());
-        skuStockDTO.setStock(stock.getStock() - product.getQuantity());
-        skuStockDTO.setQuantity(product.getQuantity());
+        skuStockDTO.setLockStock(stock.getLockStock() + cartProductVO.getQuantity());
+        skuStockDTO.setStock(stock.getStock() - cartProductVO.getQuantity());
+        skuStockDTO.setQuantity(cartProductVO.getQuantity());
         return skuStockDTO;
     }
 

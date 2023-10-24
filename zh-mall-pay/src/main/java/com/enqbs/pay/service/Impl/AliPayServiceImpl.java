@@ -3,10 +3,12 @@ package com.enqbs.pay.service.Impl;
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.request.AlipayTradeCloseRequest;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.alipay.api.response.AlipayTradeCloseResponse;
 import com.alipay.api.response.AlipayTradePagePayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.alipay.api.response.AlipayTradeWapPayResponse;
@@ -72,6 +74,25 @@ public class AliPayServiceImpl implements PayService {
     }
 
     @Override
+    public void closePay(String orderNo, String payPlatformNo) {
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("out_trade_no", orderNo);
+        bizContent.put("trade_no", payPlatformNo);
+
+        try {
+            AlipayTradeCloseResponse response = alipayClosePay(bizContent);
+
+            if (response.isSuccess()) {
+                log.info("关闭支付成功,orderNo:'{}',payPlatformNo:'{}'", orderNo, payPlatformNo);
+            } else {
+                throw new ServiceException("关闭支付失败");
+            }
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public boolean asyncNotify(HttpServletRequest request, HttpServletResponse response) {
         boolean result = false;
         String outTradeNo = request.getParameter("out_trade_no");
@@ -117,6 +138,12 @@ public class AliPayServiceImpl implements PayService {
 
     private AlipayTradeQueryResponse alipayQuery(JSONObject bizContent) throws AlipayApiException {
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+        request.setBizContent(bizContent.toString());
+        return aliPayConfig.initAlipayClient().execute(request);
+    }
+
+    private AlipayTradeCloseResponse alipayClosePay(JSONObject bizContent) throws AlipayApiException {
+        AlipayTradeCloseRequest request = new AlipayTradeCloseRequest();
         request.setBizContent(bizContent.toString());
         return aliPayConfig.initAlipayClient().execute(request);
     }

@@ -30,6 +30,11 @@ public interface OrderService {
     PageUtil<OrderVO> getOrderVOList(Integer status, Integer pageNum, Integer pageSize);
 
     /*
+    * 签收订单
+    * */
+    void sign4Order(Long orderNo);
+
+    /*
     * 取消订单
     * */
     void cancelOrder(Long orderNo);

@@ -10,6 +10,9 @@ import javax.annotation.Resource;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/*
+* 利用工厂模式决定支付平台、支付实现方式
+* */
 @Component
 public class PayFactory {
 

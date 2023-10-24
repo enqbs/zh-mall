@@ -1,6 +1,7 @@
 package com.enqbs.app.service.impl;
 
 import com.enqbs.app.service.RabbitMQService;
+import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.generator.dao.MessageQueueLogMapper;
@@ -26,7 +27,11 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         String content = GsonUtil.obj2Json(message);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        saveMessageQueueLog(messageId, exchange, routingKey, content, null);
+        int insertRow = saveMessageQueueLog(messageId, exchange, routingKey, content, null);
+
+        if (insertRow <= 0) {
+            throw new ServiceException("消息持久化失败");
+        }
         rabbitTemplate.convertAndSend(exchange, routingKey, content, correlationData);
     }
 
@@ -36,7 +41,11 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         String content = GsonUtil.obj2Json(message);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        saveMessageQueueLog(messageId, exchange, routingKey, content, delay);
+        int insertRow = saveMessageQueueLog(messageId, exchange, routingKey, content, delay);
+
+        if (insertRow <= 0) {
+            throw new ServiceException("消息持久化失败");
+        }
         rabbitTemplate.convertAndSend(exchange, routingKey, content, messagePostProcessor -> {
             messagePostProcessor.getMessageProperties().setDelay(delay);
             return messagePostProcessor;
@@ -64,14 +73,14 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         messageQueueLogMapper.updateByPrimaryKeySelective(messageQueueLog);
     }
 
-    private void saveMessageQueueLog(Long messageId, String exchange, String routingKey, String content, Integer delay) {
+    private int saveMessageQueueLog(Long messageId, String exchange, String routingKey, String content, Integer delay) {
         MessageQueueLog messageQueueLog = new MessageQueueLog();
         messageQueueLog.setMessageId(messageId);
         messageQueueLog.setExchange(exchange);
         messageQueueLog.setRoutingKey(routingKey);
         messageQueueLog.setContent(content);
         messageQueueLog.setDelay(delay);
-        messageQueueLogMapper.insertSelective(messageQueueLog);
+        return messageQueueLogMapper.insertSelective(messageQueueLog);
     }
 
 }

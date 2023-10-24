@@ -47,6 +47,7 @@ public class PayController {
             String outTradeNo = request.getParameter("out_trade_no");
             String tradeNo = request.getParameter("trade_no");
             payInfoService.updatePayInfo(PayTypeEnum.ALIPAY_PAGE, outTradeNo, tradeNo);
+            payService.closePay(outTradeNo, tradeNo);       // 关闭支付
         } else {
             throw new ServiceException("支付回调通知异常");
         }

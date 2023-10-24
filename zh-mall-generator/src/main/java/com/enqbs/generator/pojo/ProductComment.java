@@ -9,9 +9,17 @@ public class ProductComment implements Serializable {
 
     private Integer productId;
 
+    private Integer parentId;
+
+    private Long orderNo;
+
     private Integer userId;
 
+    private Integer toUserId;
+
     private String nickName;
+
+    private String toNickName;
 
     private String photo;
 
@@ -49,6 +57,22 @@ public class ProductComment implements Serializable {
         this.productId = productId;
     }
 
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public Long getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(Long orderNo) {
+        this.orderNo = orderNo;
+    }
+
     public Integer getUserId() {
         return userId;
     }
@@ -57,12 +81,28 @@ public class ProductComment implements Serializable {
         this.userId = userId;
     }
 
+    public Integer getToUserId() {
+        return toUserId;
+    }
+
+    public void setToUserId(Integer toUserId) {
+        this.toUserId = toUserId;
+    }
+
     public String getNickName() {
         return nickName;
     }
 
     public void setNickName(String nickName) {
         this.nickName = nickName == null ? null : nickName.trim();
+    }
+
+    public String getToNickName() {
+        return toNickName;
+    }
+
+    public void setToNickName(String toNickName) {
+        this.toNickName = toNickName == null ? null : toNickName.trim();
     }
 
     public String getPhoto() {
@@ -142,8 +182,12 @@ public class ProductComment implements Serializable {
         return "ProductComment{" +
                 "id=" + id +
                 ", productId=" + productId +
+                ", parentId=" + parentId +
+                ", orderNo=" + orderNo +
                 ", userId=" + userId +
+                ", toUserId=" + toUserId +
                 ", nickName='" + nickName + '\'' +
+                ", toNickName='" + toNickName + '\'' +
                 ", photo='" + photo + '\'' +
                 ", skuTitle='" + skuTitle + '\'' +
                 ", content='" + content + '\'' +

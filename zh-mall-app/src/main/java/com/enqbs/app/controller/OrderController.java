@@ -4,6 +4,7 @@ import com.enqbs.app.form.OrderForm;
 import com.enqbs.app.service.OrderService;
 import com.enqbs.app.pojo.vo.OrderConfirmVO;
 import com.enqbs.app.pojo.vo.OrderVO;
+import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,10 +57,15 @@ public class OrderController {
         return R.ok(pageOrderVOList);
     }
 
-    @PutMapping("/order/{orderNo}")
-    public R<Void> orderCancel(@PathVariable String orderNo) {
-        orderService.cancelOrder(Long.valueOf(orderNo));
-        return R.ok("取消订单成功");
+    @PutMapping("/order")
+    public R<Void> orderCancelOrReceipt(@RequestParam Long orderNo, @RequestParam Integer status) {
+        if (OrderStatusEnum.NOT_RECEIPT.getCode().equals(status)) {
+            orderService.sign4Order(orderNo);
+            return R.ok("订单签收成功");
+        } else {
+            orderService.cancelOrder(orderNo);
+            return R.ok("订单取消成功");
+        }
     }
 
 }

@@ -2,10 +2,13 @@ server:
   port: 6000
   servlet:
     context-path: /admin
+
 spring:
+  application:
+    name: admin
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC
+    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
     username: root
     password: root
   jackson:
@@ -14,19 +17,19 @@ spring:
   redis:
     host: 192.168.43.2
     port: 6379
-  rabbitmq:
-    host: 192.168.43.2
-    port: 5672
-    username: guest
-    password: guest
-    virtual-host: /
-    listener:
-      simple:
-        acknowledge-mode: manual
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
   mapper-locations: classpath*:mapper/*.xml
+
 jwt:
   secret: 3e900df3f1ba461c92ddc20d014dfc34
   expire: 1
+
+secure:
+  ignored:
+    anonymous:
+      - "/login"
+    permit:
+      - "/favicon.ico"

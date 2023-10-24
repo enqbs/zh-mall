@@ -18,6 +18,11 @@ public class WeChatPayServiceImpl implements PayService {
     }
 
     @Override
+    public void closePay(String orderNo, String payPlatformNo) {
+        System.out.println("WeChatPay关闭交易");
+    }
+
+    @Override
     public boolean asyncNotify(HttpServletRequest request, HttpServletResponse response) {
         boolean result = false;
         System.out.println("WeChatPay异步通知");
