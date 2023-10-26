@@ -6,7 +6,7 @@ public enum QueueEnum {
 
     PAY_SUCCESS_QUEUE("pay.notify", "pay.notify.success", "pay.success.queue"),
 
-    CANAL_SYNC_QUEUE("canal.sync", "zh_mall", "canal.sync.queue");
+    CANAL_SYNC_QUEUE("canal.sync", "canal.sync.data", "canal.data.queue");
 
     private final String exchange;
 

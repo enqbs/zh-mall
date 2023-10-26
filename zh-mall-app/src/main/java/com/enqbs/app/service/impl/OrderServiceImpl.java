@@ -205,8 +205,8 @@ public class OrderServiceImpl implements OrderService {
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
-        List<Order> orderList = orderMapper.selectListByParam(userInfoVO.getUserId(), status, pageNum, pageSize);
         List<OrderVO> orderVOList = new ArrayList<>();
+        List<Order> orderList = orderMapper.selectListByParam(userInfoVO.getUserId(), status, pageNum, pageSize);
 
         if (!CollectionUtils.isEmpty(orderList)) {
             total = orderMapper.countByUserId(userInfoVO.getUserId(), status);
@@ -243,6 +243,7 @@ public class OrderServiceImpl implements OrderService {
         if (updateRow <= 0) {
             throw new ServiceException("订单签收失败");
         }
+        log.info("订单签收成功,订单号'{}'", orderNo);
     }
 
     @Override

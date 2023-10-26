@@ -44,6 +44,7 @@ public class AliPayServiceImpl implements PayService {
         if (PayTypeEnum.ALIPAY_PAGE.getPayType().equals(payTypeEnum.getPayType())) {
             /* 电脑网站支付 */
             AlipayTradePagePayResponse response = alipayPagePay(bizContent);
+
             if (response.isSuccess()) {
                 body = response.getBody();
             } else {

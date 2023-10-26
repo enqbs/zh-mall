@@ -27,7 +27,6 @@ public class RabbitMQMessageListener {
 
     @RabbitListener(queues = "order.close.queue")
     public void listenerOrderCloseQueue(String body, Message message, Channel channel) throws IOException {
-        log.info("body:{}", body);
         Order messageQueueOrder = GsonUtil.json2Obj(body, Order.class);
         orderService.handleTimeoutOrder(messageQueueOrder);
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
@@ -35,13 +34,12 @@ public class RabbitMQMessageListener {
 
     @RabbitListener(queues = "pay.success.queue")
     public void listenerPaySuccessQueue(String body, Message message, Channel channel) throws IOException {
-        log.info("body:{}", body);
         PayInfo messageQueuePayInfo = GsonUtil.json2Obj(body, PayInfo.class);
         orderService.handlePaySuccessOrder(messageQueuePayInfo);
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 
-    @RabbitListener(queues = "canal.sync.queue")
+    @RabbitListener(queues = "canal.data.queue")
     public void listenerCanalSyncQueue(String body, Message message, Channel channel) throws IOException {
         /*
         * body:{
