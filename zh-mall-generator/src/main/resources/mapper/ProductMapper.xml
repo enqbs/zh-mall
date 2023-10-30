@@ -241,4 +241,48 @@
     and saleable_status = 1
     and delete_status = 0
   </select>
+
+  <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product
+    where
+    <if test="productCategoryId != null">
+      product_category_id = #{productCategoryId,jdbcType=INTEGER} and
+    </if>
+    <if test="saleableStatus != null">
+      saleable_status = #{saleableStatus,jdbcType=INTEGER} and
+    </if>
+    <if test="newStatus != null">
+      new_status = #{newStatus,jdbcType=INTEGER} and
+    </if>
+    <if test="recommendStatus != null">
+      recommend_status = #{recommendStatus,jdbcType=INTEGER} and
+    </if>
+    delete_status = #{deleteStatus,jdbcType=INTEGER}
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByParam" parameterType="map" resultType="java.lang.Long">
+    select
+    count(id)
+    from tb_product
+    where
+    <if test="productCategoryId != null">
+      product_category_id = #{productCategoryId,jdbcType=INTEGER} and
+    </if>
+    <if test="saleableStatus != null">
+      saleable_status = #{saleableStatus,jdbcType=INTEGER} and
+    </if>
+    <if test="newStatus != null">
+      new_status = #{newStatus,jdbcType=INTEGER} and
+    </if>
+    <if test="recommendStatus != null">
+      recommend_status = #{recommendStatus,jdbcType=INTEGER} and
+    </if>
+    delete_status = #{deleteStatus,jdbcType=INTEGER}
+  </select>
 </mapper>

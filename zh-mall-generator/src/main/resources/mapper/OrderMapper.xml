@@ -284,30 +284,53 @@
     for update
   </select>
 
-  <select id="countByUserId" parameterType="map" resultType="java.lang.Long">
-    select
-    count(id)
-    from tb_order
-    where user_id = #{userId,jdbcType=INTEGER}
-    <if test="status != null">
-      and status = #{status,jdbcType=INTEGER}
-    </if>
-    and delete_status = 0
-  </select>
-
   <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from tb_order
-    where user_id = #{userId,jdbcType=INTEGER}
-    <if test="status != null">
-      and status = #{status,jdbcType=INTEGER}
+    where
+    <if test="orderNo != null">
+      order_no = #{orderNo,jdbcType=BIGINT} and
     </if>
-    and delete_status = 0
-    order by create_time desc
+    <if test="orderSc != null">
+      order_sc = #{orderSc,jdbcType=VARCHAR} and
+    </if>
+    <if test="userId != null">
+      user_id = #{userId,jdbcType=INTEGER} and
+    </if>
+    <if test="paymentType != null">
+      payment_type = #{paymentType,jdbcType=INTEGER} and
+    </if>
+    <if test="status != null">
+      status = #{status,jdbcType=INTEGER} and
+    </if>
+    delete_status = #{deleteStatus,jdbcType=INTEGER}
     <if test="pageNum != null and pageSize != null">
       <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
       limit #{pageStart}, #{pageSize}
     </if>
+  </select>
+
+  <select id="countByParam" parameterType="map" resultType="java.lang.Long">
+    select
+    count(id)
+    from tb_order
+    where
+    <if test="orderNo != null">
+      order_no = #{orderNo,jdbcType=BIGINT} and
+    </if>
+    <if test="orderSc != null">
+      order_sc = #{orderSc,jdbcType=VARCHAR} and
+    </if>
+    <if test="userId != null">
+      user_id = #{userId,jdbcType=INTEGER} and
+    </if>
+    <if test="paymentType != null">
+      payment_type = #{paymentType,jdbcType=INTEGER} and
+    </if>
+    <if test="status != null">
+      status = #{status,jdbcType=INTEGER} and
+    </if>
+    delete_status = #{deleteStatus,jdbcType=INTEGER}
   </select>
 </mapper>

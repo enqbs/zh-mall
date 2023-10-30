@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://db.com:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+    username: root
+    password: root
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+  redis:
+    host: 192.168.43.2
+    port: 6379
+
+thread-pool:
+  core-pool-size: 12
+  max-pool-size: 24
+  work-queue-size: 1000
+  keep-alive-seconds: 300

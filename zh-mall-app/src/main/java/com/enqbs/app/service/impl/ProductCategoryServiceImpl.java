@@ -5,7 +5,6 @@ import com.enqbs.app.service.ProductService;
 import com.enqbs.app.pojo.vo.ProductCategoryVO;
 import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.common.constant.Constants;
-import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.RedisUtil;
 import com.enqbs.generator.dao.ProductCategoryMapper;
@@ -40,12 +39,14 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public ProductCategoryVO getProductCategoryVO(Integer categoryId) {
+        ProductCategoryVO categoryVO = new ProductCategoryVO();
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
 
         if (ObjectUtils.isEmpty(category) || Constants.IS_DELETE.equals(category.getDeleteStatus())) {
-            throw new ServiceException("商品分类不存在");
+            return categoryVO;
         }
-        ProductCategoryVO categoryVO = productCategory2ProductCategoryVO(category);
+
+        categoryVO = productCategory2ProductCategoryVO(category);
         List<ProductVO> productVOList = productService.getProductVOList(categoryVO.getId());
         categoryVO.setProductList(productVOList);
         return categoryVO;
@@ -71,6 +72,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                     List<ProductVO> productVOList = productService.getProductVOList(categoryVO.getId());
                     categoryVO.setProductList(productVOList);
                 }
+
                 long cacheTimeout;
 
                 if (CollectionUtils.isEmpty(categoryVOList)) {
@@ -91,6 +93,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         } finally {
             lock.unlock();
         }
+
         return categoryVOList;
     }
 

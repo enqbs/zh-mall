@@ -2,6 +2,8 @@ package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.SysMenu;
 
+import java.util.Set;
+
 public interface SysMenuMapper {
 
     int deleteByPrimaryKey(Integer id);
@@ -15,5 +17,7 @@ public interface SysMenuMapper {
     int updateByPrimaryKeySelective(SysMenu record);
 
     int updateByPrimaryKey(SysMenu record);
+
+    Set<SysMenu> selectSetByUsername(String username);
 
 }

@@ -4,7 +4,6 @@ import com.enqbs.app.form.OrderForm;
 import com.enqbs.app.service.OrderService;
 import com.enqbs.app.pojo.vo.OrderConfirmVO;
 import com.enqbs.app.pojo.vo.OrderVO;
-import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,8 +36,8 @@ public class OrderController {
     }
 
     @GetMapping("/order/{orderNo}")
-    public R<OrderVO> orderDetail(@PathVariable String orderNo) {
-        OrderVO orderVO = orderService.getOrderVO(Long.valueOf(orderNo));
+    public R<OrderVO> orderDetail(@PathVariable Long orderNo) {
+        OrderVO orderVO = orderService.getOrderVO(orderNo);
         return R.ok(orderVO);
     }
 
@@ -53,19 +52,21 @@ public class OrderController {
         if (pageSize <= 0) {
             pageSize = 5;
         }
+
         PageUtil<OrderVO> pageOrderVOList = orderService.getOrderVOList(status, pageNum, pageSize);
         return R.ok(pageOrderVOList);
     }
 
-    @PutMapping("/order")
-    public R<Void> orderCancelOrReceipt(@RequestParam Long orderNo, @RequestParam Integer status) {
-        if (OrderStatusEnum.NOT_RECEIPT.getCode().equals(status)) {
-            orderService.sign4Order(orderNo);
-            return R.ok("订单签收成功");
-        } else {
-            orderService.cancelOrder(orderNo);
-            return R.ok("订单取消成功");
-        }
+    @PutMapping("/order/receipt/{orderNo}")
+    public R<Void> orderReceipt(@PathVariable Long orderNo) {
+        orderService.sign4Order(orderNo);
+        return R.ok("订单签收成功");
+    }
+
+    @PutMapping("/order/cancel/{orderNo}")
+    public R<Void> orderCancel(@PathVariable Long orderNo) {
+        orderService.cancelOrder(orderNo);
+        return R.ok("订单取消成功");
     }
 
 }

@@ -30,12 +30,6 @@
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>zh-mall-security</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.enqbs</groupId>
-                    <artifactId>zh-mall-common</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

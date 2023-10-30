@@ -24,4 +24,18 @@ public interface ProductMapper {
 
     List<Product> selectListByProductIdSet(@Param("productIdSet") Set<Integer> productIdSet);
 
+    List<Product> selectListByParam(@Param("productCategoryId") Integer productCategoryId,
+                                    @Param("saleableStatus") Integer saleableStatus,
+                                    @Param("newStatus") Integer newStatus,
+                                    @Param("recommendStatus") Integer recommendStatus,
+                                    @Param("deleteStatus") Integer deleteStatus,
+                                    @Param("pageNum") Integer pageNum,
+                                    @Param("pageSize") Integer pageSize);
+
+    Long countByParam(@Param("productCategoryId") Integer productCategoryId,
+                      @Param("saleableStatus") Integer saleableStatus,
+                      @Param("newStatus") Integer newStatus,
+                      @Param("recommendStatus") Integer recommendStatus,
+                      @Param("deleteStatus") Integer deleteStatus);
+
 }

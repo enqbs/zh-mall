@@ -66,9 +66,11 @@ public class SkuStockServiceImpl implements SkuStockService {
                     if (ObjectUtils.isNotEmpty(skuStock.getLockStock())) {
                         skuStock.setLockStock(skuStock.getLockStock() - stockLock.getCount());
                     }
+
                     skuStock.setStock(skuStock.getStock() + stockLock.getCount());
                     updateSkuStockList.add(skuStock);
                 }
+
                 batchUpdateSkuStock(updateSkuStockList);
                 deleteSkuStockLock(orderNo);
                 log.info("库存解锁成功,订单号:{}", orderNo);
@@ -97,9 +99,11 @@ public class SkuStockServiceImpl implements SkuStockService {
                     if (ObjectUtils.isNotEmpty(skuStock.getLockStock())) {
                         skuStock.setLockStock(skuStock.getLockStock() - stockLock.getCount());
                     }
+
                     skuStock.setStock(skuStock.getStock() - stockLock.getCount());
                     updateSkuStockList.add(skuStock);
                 }
+
                 batchUpdateSkuStock(updateSkuStockList);
                 deleteSkuStockLock(orderNo);
                 log.info("库存删减成功,订单号:{}", orderNo);
@@ -113,6 +117,7 @@ public class SkuStockServiceImpl implements SkuStockService {
         if (batchUpdateRow <= 0) {
             throw new ServiceException("库存信息更新失败");
         }
+
         log.info("库存信息更新成功,{}", stockList);
     }
 
@@ -122,16 +127,8 @@ public class SkuStockServiceImpl implements SkuStockService {
         if (batchInsertRow <= 0) {
             throw new ServiceException("库存锁定信息保存失败");
         }
+
         log.info("库存锁定信息保存成功,{}", skuStockLockList);
-    }
-
-    private void batchUpdateSkuStockLock(List<SkuStockLock> skuStockLockList) {
-        int batchUpdateRow = skuStockLockMapper.batchUpdateBySkuStockLockList(skuStockLockList);
-
-        if (batchUpdateRow <= 0) {
-            throw new ServiceException("库存锁定信息更新失败");
-        }
-        log.info("库存锁定信息更新成功,{}", skuStockLockList);
     }
 
     private void deleteSkuStockLock(Long orderNo) {
@@ -140,6 +137,7 @@ public class SkuStockServiceImpl implements SkuStockService {
         if (deleteRow <= 0) {
             throw new ServiceException("库存锁定信息更新失败");
         }
+
         log.info("库存锁定信息更新成功");
     }
 

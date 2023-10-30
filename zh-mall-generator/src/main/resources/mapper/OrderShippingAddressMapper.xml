@@ -110,4 +110,14 @@
       sharding = #{sharding,jdbcType=INTEGER}
     where order_no = #{orderNo,jdbcType=BIGINT}
   </update>
+
+  <select id="selectListByOrderNoSet" parameterType="java.util.Set" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_order_shipping_address
+    where
+    <foreach collection="orderNoSet" item="item" index="index" separator="or">
+      order_no = #{item,jdbcType=BIGINT}
+    </foreach>
+  </select>
 </mapper>

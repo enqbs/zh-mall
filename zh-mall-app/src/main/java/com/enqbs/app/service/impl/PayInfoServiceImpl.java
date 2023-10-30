@@ -53,6 +53,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         if (!OrderStatusEnum.NOT_PAY.getCode().equals(orderVO.getStatus())) {
             throw new ServiceException("该订单已关闭支付");
         }
+
         PayInfo payInfo = payInfoMapper.selectByOrderNo(orderNo);
 
         if (ObjectUtils.isEmpty(payInfo)) {
@@ -66,12 +67,14 @@ public class PayInfoServiceImpl implements PayInfoService {
             if (insertRow <= 0) {
                 throw new ServiceException("支付信息保存失败");
             }
+
             log.info("支付信息保存成功");
         }
 
         if (!PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())) {
             throw new ServiceException("该订单已关闭支付");
         }
+
         return payInfo;
     }
 
@@ -87,12 +90,14 @@ public class PayInfoServiceImpl implements PayInfoService {
         if (!PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())) {
             throw new ServiceException("该订单已关闭支付");
         }
+
         payInfo.setStatus(PayStatusEnum.PAY_SUCCESS.getCode());
         int updateRow = payInfoMapper.updateByPrimaryKeySelective(payInfo);
 
         if (updateRow <= 0) {
             throw new ServiceException("支付信息更新失败");
         }
+
         log.info("支付信息更新成功");
         insertPayPlatform(payTypeEnum, orderNo, platformNo, payInfo.getId());
         rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE.getExchange(), QueueEnum.PAY_SUCCESS_QUEUE.getRoutingKey(), payInfo);
@@ -110,6 +115,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         if (insertRow <= 0) {
             throw new ServiceException("支付平台信息保存失败");
         }
+
         log.info("支付平台信息保存成功");
     }
 

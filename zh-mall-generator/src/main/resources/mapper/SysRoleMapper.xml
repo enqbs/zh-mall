@@ -16,7 +16,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from sys_role
     where id = #{id,jdbcType=INTEGER}
@@ -28,12 +28,12 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.SysRole">
-    insert into sys_role (id, name, role_key, 
-      sort, delete_status, create_time, 
-      update_time)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{roleKey,jdbcType=VARCHAR}, 
-      #{sort,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into sys_role (id, name, role_key,
+                          sort, delete_status, create_time,
+                          update_time)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{roleKey,jdbcType=VARCHAR},
+            #{sort,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+            #{updateTime,jdbcType=TIMESTAMP})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.SysRole">
@@ -114,11 +114,18 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.SysRole">
     update sys_role
     set name = #{name,jdbcType=VARCHAR},
-      role_key = #{roleKey,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=INTEGER},
-      delete_status = #{deleteStatus,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+        role_key = #{roleKey,jdbcType=VARCHAR},
+        sort = #{sort,jdbcType=INTEGER},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectListByAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_role
+    where delete_status = 0
+  </select>
 </mapper>

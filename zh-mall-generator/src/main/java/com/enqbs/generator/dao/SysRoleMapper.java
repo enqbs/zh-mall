@@ -2,6 +2,8 @@ package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.SysRole;
 
+import java.util.List;
+
 public interface SysRoleMapper {
 
     int deleteByPrimaryKey(Integer id);
@@ -15,5 +17,7 @@ public interface SysRoleMapper {
     int updateByPrimaryKeySelective(SysRole record);
 
     int updateByPrimaryKey(SysRole record);
+
+    List<SysRole> selectListByAll();
 
 }

@@ -10,10 +10,15 @@ import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -37,7 +42,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public String refreshToken(String token) {
+    @Async("threadPoolTaskExecutor")
+    public Future<String> refreshToken(String token) {
         String newToken;
 
         try {
@@ -55,7 +61,13 @@ public class TokenServiceImpl implements TokenService {
             newToken = getNewToken(token);
         }
 
-        return newToken;
+        return new AsyncResult<>(newToken);
+    }
+
+    @Override
+    public LoginUser getLoginUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (LoginUser) authentication.getPrincipal();
     }
 
     @Override
@@ -98,7 +110,7 @@ public class TokenServiceImpl implements TokenService {
                     throw new ServiceException("用户信息已过期,请重新登录");
                 }
             } else {
-                log.warn("无效token:{}", token);
+                log.error("无效token:{}", token);
                 throw new ServiceException("无效的token");
             }
         }

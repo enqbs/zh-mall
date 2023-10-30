@@ -13,11 +13,18 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_order_logistics_info
     where order_no = #{orderNo,jdbcType=BIGINT}
-      and logistics_no = #{logisticsNo,jdbcType=VARCHAR}
+    and logistics_no = #{logisticsNo,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByOrderNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_order_logistics_info
+    where order_no = #{orderNo,jdbcType=BIGINT}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="map">
@@ -27,10 +34,10 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.OrderLogisticsInfo">
-    insert into tb_order_logistics_info (order_no, logistics_no, logistics_title, 
-      sharding)
-    values (#{orderNo,jdbcType=BIGINT}, #{logisticsNo,jdbcType=VARCHAR}, #{logisticsTitle,jdbcType=VARCHAR}, 
-      #{sharding,jdbcType=INTEGER})
+    insert into tb_order_logistics_info (order_no, logistics_no, logistics_title,
+                                         sharding)
+    values (#{orderNo,jdbcType=BIGINT}, #{logisticsNo,jdbcType=VARCHAR}, #{logisticsTitle,jdbcType=VARCHAR},
+            #{sharding,jdbcType=INTEGER})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.OrderLogisticsInfo">
@@ -76,14 +83,24 @@
       </if>
     </set>
     where order_no = #{orderNo,jdbcType=BIGINT}
-      and logistics_no = #{logisticsNo,jdbcType=VARCHAR}
+    and logistics_no = #{logisticsNo,jdbcType=VARCHAR}
   </update>
 
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.OrderLogisticsInfo">
     update tb_order_logistics_info
     set logistics_title = #{logisticsTitle,jdbcType=VARCHAR},
-      sharding = #{sharding,jdbcType=INTEGER}
+        sharding = #{sharding,jdbcType=INTEGER}
     where order_no = #{orderNo,jdbcType=BIGINT}
       and logistics_no = #{logisticsNo,jdbcType=VARCHAR}
   </update>
+
+  <select id="selectListByOrderNoSet" parameterType="java.util.Set" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_order_logistics_info
+    where
+    <foreach collection="orderNoSet" item="item" index="index" separator="or">
+      order_no = #{item,jdbcType=BIGINT}
+    </foreach>
+  </select>
 </mapper>

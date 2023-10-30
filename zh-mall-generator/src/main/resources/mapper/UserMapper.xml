@@ -20,6 +20,11 @@
     update_time
   </sql>
 
+  <sql id="Base_Column_List_Join">
+    u.id, u.uid, u.nick_name, u.photo, u.gender, u.experience, u.level_id, u.status, u.delete_status, u.create_time,
+    u.update_time
+  </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -168,4 +173,58 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List_Join" />
+    from tb_user AS u
+    JOIN tb_user_auths AS ua ON ua.user_id = u.id
+    where
+    <if test="id != null">
+      u.id = #{id,jdbcType=INTEGER} and
+    </if>
+    <if test="uid != null">
+      u.uid = #{uid,jdbcType=BIGINT} and
+    </if>
+    <if test="status != null">
+      u.status = #{status,jdbcType=INTEGER} and
+    </if>
+    u.delete_status = #{deleteStatus,jdbcType=INTEGER}
+    <if test="identifier != null">
+      and ua.identifier = #{identifier,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null">
+      and ua.status = #{status,jdbcType=INTEGER}
+    </if>
+    and ua.delete_status = #{deleteStatus,jdbcType=INTEGER}
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByParam" parameterType="map" resultType="java.lang.Long">
+    select
+    count(pi.id)
+    from tb_user AS u
+    JOIN tb_user_auths AS ua ON ua.user_id = u.id
+    where
+    <if test="id != null">
+      u.id = #{id,jdbcType=INTEGER} and
+    </if>
+    <if test="uid != null">
+      u.uid = #{uid,jdbcType=BIGINT} and
+    </if>
+    <if test="status != null">
+      u.status = #{status,jdbcType=INTEGER} and
+    </if>
+    u.delete_status = #{deleteStatus,jdbcType=INTEGER}
+    <if test="identifier != null">
+      and ua.identifier = #{identifier,jdbcType=VARCHAR}
+    </if>
+    <if test="status != null">
+      and ua.status = #{status,jdbcType=INTEGER}
+    </if>
+    and ua.delete_status = #{deleteStatus,jdbcType=INTEGER}
+  </select>
 </mapper>

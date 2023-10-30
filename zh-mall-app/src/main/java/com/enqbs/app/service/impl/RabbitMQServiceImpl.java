@@ -32,6 +32,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         if (insertRow <= 0) {
             throw new ServiceException("消息持久化失败");
         }
+
         rabbitTemplate.convertAndSend(exchange, routingKey, content, correlationData);
     }
 
@@ -46,6 +47,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         if (insertRow <= 0) {
             throw new ServiceException("消息持久化失败");
         }
+
         rabbitTemplate.convertAndSend(exchange, routingKey, content, messagePostProcessor -> {
             messagePostProcessor.getMessageProperties().setDelay(delay);
             return messagePostProcessor;

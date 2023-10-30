@@ -27,25 +27,25 @@ public class UserController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public R<Map<String, String>> login(@Valid @RequestBody LoginForm form) {
-        Map<String, String> login = userService.login(form);
-        return R.ok("登录成功", login);
+    public R<Map<String, Object>> login(@Valid @RequestBody LoginForm form) {
+        Map<String, Object> resultMap = userService.login(form);
+        return R.ok("登录成功", resultMap);
     }
 
     @PostMapping("/register/username")
     public R<Map<String, Object>> register(@Valid @RequestBody RegisterByUsernameForm form) {
-        Map<String, Object> register = userService.registerByUsername(form);
-        return R.ok("注册成功", register);
+        Map<String, Object> resultMap = userService.registerByUsername(form);
+        return R.ok("注册成功", resultMap);
     }
 
     @GetMapping("/user-info")
-    public R<Map<String, Object>> userInfo(@RequestHeader String token) {
+    public R<Map<String, Object>> userInfo(@RequestHeader String token) throws Exception {
+        String newToken = tokenService.refreshToken(token).get();
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        String newToken = tokenService.refreshToken(token);
-        Map<String, Object> map = new HashMap<>();
-        map.put("userInfo", userInfoVO);
-        map.put("token", newToken);
-        return R.ok(map);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("userInfo", userInfoVO);
+        resultMap.put("token", newToken);
+        return R.ok(resultMap);
     }
 
     @PostMapping("/sign-out")

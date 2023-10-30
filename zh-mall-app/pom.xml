@@ -30,23 +30,11 @@
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>zh-mall-security</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.enqbs</groupId>
-                    <artifactId>zh-mall-common</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>zh-mall-pay</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.enqbs</groupId>
-                    <artifactId>zh-mall-common</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

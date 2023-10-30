@@ -7,8 +7,6 @@ import java.util.List;
 
 public class OrderVO implements Serializable {
 
-    private Long id;
-
     private Long orderNo;
 
     private String orderSc;
@@ -46,14 +44,6 @@ public class OrderVO implements Serializable {
     private OrderLogisticsInfoVO logisticsInfo;
 
     private List<OrderItemVO> orderItemList;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getOrderNo() {
         return orderNo;
@@ -210,8 +200,7 @@ public class OrderVO implements Serializable {
     @Override
     public String toString() {
         return "OrderVO{" +
-                "id=" + id +
-                ", orderNo=" + orderNo +
+                "orderNo=" + orderNo +
                 ", orderSc='" + orderSc + '\'' +
                 ", userId=" + userId +
                 ", couponId=" + couponId +

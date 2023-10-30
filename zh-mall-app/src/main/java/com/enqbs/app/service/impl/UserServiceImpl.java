@@ -18,7 +18,6 @@ import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,16 +40,16 @@ public class UserServiceImpl implements UserService {
     private UserLevelMapper userLevelMapper;
 
     @Resource
-    private RedisUtil redisUtil;
+    private TokenService tokenService;
 
     @Resource
-    private TokenService tokenService;
+    private RedisUtil redisUtil;
 
     @Resource
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Map<String, String> login(LoginForm form) {
+    public Map<String, Object> login(LoginForm form) {
         UserAuths userAuths = userAuthsMapper.selectByIdentifier(form.getUsername());
 
         if (ObjectUtils.isEmpty(userAuths)) {
@@ -60,12 +59,13 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(form.getPassword(), userAuths.getCredential())) {
             throw new ServiceException("密码错误");
         }
+
         User user = userMapper.selectByPrimaryKey(userAuths.getUserId());
         UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getLevelId());
         LoginUser loginUser = getLoginUser(user, userAuths, userLevel);
         cacheLoginUser(loginUser);
         String token = tokenService.getToken(loginUser);
-        Map<String, String> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("token", token);
         return map;
     }
@@ -73,17 +73,19 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> registerByUsername(RegisterByUsernameForm form) {
-        int count = userAuthsMapper.countIdByIdentifier(form.getUsername());
+        int count = userAuthsMapper.countByIdentifier(form.getUsername());
 
         if (count > 0) {
             throw new ServiceException("用户已存在");
         }
+
         User user = buildUser();
         int insertUserRow = userMapper.insertSelective(user);
 
         if (insertUserRow <= 0) {
             throw new ServiceException("用户信息保存失败");
         }
+
         UserAuths userAuths = buildUserAuths(user.getId(), Constants.LOGIN_TYPE_USERNAME,
                 form.getUsername(), passwordEncoder.encode(form.getPassword()));
         int insertUserAuthsRow = userAuthsMapper.insertSelective(userAuths);
@@ -91,6 +93,7 @@ public class UserServiceImpl implements UserService {
         if (insertUserAuthsRow <= 0) {
             throw new ServiceException("用户账号密码保存失败");
         }
+
         Map<String, Object> map = new HashMap<>();
         map.put("userId", user.getId());
         return map;
@@ -98,16 +101,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoVO getUserInfoVO() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = tokenService.getLoginUser();
         UserInfoVO userInfoVO = new UserInfoVO();
-        BeanUtils.copyProperties(authentication.getPrincipal(), userInfoVO);
+        BeanUtils.copyProperties(loginUser, userInfoVO);
         return userInfoVO;
     }
 
     @Override
     public void logout() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        LoginUser loginUser = tokenService.getLoginUser();
         removeCacheLoginUser(loginUser);
         SecurityContextHolder.clearContext();
     }
@@ -131,6 +133,7 @@ public class UserServiceImpl implements UserService {
             loginUser.setLevelExperience(userLevel.getExperience());
             loginUser.setDiscount(userLevel.getDiscount());
         }
+
         return loginUser;
     }
 

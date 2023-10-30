@@ -1,6 +1,10 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.UserLevel;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Set;
 
 public interface UserLevelMapper {
 
@@ -15,5 +19,7 @@ public interface UserLevelMapper {
     int updateByPrimaryKeySelective(UserLevel record);
 
     int updateByPrimaryKey(UserLevel record);
+
+    List<UserLevel> selectListByIdSet(@Param("idSet") Set<Integer> idSet);
 
 }

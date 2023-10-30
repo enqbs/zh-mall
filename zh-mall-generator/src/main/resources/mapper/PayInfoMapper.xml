@@ -18,12 +18,17 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, order_no, user_id, nick_name, photo, pay_amount, status, delete_status, consume_version, 
+    id, order_no, user_id, nick_name, photo, pay_amount, status, delete_status, consume_version,
     sharding, create_time, payment_time, update_time
   </sql>
 
+  <sql id="Base_Column_List_Join">
+    pi.id, pi.order_no, pi.user_id, pi.nick_name, pi.photo, pi.pay_amount, pi.status, pi.delete_status, pi.consume_version,
+    pi.sharding, pi.create_time, pi.payment_time, pi.update_time
+  </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_pay_info
     where id = #{id,jdbcType=BIGINT}
@@ -35,16 +40,16 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.PayInfo">
-    insert into tb_pay_info (id, order_no, user_id, 
-      nick_name, photo, pay_amount, 
-      status, delete_status, consume_version, 
-      sharding, create_time, payment_time, 
-      update_time)
-    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER}, 
-      #{nickName,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, #{payAmount,jdbcType=DECIMAL}, 
-      #{status,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{consumeVersion,jdbcType=INTEGER}, 
-      #{sharding,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{paymentTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into tb_pay_info (id, order_no, user_id,
+                             nick_name, photo, pay_amount,
+                             status, delete_status, consume_version,
+                             sharding, create_time, payment_time,
+                             update_time)
+    values (#{id,jdbcType=BIGINT}, #{orderNo,jdbcType=BIGINT}, #{userId,jdbcType=INTEGER},
+            #{nickName,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, #{payAmount,jdbcType=DECIMAL},
+            #{status,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{consumeVersion,jdbcType=INTEGER},
+            #{sharding,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{paymentTime,jdbcType=TIMESTAMP},
+            #{updateTime,jdbcType=TIMESTAMP})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.PayInfo">
@@ -179,17 +184,17 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.PayInfo">
     update tb_pay_info
     set order_no = #{orderNo,jdbcType=BIGINT},
-      user_id = #{userId,jdbcType=INTEGER},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      photo = #{photo,jdbcType=VARCHAR},
-      pay_amount = #{payAmount,jdbcType=DECIMAL},
-      status = #{status,jdbcType=INTEGER},
-      delete_status = #{deleteStatus,jdbcType=INTEGER},
-      consume_version = #{consumeVersion,jdbcType=INTEGER},
-      sharding = #{sharding,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      payment_time = #{paymentTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+        user_id = #{userId,jdbcType=INTEGER},
+        nick_name = #{nickName,jdbcType=VARCHAR},
+        photo = #{photo,jdbcType=VARCHAR},
+        pay_amount = #{payAmount,jdbcType=DECIMAL},
+        status = #{status,jdbcType=INTEGER},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        consume_version = #{consumeVersion,jdbcType=INTEGER},
+        sharding = #{sharding,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -200,5 +205,63 @@
     where order_no = #{orderNo,jdbcType=BIGINT}
     and delete_status = 0
     for update
+  </select>
+
+  <select id="selectListParam" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List_Join" />
+    from tb_pay_info as pi
+    join tb_pay_platform as pp on pp.pay_info_id = pi.id
+    where
+    <if test="orderNo != null">
+      pi.order_no = #{orderNo,jdbcType=BIGINT} and
+    </if>
+    <if test="userId != null">
+      pi.user_id = #{userId,jdbcType=INTEGER} and
+    </if>
+    <if test="status != null">
+      pi.status = #{status,jdbcType=INTEGER} and
+    </if>
+    pi.delete_status = #{deleteStatus,jdbcType=INTEGER}
+    <if test="payType != null">
+      and pp.pay_type = #{payType,jdbcType=VARCHAR}
+    </if>
+    <if test="platform != null">
+      and pp.platform = #{platform,jdbcType=VARCHAR}
+    </if>
+    <if test="platformNumber != null">
+      and pp.platform_number = #{platformNumber,jdbcType=VARCHAR}
+    </if>
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByParam" parameterType="map" resultType="java.lang.Long">
+    select
+    count(pi.id)
+    from tb_pay_info as pi
+    join tb_pay_platform as pp on pp.pay_info_id = pi.id
+    where
+    <if test="orderNo != null">
+      pi.order_no = #{orderNo,jdbcType=BIGINT} and
+    </if>
+    <if test="userId != null">
+      pi.user_id = #{userId,jdbcType=INTEGER} and
+    </if>
+    <if test="status != null">
+      pi.status = #{status,jdbcType=INTEGER} and
+    </if>
+    pi.delete_status = #{deleteStatus,jdbcType=INTEGER}
+    <if test="payType != null">
+      and pp.pay_type = #{payType,jdbcType=VARCHAR}
+    </if>
+    <if test="platform != null">
+      and pp.platform = #{platform,jdbcType=VARCHAR}
+    </if>
+    <if test="platformNumber != null">
+      and pp.platform_number = #{platformNumber,jdbcType=VARCHAR}
+    </if>
   </select>
 </mapper>

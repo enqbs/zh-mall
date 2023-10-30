@@ -21,9 +21,20 @@ public interface OrderMapper {
 
     Order selectByOrderNo(Long orderNo);
 
-    Long countByUserId(@Param("userId") Integer userId, @Param("status") Integer status);
+    List<Order> selectListByParam(@Param("orderNo") Long orderNo,
+                                  @Param("orderSc") String orderSc,
+                                  @Param("userId") Integer userId,
+                                  @Param("paymentType") Integer paymentType,
+                                  @Param("status") Integer status,
+                                  @Param("deleteStatus") Integer deleteStatus,
+                                  @Param("pageNum") Integer pageNum,
+                                  @Param("pageSize") Integer pageSize);
 
-    List<Order> selectListByParam(@Param("userId") Integer userId, @Param("status") Integer status,
-                                  @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
+    Long countByParam(@Param("orderNo") Long orderNo,
+                      @Param("orderSc") String orderSc,
+                      @Param("userId") Integer userId,
+                      @Param("paymentType") Integer paymentType,
+                      @Param("status") Integer status,
+                      @Param("deleteStatus") Integer deleteStatus);
 
 }

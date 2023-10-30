@@ -18,6 +18,6 @@ public interface UserAuthsMapper {
 
     UserAuths selectByIdentifier(String identifier);
 
-    int countIdByIdentifier(String identifier);
+    int countByIdentifier(String identifier);
 
 }

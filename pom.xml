@@ -132,16 +132,6 @@
                 <artifactId>zh-mall-pay</artifactId>
                 <version>${enqbs.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.enqbs</groupId>
-                <artifactId>zh-mall-app</artifactId>
-                <version>${enqbs.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.enqbs</groupId>
-                <artifactId>zh-mall-admin</artifactId>
-                <version>${enqbs.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
