@@ -240,7 +240,7 @@
 
   <select id="countByParam" parameterType="map" resultType="java.lang.Long">
     select
-    count(pi.id)
+    count(*)
     from tb_pay_info as pi
     join tb_pay_platform as pp on pp.pay_info_id = pi.id
     where

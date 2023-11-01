@@ -153,7 +153,7 @@ public class OrderServiceImpl implements OrderService {
                         ",商品规格:" + cartProductVO.getSkuTitle() + ",下架或删除");
             }
 
-            if (stock.getStock() < cartProductVO.getQuantity()) {
+            if (cartProductVO.getQuantity() > stock.getStock()) {
                 throw new ServiceException("商品规格ID:" + cartProductVO.getSkuId() +
                         ",商品规格:" + cartProductVO.getSkuTitle() + ",库存不足");
             }

@@ -62,7 +62,6 @@ public class OrderServiceImpl implements OrderService {
         List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNoSet(orderNoSet);
         List<OrderShippingAddress> orderShippingAddressList = orderShippingAddressMapper.selectListByOrderNoSet(orderNoSet);
         List<OrderLogisticsInfo> orderLogisticsInfoList = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
-
         /* List to Map */
         Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemList.stream()
                 .map(this::orderItem2OrderItemVO).collect(Collectors.groupingBy(OrderItemVO::getOrderNo));

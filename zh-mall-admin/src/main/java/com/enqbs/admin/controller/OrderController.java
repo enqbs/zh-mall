@@ -6,6 +6,7 @@ import com.enqbs.admin.vo.OrderVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,6 +52,7 @@ public class OrderController {
     }
 
     @PostMapping("/order/shipment/{orderNo}")
+    @PreAuthorize("hasAuthority('ORDER:UPDATE')")
     public R<Void> orderShipment(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
         int insertRow = orderService.insertOrderLogisticsInfo(orderNo, form);
 
@@ -62,6 +64,7 @@ public class OrderController {
     }
 
     @PutMapping("/order/logistics-info/{orderNo}")
+    @PreAuthorize("hasAuthority('ORDER:UPDATE')")
     public R<Void> updateOrderLogisticsInfo(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
         int updateRow = orderService.updateOrderLogisticsInfo(orderNo, form);
 

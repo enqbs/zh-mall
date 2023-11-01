@@ -20,13 +20,13 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, product_category_id, title, sub_title, picture, slider, lowest_price, virtual_price, 
-    sale, saleable_status, new_status, recommend_status, delete_status, create_time, 
+    id, product_category_id, title, sub_title, picture, slider, lowest_price, virtual_price,
+    sale, saleable_status, new_status, recommend_status, delete_status, create_time,
     update_time
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_product
     where id = #{id,jdbcType=INTEGER}
@@ -38,18 +38,18 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.Product">
-    insert into tb_product (id, product_category_id, title, 
-      sub_title, picture, slider, 
-      lowest_price, virtual_price, sale, 
-      saleable_status, new_status, recommend_status, 
-      delete_status, create_time, update_time
-      )
-    values (#{id,jdbcType=INTEGER}, #{productCategoryId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
-      #{subTitle,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, #{slider,jdbcType=VARCHAR}, 
-      #{lowestPrice,jdbcType=DECIMAL}, #{virtualPrice,jdbcType=DECIMAL}, #{sale,jdbcType=INTEGER}, 
-      #{saleableStatus,jdbcType=INTEGER}, #{newStatus,jdbcType=INTEGER}, #{recommendStatus,jdbcType=INTEGER}, 
-      #{deleteStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+    insert into tb_product (id, product_category_id, title,
+                            sub_title, picture, slider,
+                            lowest_price, virtual_price, sale,
+                            saleable_status, new_status, recommend_status,
+                            delete_status, create_time, update_time
+    )
+    values (#{id,jdbcType=INTEGER}, #{productCategoryId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+            #{subTitle,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, #{slider,jdbcType=VARCHAR},
+            #{lowestPrice,jdbcType=DECIMAL}, #{virtualPrice,jdbcType=DECIMAL}, #{sale,jdbcType=INTEGER},
+            #{saleableStatus,jdbcType=INTEGER}, #{newStatus,jdbcType=INTEGER}, #{recommendStatus,jdbcType=INTEGER},
+            #{deleteStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+           )
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.Product">
@@ -202,19 +202,19 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.Product">
     update tb_product
     set product_category_id = #{productCategoryId,jdbcType=INTEGER},
-      title = #{title,jdbcType=VARCHAR},
-      sub_title = #{subTitle,jdbcType=VARCHAR},
-      picture = #{picture,jdbcType=VARCHAR},
-      slider = #{slider,jdbcType=VARCHAR},
-      lowest_price = #{lowestPrice,jdbcType=DECIMAL},
-      virtual_price = #{virtualPrice,jdbcType=DECIMAL},
-      sale = #{sale,jdbcType=INTEGER},
-      saleable_status = #{saleableStatus,jdbcType=INTEGER},
-      new_status = #{newStatus,jdbcType=INTEGER},
-      recommend_status = #{recommendStatus,jdbcType=INTEGER},
-      delete_status = #{deleteStatus,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+        title = #{title,jdbcType=VARCHAR},
+        sub_title = #{subTitle,jdbcType=VARCHAR},
+        picture = #{picture,jdbcType=VARCHAR},
+        slider = #{slider,jdbcType=VARCHAR},
+        lowest_price = #{lowestPrice,jdbcType=DECIMAL},
+        virtual_price = #{virtualPrice,jdbcType=DECIMAL},
+        sale = #{sale,jdbcType=INTEGER},
+        saleable_status = #{saleableStatus,jdbcType=INTEGER},
+        new_status = #{newStatus,jdbcType=INTEGER},
+        recommend_status = #{recommendStatus,jdbcType=INTEGER},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -268,7 +268,7 @@
 
   <select id="countByParam" parameterType="map" resultType="java.lang.Long">
     select
-    count(id)
+    count(*)
     from tb_product
     where
     <if test="productCategoryId != null">

@@ -7,6 +7,7 @@ import com.enqbs.admin.service.user.SysUserService;
 import com.enqbs.admin.vo.SysUserInfoVO;
 import com.enqbs.common.util.R;
 import com.enqbs.security.service.TokenService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,6 +36,7 @@ public class SysUserController {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasAuthority('SYS_USER:ADD')")
     public R<Map<String, Object>> register(@Valid @RequestBody RegisterForm form) {
         Map<String, Object> resultMap = sysUserService.register(form);
         return R.ok("注册成功", resultMap);

@@ -16,7 +16,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, uid, nick_name, photo, gender, experience, level_id, status, delete_status, create_time, 
+    id, uid, nick_name, photo, gender, experience, level_id, status, delete_status, create_time,
     update_time
   </sql>
 
@@ -26,7 +26,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_user
     where id = #{id,jdbcType=INTEGER}
@@ -38,14 +38,14 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.User">
-    insert into tb_user (id, uid, nick_name, 
-      photo, gender, experience, 
-      level_id, status, delete_status, 
-      create_time, update_time)
+    insert into tb_user (id, uid, nick_name,
+                         photo, gender, experience,
+                         level_id, status, delete_status,
+                         create_time, update_time)
     values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=BIGINT}, #{nickName,jdbcType=VARCHAR},
-      #{photo,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{experience,jdbcType=INTEGER}, 
-      #{levelId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+            #{photo,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, #{experience,jdbcType=INTEGER},
+            #{levelId,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER},
+            #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.User" useGeneratedKeys="true" keyProperty="id">
@@ -162,15 +162,15 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.User">
     update tb_user
     set uid = #{uid,jdbcType=BIGINT},
-      nick_name = #{nickName,jdbcType=VARCHAR},
-      photo = #{photo,jdbcType=VARCHAR},
-      gender = #{gender,jdbcType=INTEGER},
-      experience = #{experience,jdbcType=INTEGER},
-      level_id = #{levelId,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER},
-      delete_status = #{deleteStatus,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+        nick_name = #{nickName,jdbcType=VARCHAR},
+        photo = #{photo,jdbcType=VARCHAR},
+        gender = #{gender,jdbcType=INTEGER},
+        experience = #{experience,jdbcType=INTEGER},
+        level_id = #{levelId,jdbcType=INTEGER},
+        status = #{status,jdbcType=INTEGER},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -205,7 +205,7 @@
 
   <select id="countByParam" parameterType="map" resultType="java.lang.Long">
     select
-    count(pi.id)
+    count(pi.*)
     from tb_user AS u
     JOIN tb_user_auths AS ua ON ua.user_id = u.id
     where

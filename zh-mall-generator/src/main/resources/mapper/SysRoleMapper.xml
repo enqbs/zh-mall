@@ -122,10 +122,27 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectListByAll" resultMap="BaseResultMap">
+  <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from sys_role
-    where delete_status = 0
+    where
+    <if test="deleteStatus != null">
+      delete_status = #{deleteStatus,jdbcType=INTEGER}
+    </if>
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByParam" parameterType="java.lang.Integer" resultType="java.lang.Long">
+    select
+    count(*)
+    from sys_role
+    where
+    <if test="deleteStatus != null">
+      delete_status = #{deleteStatus,jdbcType=INTEGER}
+    </if>
   </select>
 </mapper>

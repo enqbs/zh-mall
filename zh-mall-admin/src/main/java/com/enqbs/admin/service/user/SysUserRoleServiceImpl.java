@@ -1,4 +1,7 @@
 package com.enqbs.admin.service.user;
 
-public class SysUserRoleServiceImpl {
+import org.springframework.stereotype.Service;
+
+@Service
+public class SysUserRoleServiceImpl implements SysUserRoleService {
 }

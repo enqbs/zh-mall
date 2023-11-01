@@ -1,6 +1,7 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.SysRole;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ public interface SysRoleMapper {
 
     int updateByPrimaryKey(SysRole record);
 
-    List<SysRole> selectListByAll();
+    List<SysRole> selectListByParam(@Param("deleteStatus") Integer deleteStatus,
+                                    @Param("pageNum") Integer pageNum,
+                                    @Param("pageSize") Integer pageSize);
+
+    Long countByParam(Integer deleteStatus);
 
 }
