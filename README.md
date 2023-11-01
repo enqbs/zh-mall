@@ -51,11 +51,11 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 
 ```shell
 zh-mall
-├─doc               --	SQL、Postman 等相关文件
-├─zh-mall-admin	    --	后台管理系统
-├─zh-mall-app	    --	前台商城系统
-├─zh-mall-common    --	封装的常用工具类、常量、异常处理
-├─zh-mall-generator --	MyBatis-Generator 插件生成的代码
-├─zh-mall-pay	    --	支付功能实现
-└─zh-mall-security  --	Spring Security 相关配置、处理
+├─doc                 --  SQL、Postman 等相关文件
+├─zh-mall-admin       --  后台管理系统
+├─zh-mall-app         --  前台商城系统
+├─zh-mall-common      --  封装的常用工具类、常量、异常处理
+├─zh-mall-generator   --  MyBatis-Generator 插件生成的代码
+├─zh-mall-pay         --  支付功能实现
+└─zh-mall-security    --  Spring Security 相关配置、处理
 ```
