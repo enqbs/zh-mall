@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 24/10/2023 16:02:27
+ Date: 02/11/2023 02:09:07
 */
 
 SET NAMES utf8mb4;
@@ -27,7 +27,7 @@ CREATE TABLE `sys_menu`  (
   `title` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单标题',
   `path` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '路由地址',
   `permissions_key` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识符',
-  `sort` int UNSIGNED NULL DEFAULT NULL COMMENT '牌字段',
+  `sort` int UNSIGNED NULL DEFAULT NULL COMMENT '排序字段',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -36,11 +36,37 @@ CREATE TABLE `sys_menu`  (
   INDEX `idx_sort`(`sort` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统菜单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统菜单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
 -- ----------------------------
+INSERT INTO `sys_menu` VALUES (1, 0, '系统用户管理', '', '', NULL, 0, '2023-11-01 16:57:05', '2023-11-01 16:57:05');
+INSERT INTO `sys_menu` VALUES (2, 0, '系统角色管理', '', '', NULL, 0, '2023-11-01 16:58:00', '2023-11-01 16:58:00');
+INSERT INTO `sys_menu` VALUES (3, 0, '系统菜单管理', '', '', NULL, 0, '2023-11-01 16:58:19', '2023-11-01 16:58:19');
+INSERT INTO `sys_menu` VALUES (4, 0, '用户管理', '', '', NULL, 0, '2023-11-01 17:02:50', '2023-11-01 17:02:50');
+INSERT INTO `sys_menu` VALUES (5, 0, '商品管理', '', '', NULL, 0, '2023-11-01 17:03:38', '2023-11-01 17:03:38');
+INSERT INTO `sys_menu` VALUES (6, 0, '订单管理', '', '', NULL, 0, '2023-11-01 17:03:57', '2023-11-01 17:03:57');
+INSERT INTO `sys_menu` VALUES (7, 0, '支付信息管理', '', '', NULL, 0, '2023-11-01 17:04:04', '2023-11-01 17:04:04');
+INSERT INTO `sys_menu` VALUES (8, 0, '优惠券管理', '', '', NULL, 0, '2023-11-01 17:04:12', '2023-11-01 17:04:12');
+INSERT INTO `sys_menu` VALUES (9, 1, '注册系统用户', '/register', 'SYS_USER:ADD', NULL, 0, '2023-11-01 17:07:29', '2023-11-01 17:07:29');
+INSERT INTO `sys_menu` VALUES (10, 1, '修改系统用户', '/user/**', 'SYS_USER:UPDATE', NULL, 0, '2023-11-01 17:08:19', '2023-11-01 17:30:04');
+INSERT INTO `sys_menu` VALUES (11, 1, '删除系统用户', '/user/**', 'SYS_USER:DELETE', NULL, 0, '2023-11-01 17:08:40', '2023-11-01 17:30:08');
+INSERT INTO `sys_menu` VALUES (12, 2, '新增系统角色', '/role', 'SYS_ROLE:ADD', NULL, 0, '2023-11-01 17:28:33', '2023-11-01 17:28:33');
+INSERT INTO `sys_menu` VALUES (13, 2, '修改系统角色', '/role/**', 'SYS_ROLE:UPDATE', NULL, 0, '2023-11-01 17:28:54', '2023-11-01 17:28:54');
+INSERT INTO `sys_menu` VALUES (14, 2, '删除系统角色', '/role/**', 'SYS_ROLE:DELETE', NULL, 0, '2023-11-01 17:29:12', '2023-11-01 17:29:12');
+INSERT INTO `sys_menu` VALUES (15, 3, '新增菜单', '/menu', 'SYS_MENU:ADD', NULL, 0, '2023-11-01 17:32:38', '2023-11-01 17:32:38');
+INSERT INTO `sys_menu` VALUES (16, 3, '修改菜单', '/menu/**', 'SYS_MENU:UPDATE', NULL, 0, '2023-11-01 17:32:49', '2023-11-01 17:32:49');
+INSERT INTO `sys_menu` VALUES (17, 3, '删除菜单', '/menu/**', 'SYS_MENU:DELETE', NULL, 0, '2023-11-01 17:33:00', '2023-11-01 17:33:00');
+INSERT INTO `sys_menu` VALUES (18, 4, '修改会员信息', '/member/**', 'MEMBER:UPDATE', NULL, 0, '2023-11-01 17:35:37', '2023-11-01 17:35:37');
+INSERT INTO `sys_menu` VALUES (19, 4, '删除会员信息', '/member/**', 'MEMBER:DELETE', NULL, 0, '2023-11-01 17:35:47', '2023-11-01 17:35:47');
+INSERT INTO `sys_menu` VALUES (20, 5, '新增商品', '/product/**', 'PRODUCT:ADD', NULL, 0, '2023-11-01 17:37:36', '2023-11-01 17:37:36');
+INSERT INTO `sys_menu` VALUES (21, 5, '修改商品', '/product/**', 'PRODUCT:UPDATE', NULL, 0, '2023-11-01 17:37:45', '2023-11-01 17:37:45');
+INSERT INTO `sys_menu` VALUES (22, 5, '删除商品', '/product/**', 'PRODUCT:DELETE', NULL, 0, '2023-11-01 17:37:53', '2023-11-01 17:37:53');
+INSERT INTO `sys_menu` VALUES (23, 6, '修改订单', '/order/**', 'ORDER:UPDATE', NULL, 0, '2023-11-01 17:39:11', '2023-11-01 17:39:11');
+INSERT INTO `sys_menu` VALUES (24, 6, '删除订单', '/order/**', 'ORDER:DELETE', NULL, 0, '2023-11-01 17:39:21', '2023-11-01 17:39:21');
+INSERT INTO `sys_menu` VALUES (25, 7, '修改支付信息', '/pay/**', 'PAY_INFO:UPDATE', NULL, 0, '2023-11-01 17:40:28', '2023-11-01 17:40:28');
+INSERT INTO `sys_menu` VALUES (26, 7, '删除支付信息', '/pay/**', 'PAY_INFO:DELETE', NULL, 0, '2023-11-01 17:40:36', '2023-11-01 17:40:36');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -50,7 +76,7 @@ CREATE TABLE `sys_role`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色名',
   `role_key` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色标识符',
-  `sort` int UNSIGNED NULL DEFAULT NULL COMMENT '牌字段',
+  `sort` int UNSIGNED NULL DEFAULT NULL COMMENT '排序字段',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -58,11 +84,14 @@ CREATE TABLE `sys_role`  (
   INDEX `idx_sort`(`sort` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统角色表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
 -- ----------------------------
+INSERT INTO `sys_role` VALUES (1, '超级管理员', 'root', NULL, 0, '2023-11-01 16:49:29', '2023-11-01 16:49:29');
+INSERT INTO `sys_role` VALUES (2, '系统管理员', 'admin', NULL, 0, '2023-11-01 16:49:49', '2023-11-01 16:49:49');
+INSERT INTO `sys_role` VALUES (3, '系统用户', 'user', NULL, 0, '2023-11-01 16:49:58', '2023-11-01 16:49:58');
 
 -- ----------------------------
 -- Table structure for sys_role_menu
@@ -77,6 +106,29 @@ CREATE TABLE `sys_role_menu`  (
 -- ----------------------------
 -- Records of sys_role_menu
 -- ----------------------------
+INSERT INTO `sys_role_menu` VALUES (1, 9);
+INSERT INTO `sys_role_menu` VALUES (1, 10);
+INSERT INTO `sys_role_menu` VALUES (1, 11);
+INSERT INTO `sys_role_menu` VALUES (1, 12);
+INSERT INTO `sys_role_menu` VALUES (1, 13);
+INSERT INTO `sys_role_menu` VALUES (1, 14);
+INSERT INTO `sys_role_menu` VALUES (1, 15);
+INSERT INTO `sys_role_menu` VALUES (1, 16);
+INSERT INTO `sys_role_menu` VALUES (1, 17);
+INSERT INTO `sys_role_menu` VALUES (1, 18);
+INSERT INTO `sys_role_menu` VALUES (1, 19);
+INSERT INTO `sys_role_menu` VALUES (1, 20);
+INSERT INTO `sys_role_menu` VALUES (1, 21);
+INSERT INTO `sys_role_menu` VALUES (1, 22);
+INSERT INTO `sys_role_menu` VALUES (1, 23);
+INSERT INTO `sys_role_menu` VALUES (1, 24);
+INSERT INTO `sys_role_menu` VALUES (1, 25);
+INSERT INTO `sys_role_menu` VALUES (1, 26);
+INSERT INTO `sys_role_menu` VALUES (2, 18);
+INSERT INTO `sys_role_menu` VALUES (2, 20);
+INSERT INTO `sys_role_menu` VALUES (2, 21);
+INSERT INTO `sys_role_menu` VALUES (2, 23);
+INSERT INTO `sys_role_menu` VALUES (2, 25);
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -95,11 +147,13 @@ CREATE TABLE `sys_user`  (
   UNIQUE INDEX `unq_username`(`username` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统用户表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
+INSERT INTO `sys_user` VALUES (1, 'root', '$2a$10$54xVfEDj4NdVu0KqentMnuByINHrMP3fsZzJJ2mWJHZCq82ODVqIS', NULL, NULL, 0, '2023-10-28 10:31:54', '2023-10-28 10:31:54');
+INSERT INTO `sys_user` VALUES (2, 'admin', '$2a$10$633GDlPwzGLnZ5XqHnnDi.Y9yynlFz3kXfMkIGsmS7QVg4Rm7ESrG', NULL, NULL, 0, '2023-11-01 17:53:23', '2023-11-01 17:53:23');
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -114,6 +168,7 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 -- Records of sys_user_role
 -- ----------------------------
+INSERT INTO `sys_user_role` VALUES (1, 1);
 
 -- ----------------------------
 -- Table structure for tb_coupon
@@ -136,7 +191,7 @@ CREATE TABLE `tb_coupon`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_coupon
@@ -159,7 +214,7 @@ CREATE TABLE `tb_home_banner`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页横幅表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页横幅表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_banner
@@ -182,7 +237,7 @@ CREATE TABLE `tb_home_recommend_advertise`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页推荐广告表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页推荐广告表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_recommend_advertise
@@ -344,7 +399,7 @@ CREATE TABLE `tb_order_refund`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单申请退款表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单申请退款表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order_refund
@@ -417,7 +472,7 @@ CREATE TABLE `tb_pay_info`  (
   INDEX `idx_status`(`status` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_info
@@ -466,7 +521,7 @@ CREATE TABLE `tb_pay_refund`  (
   INDEX `idx_pay_info_id`(`pay_info_id` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_refund
@@ -504,7 +559,7 @@ CREATE TABLE `tb_product`  (
 -- ----------------------------
 -- Records of tb_product
 -- ----------------------------
-INSERT INTO `tb_product` VALUES (1, 1, 'Xiaomi MIX Fold 2', '超轻薄折叠机身｜小米自研微水滴形态转轴｜内外双旗舰屏幕｜徕卡专业光学镜头｜徕卡原生双画质', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/b63bf6e853524d7c9fe515c7287d8b51.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/78459a521d084739b0d34373f527d23e.jpg\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/6babd6ce1f314cfab32e1da8561df009.jpg\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/a759378a5932435c9e8452868023e3f7.jpg\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-22 12:34:23');
+INSERT INTO `tb_product` VALUES (1, 1, 'Xiaomi MIX Fold 2', '超轻薄折叠机身｜小米自研微水滴形态转轴｜内外双旗舰屏幕｜徕卡专业光学镜头｜徕卡原生双画质', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/b63bf6e853524d7c9fe515c7287d8b51.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/78459a521d084739b0d34373f527d23e.jpg\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/6babd6ce1f314cfab32e1da8561df009.jpg\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/a759378a5932435c9e8452868023e3f7.jpg\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-26 06:12:51');
 INSERT INTO `tb_product` VALUES (2, 1, 'Redmi K50 至尊版', '骁龙8+「狂暴调校」｜ 定制 1.5K 旗舰直屏 ｜ 120W神仙秒充丨1 亿像素光学防抖相机｜ 电竞级 VC 散热 | 屏下指纹', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/db31a83715ae41379b58877670215b4c.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/4244c87bb1bc43c39da621938fb0d2a1.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/b08e21b130d34d1ebd756234832e7f14.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/d269c537a8ab4162ae0d3cbac3aa52f3.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/85dec4b01dee4e8fb102970c01b8d8b9.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/4d6ca860093143819b209201fc150ba1.png\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-11 18:01:50');
 INSERT INTO `tb_product` VALUES (3, 1, 'Xiaomi 12S Ultra', '徕卡专业光学镜头｜骁龙8+ 旗舰处理器｜徕卡原生双画质｜1 英寸大底专业主摄｜小米澎湃 P1 快充芯片｜全场景疾速抓拍｜IP68级防尘防水', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/cae7e8c393884b0eb687b912ff454a2c.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/2e52833835074f2b94d346dca4628959.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/a3576c5d60b4450c916ea4263bb59c31.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/c08f5368353d40bf889dec8cac739be4.png\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-11 18:01:50');
 INSERT INTO `tb_product` VALUES (4, 1, 'Xiaomi 12S Pro', '骁龙8+ 旗舰处理器 | 徕卡光学镜头 | 徕卡原生双画质 | 徕卡水印、大师镜头包 | 全场景疾速抓拍 | 5000万三主摄 | 小米自研澎湃P1芯片 | 120W小米澎湃秒充 | 4600mAh大电量 | 2K AMOLED屏', 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/show-img/d612969eee074d40845a9aca6ecf707b.png', '[\"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/7d72d2fa7f7c428e8e93c434920ffb3e.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/ad4ec1ae84a940b1a81a7d8530b8bf4f.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/89c1cf4136d8465196974a1aacad7dd0.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/26ba2fdd3557400a91e7455d8e7d5c03.png\", \"https://zh-product.oss-cn-shenzhen.aliyuncs.com/slider-img/69c617b911004be4b76bd1ef227420f9.png\"]', NULL, NULL, NULL, 1, 0, 0, 0, '2023-10-11 18:01:50', '2023-10-11 18:01:50');
@@ -559,7 +614,7 @@ CREATE TABLE `tb_product_category_attribute`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_category_attribute
@@ -609,7 +664,7 @@ CREATE TABLE `tb_product_comment`  (
   INDEX `idx_like`(`like` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_comment
@@ -627,7 +682,7 @@ CREATE TABLE `tb_product_overview`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品概述表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品概述表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_overview
@@ -645,7 +700,7 @@ CREATE TABLE `tb_product_spec`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品参数表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品参数表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_spec
@@ -676,7 +731,7 @@ CREATE TABLE `tb_sku`  (
 -- ----------------------------
 -- Records of tb_sku
 -- ----------------------------
-INSERT INTO `tb_sku` VALUES (1, 1, 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/sku-img/018a74063f074821927b910eb82afb90.jpg', NULL, '[{\"paramKey\": \"选择版本\", \"paramValue\": \"12GB+256GB\"}, {\"paramKey\": \"选择颜色\", \"paramValue\": \"月影黑\"}]', 8999.00, 1, 0, '2023-10-11 18:19:02', '2023-10-11 18:19:02');
+INSERT INTO `tb_sku` VALUES (1, 1, 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/sku-img/018a74063f074821927b910eb82afb90.jpg', NULL, '[{\"paramKey\": \"选择版本\", \"paramValue\": \"12GB+256GB\"}, {\"paramKey\": \"选择颜色\", \"paramValue\": \"月影黑\"}]', 8999.00, 1, 0, '2023-10-11 18:19:02', '2023-10-26 05:45:38');
 INSERT INTO `tb_sku` VALUES (2, 1, 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/sku-img/018a74063f074821927b910eb82afb90.jpg', NULL, '[{\"paramKey\": \"选择版本\", \"paramValue\": \"12GB+512GB\"}, {\"paramKey\": \"选择颜色\", \"paramValue\": \"月影黑\"}]', 9999.00, 1, 0, '2023-10-11 18:19:02', '2023-10-11 18:19:02');
 INSERT INTO `tb_sku` VALUES (3, 1, 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/sku-img/018a74063f074821927b910eb82afb90.jpg', NULL, '[{\"paramKey\": \"选择版本\", \"paramValue\": \"12GB+1024GB\"}, {\"paramKey\": \"选择颜色\", \"paramValue\": \"月影黑\"}]', 11999.00, 1, 0, '2023-10-11 18:19:03', '2023-10-11 18:19:03');
 INSERT INTO `tb_sku` VALUES (4, 1, 'https://zh-product.oss-cn-shenzhen.aliyuncs.com/sku-img/e139610ab78f4461984f74443bd59354.jpg', NULL, '[{\"paramKey\": \"选择版本\", \"paramValue\": \"12GB+256GB\"}, {\"paramKey\": \"选择颜色\", \"paramValue\": \"星耀金\"}]', 8999.00, 1, 0, '2023-10-11 18:19:03', '2023-10-11 18:19:03');
@@ -932,7 +987,7 @@ CREATE TABLE `tb_user_level`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
   INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员等级表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员等级表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_level

@@ -11,91 +11,263 @@
 			"name": "admin",
 			"item": [
 				{
-					"name": "user",
+					"name": "sys",
 					"item": [
 						{
-							"name": "user info",
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6ImZkMDdjMGY3ZDg5MTQzMjhiMTViM2QzNWQxMDk1MDY2IiwiZXhwIjoxNjk4NzI1OTM0fQ.T1L0Tru2SIFwsp3vLJbuTqtHG9in-osr-Zaa1iEplM0",
-										"type": "text"
-									}
-								],
-								"url": {
-									"raw": "http://localhost:6000/admin/user-info",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "6000",
-									"path": [
-										"admin",
-										"user-info"
-									]
+							"name": "user",
+							"item": [
+								{
+									"name": "user info",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjcxMjIxZWFkZTA2ZjQ0NWY5YjU5Y2MyNDg0M2FmMDQ5IiwiZXhwIjoxNjk4OTQ3NTU5fQ.rHJ3j4qRH9k3u1oS7Zu3b-10X6ytWB_beZLH8EbS4Gk",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "http://localhost:6000/admin/user-info",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"user-info"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "register",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6ImNmYWU3ODY2N2JlNjQ4NTM4Nzk3NzA0M2M2MTFlZjI3IiwiZXhwIjoxNjk4OTQ3NjI2fQ.BrdH7VLmbR18re7acWTI-yXXuj1qSg17DDv_az91WWo",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"root\",\r\n    \"password\": \"root\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/register",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"register"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "login",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/login",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"login"
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						},
 						{
-							"name": "register",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"username\": \"root\",\r\n    \"password\": \"root\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
+							"name": "role",
+							"item": [
+								{
+									"name": "role list",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "http://localhost:6000/admin/role/list",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"role",
+												"list"
+											]
 										}
-									}
+									},
+									"response": []
 								},
-								"url": {
-									"raw": "http://localhost:6000/admin/register",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "6000",
-									"path": [
-										"admin",
-										"register"
-									]
+								{
+									"name": "role add",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"系统用户\",\r\n    \"roleKey\": \"user\",\r\n    \"sort\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/role",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"role"
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						},
 						{
-							"name": "login",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \"username\": \"root\",\r\n    \"password\": \"root\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
+							"name": "menu",
+							"item": [
+								{
+									"name": "menu root list",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "http://localhost:6000/admin/menu/root-list",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"menu",
+												"root-list"
+											]
 										}
-									}
+									},
+									"response": []
 								},
-								"url": {
-									"raw": "http://localhost:6000/admin/login",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "6000",
-									"path": [
-										"admin",
-										"login"
-									]
+								{
+									"name": "menu list",
+									"request": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "http://localhost:6000/admin/menu/list",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"menu",
+												"list"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "menu add",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6Ijk3NDAzZjFmN2ZjMTRlNjNiODVkYmMwNTUwYTZjODM0IiwiZXhwIjoxNjk4OTQ3NzAzfQ.wqhVMtgW9JVswOQ9_2hQbQM2rMSIwqKQj_A90CtLUPs",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"parentId\": 7,\r\n    \"title\": \"删除支付信息\",\r\n    \"path\": \"/pay/**\",\r\n    \"permissionsKey\": \"PAY_INFO:DELETE\",\r\n    \"sort\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/menu",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"menu"
+											]
+										}
+									},
+									"response": []
 								}
-							},
-							"response": []
+							]
 						}
 					]
 				},
@@ -109,7 +281,7 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6ImZkMDdjMGY3ZDg5MTQzMjhiMTViM2QzNWQxMDk1MDY2IiwiZXhwIjoxNjk4NzI1OTM0fQ.T1L0Tru2SIFwsp3vLJbuTqtHG9in-osr-Zaa1iEplM0",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
 										"type": "text"
 									}
 								],
@@ -168,7 +340,7 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6ImJiZGRhYzZlMzE5NjQ4Y2Y5ZDI1Yzc3ZmNlZWU2MDQxIiwiZXhwIjoxNjk4NjgzMzEzfQ.BZS_ieQKgZMB0OAGgKRVfqfOmLjyEfRIqUrfSaATrwU",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
 										"type": "text"
 									}
 								],
@@ -248,7 +420,13 @@
 							"name": "order list",
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "token",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+										"type": "text"
+									}
+								],
 								"url": {
 									"raw": "http://localhost:6000/admin/order/list?orderNo=&orderSc&userId&paymentType&status&deleteStatus&pageNum&pageSize",
 									"protocol": "http",
@@ -303,7 +481,13 @@
 							"name": "order detail",
 							"request": {
 								"method": "GET",
-								"header": [],
+								"header": [
+									{
+										"key": "token",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+										"type": "text"
+									}
+								],
 								"url": {
 									"raw": "http://localhost:6000/admin/order/1",
 									"protocol": "http",
@@ -332,7 +516,7 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6ImJiZGRhYzZlMzE5NjQ4Y2Y5ZDI1Yzc3ZmNlZWU2MDQxIiwiZXhwIjoxNjk4NjgzMzEzfQ.BZS_ieQKgZMB0OAGgKRVfqfOmLjyEfRIqUrfSaATrwU",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
 										"type": "text"
 									}
 								],
