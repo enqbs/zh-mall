@@ -71,6 +71,7 @@ public class AliPayServiceImpl implements PayService {
         } else {
             throw new ServiceException("暂不支持的支付类型");
         }
+
         return body;
     }
 
@@ -111,6 +112,7 @@ public class AliPayServiceImpl implements PayService {
                 e.printStackTrace();
             }
         }
+
         return result;
     }
 

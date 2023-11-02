@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /*
-* 利用工厂模式决定支付平台、支付实现方式
-* */
+ * 利用工厂模式决定支付平台、支付实现方式
+ * */
 @Component
 public class PayFactory {
 
@@ -25,6 +25,7 @@ public class PayFactory {
         if (ObjectUtils.isEmpty(payService)) {
             throw new ServiceException("暂不支持的支付平台");
         }
+
         return payService;
     }
 
