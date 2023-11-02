@@ -70,11 +70,11 @@ public class SysRoleController {
     public R<Void> roleAdd(@Valid @RequestBody SysRoleForm form) {
         int row = sysRoleService.insetSysRole(form);
 
-        if (row >= 1) {
-            return R.ok("新增成功");
-        } else {
-            throw new ServiceException("新增失败");
+        if (row <= 0) {
+            throw new ServiceException("角色新增失败");
         }
+
+        return R.ok("角色新增成功");
     }
 
     @PutMapping("/role/{roleId}")
@@ -82,11 +82,11 @@ public class SysRoleController {
     public R<Void> roleUpdate(@PathVariable Integer roleId, @Valid @RequestBody SysRoleForm form) {
         int row = sysRoleService.updateSysRole(roleId, form);
 
-        if (row >= 1) {
-            return R.ok("修改成功");
-        } else {
-            throw new ServiceException("修改失败");
+        if (row <= 0) {
+            throw new ServiceException("角色修改失败");
         }
+
+        return R.ok("角色修改成功");
     }
 
     @DeleteMapping("/role/{roleId}")
@@ -94,11 +94,11 @@ public class SysRoleController {
     public R<Void> roleDelete(@PathVariable Integer roleId) {
         int row = sysRoleService.deleteSysRole(roleId);
 
-        if (row >= 1) {
-            return R.ok("删除成功");
-        } else {
-            throw new ServiceException("删除失败");
+        if (row <= 0) {
+            throw new ServiceException("角色删除失败");
         }
+
+        return R.ok("角色删除成功");
     }
 
     @PostMapping("/role/bind")

@@ -61,11 +61,11 @@ public class SysMenuController {
     public R<Void> menuAdd(@Valid @RequestBody SysMenuForm form) {
         int row = sysMenuService.insertSysMenu(form);
 
-        if (row >= 1) {
-            return R.ok("新增成功");
-        } else {
-            throw new ServiceException("新增失败");
+        if (row <= 0) {
+            throw new ServiceException("菜单新增失败");
         }
+
+        return R.ok("菜单新增成功");
     }
 
     @PutMapping("/menu/{menuId}")
@@ -73,11 +73,11 @@ public class SysMenuController {
     public R<Void> menuUpdate(@PathVariable Integer menuId, @Valid @RequestBody SysMenuForm form) {
         int row = sysMenuService.updateSysMenu(menuId, form);
 
-        if (row >= 1) {
-            return R.ok("修改成功");
-        } else {
-            throw new ServiceException("修改失败");
+        if (row <= 0) {
+            throw new ServiceException("菜单修改失败");
         }
+
+        return R.ok("菜单修改成功");
     }
 
     @DeleteMapping("/menu/{menuId}")
@@ -85,11 +85,11 @@ public class SysMenuController {
     public R<Void> menuDelete(@PathVariable Integer menuId) {
         int row = sysMenuService.deleteSysMenu(menuId);
 
-        if (row >= 1) {
-            return R.ok("删除成功");
-        } else {
-            throw new ServiceException("删除失败");
+        if (row <= 0) {
+            throw new ServiceException("菜单删除失败");
         }
+
+        return R.ok("菜单删除成功");
     }
 
 }

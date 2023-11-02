@@ -32,7 +32,7 @@ public interface OrderService {
     /*
     * 签收订单
     * */
-    void sign4Order(Long orderNo);
+    int sign4Order(Long orderNo);
 
     /*
     * 取消订单

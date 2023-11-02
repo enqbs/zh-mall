@@ -239,7 +239,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void sign4Order(Long orderNo) {
+    public int sign4Order(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         Order order = orderMapper.selectByOrderNo(orderNo);
 
@@ -251,13 +251,7 @@ public class OrderServiceImpl implements OrderService {
 
         order.setStatus(OrderStatusEnum.RECEIPT_SUCCESS.getCode());
         order.setSignReceiptTime(new Date());
-        int row = orderMapper.updateByPrimaryKeySelective(order);
-
-        if (row <= 0) {
-            throw new ServiceException("订单签收失败");
-        }
-
-        log.info("订单签收成功,订单号'{}'", orderNo);
+        return orderMapper.updateByPrimaryKeySelective(order);
     }
 
     @Override
