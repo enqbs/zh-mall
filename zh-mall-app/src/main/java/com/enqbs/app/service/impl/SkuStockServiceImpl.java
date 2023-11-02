@@ -112,9 +112,9 @@ public class SkuStockServiceImpl implements SkuStockService {
     }
 
     private void batchUpdateSkuStock(List<SkuStock> stockList) {
-        int batchUpdateRow = skuStockMapper.batchUpdateBySkuStockList(stockList);
+        int row = skuStockMapper.batchUpdateBySkuStockList(stockList);
 
-        if (batchUpdateRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("库存信息更新失败");
         }
 
@@ -122,9 +122,9 @@ public class SkuStockServiceImpl implements SkuStockService {
     }
 
     private void batchInsertSkuStockLock(List<SkuStockLock> skuStockLockList) {
-        int batchInsertRow = skuStockLockMapper.batchInsertBySkuStockLockList(skuStockLockList);
+        int row = skuStockLockMapper.batchInsertBySkuStockLockList(skuStockLockList);
 
-        if (batchInsertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("库存锁定信息保存失败");
         }
 
@@ -132,9 +132,9 @@ public class SkuStockServiceImpl implements SkuStockService {
     }
 
     private void deleteSkuStockLock(Long orderNo) {
-        int deleteRow = skuStockLockMapper.deleteByOrderNo(orderNo);
+        int row = skuStockLockMapper.deleteByOrderNo(orderNo);
 
-        if (deleteRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("库存锁定信息更新失败");
         }
 

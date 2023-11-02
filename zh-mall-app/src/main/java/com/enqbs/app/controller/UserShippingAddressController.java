@@ -25,9 +25,9 @@ public class UserShippingAddressController {
 
     @PostMapping("/shipping")
     public R<Void> addShippingAddress(@Valid @RequestBody UserShippingAddressForm form) {
-        int insertRow = shippingAddressService.insertUserShippingAddress(form);
+        int row = shippingAddressService.insertUserShippingAddress(form);
 
-        if (insertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("新增收货地址失败");
         }
 
@@ -36,9 +36,9 @@ public class UserShippingAddressController {
 
     @PutMapping("/shipping/{shippingAddressId}")
     public R<Void> updateShippingAddress(@PathVariable Integer shippingAddressId, @Valid @RequestBody UserShippingAddressForm form) {
-        int updateRow = shippingAddressService.updateUserShippingAddress(shippingAddressId, form);
+        int row = shippingAddressService.updateUserShippingAddress(shippingAddressId, form);
 
-        if (updateRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("修改收货地址失败");
         }
 
@@ -47,9 +47,9 @@ public class UserShippingAddressController {
 
     @DeleteMapping("/shipping/{shippingAddressId}")
     public R<Void> deleteShippingAddress(@PathVariable Integer shippingAddressId) {
-        int deleteRow = shippingAddressService.deleteUserShippingAddress(shippingAddressId);
+        int row = shippingAddressService.deleteUserShippingAddress(shippingAddressId);
 
-        if (deleteRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("删除收货地址失败");
         }
 

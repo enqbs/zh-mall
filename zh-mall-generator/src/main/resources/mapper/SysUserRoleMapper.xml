@@ -12,6 +12,11 @@
       and role_id = #{roleId,jdbcType=INTEGER}
   </delete>
 
+  <delete id="deleteByUserId" parameterType="java.lang.Integer">
+    delete from sys_user_role
+    where user_id = #{userId,jdbcType=INTEGER}
+  </delete>
+
   <insert id="insert" parameterType="com.enqbs.generator.pojo.SysUserRole">
     insert into sys_user_role (user_id, role_id)
     values (#{userId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER})
@@ -36,4 +41,24 @@
       </if>
     </trim>
   </insert>
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into sys_user_role (user_id, role_id)
+    values
+    <foreach collection="sysUserRoleList" item="item" index="index" separator=",">
+      (#{item.userId,jdbcType=INTEGER}, #{item.roleId,jdbcType=INTEGER})
+    </foreach>
+  </insert>
+
+  <delete id="batchDelete" parameterType="java.util.List">
+    delete from sys_user_role
+    where user_id in
+    <foreach collection="sysUserRoleList" item="item" index="index" open="(" close=")" separator=",">
+      #{item.userId,jdbcType=INTEGER}
+    </foreach>
+    and role_id in
+    <foreach collection="sysUserRoleList" item="item" index="index" open="(" close=")" separator=",">
+      #{item.roleId,jdbcType=INTEGER}
+    </foreach>
+  </delete>
 </mapper>

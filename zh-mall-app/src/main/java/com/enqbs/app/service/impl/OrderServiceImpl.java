@@ -251,9 +251,9 @@ public class OrderServiceImpl implements OrderService {
 
         order.setStatus(OrderStatusEnum.RECEIPT_SUCCESS.getCode());
         order.setSignReceiptTime(new Date());
-        int updateRow = orderMapper.updateByPrimaryKeySelective(order);
+        int row = orderMapper.updateByPrimaryKeySelective(order);
 
-        if (updateRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("订单签收失败");
         }
 
@@ -273,9 +273,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setDeleteStatus(Constants.IS_DELETE);
-        int updateRow = orderMapper.updateByPrimaryKeySelective(order);
+        int row = orderMapper.updateByPrimaryKeySelective(order);
 
-        if (updateRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("订单取消失败");
         }
 
@@ -293,9 +293,9 @@ public class OrderServiceImpl implements OrderService {
             timeoutOrder.setStatus(OrderStatusEnum.TIMEOUT.getCode());
             timeoutOrder.setDeleteStatus(Constants.IS_DELETE);
             timeoutOrder.setConsumeVersion(1);
-            int updateRow = orderMapper.updateByPrimaryKeySelective(timeoutOrder);
+            int row = orderMapper.updateByPrimaryKeySelective(timeoutOrder);
 
-            if (updateRow <= 0) {
+            if (row <= 0) {
                 throw new ServiceException("订单关闭失败");
             }
 
@@ -314,9 +314,9 @@ public class OrderServiceImpl implements OrderService {
             paySuccessOrder.setStatus(OrderStatusEnum.PAY_SUCCESS.getCode());
             paySuccessOrder.setConsumeVersion(1);
             paySuccessOrder.setPaymentTime(new Date());
-            int updateRow = orderMapper.updateByPrimaryKeySelective(paySuccessOrder);
+            int row = orderMapper.updateByPrimaryKeySelective(paySuccessOrder);
 
-            if (updateRow <= 0) {
+            if (row <= 0) {
                 throw new ServiceException("订单确认支付失败");
             }
 
@@ -363,9 +363,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void insertOrder(Order order) {
-        int insertRow = orderMapper.insertSelective(order);
+        int row = orderMapper.insertSelective(order);
 
-        if (insertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("订单信息保存失败");
         }
 
@@ -373,9 +373,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void batchInsertOrderItem(List<OrderItem> orderItemList) {
-        int batchInsertRow = orderItemMapper.batchInsertByOrderItemList(orderItemList);
+        int row = orderItemMapper.batchInsertByOrderItemList(orderItemList);
 
-        if (batchInsertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("订单项保存失败");
         }
 
@@ -383,9 +383,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void insertOrderShippingAddress(OrderShippingAddress orderShippingAddress) {
-        int insertRow = orderShippingAddressMapper.insertSelective(orderShippingAddress);
+        int row = orderShippingAddressMapper.insertSelective(orderShippingAddress);
 
-        if (insertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("订单收货地址保存失败");
         }
 

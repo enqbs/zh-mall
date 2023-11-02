@@ -27,9 +27,9 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         String content = GsonUtil.obj2Json(message);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        int insertRow = saveMessageQueueLog(messageId, exchange, routingKey, content, null);
+        int row = saveMessageQueueLog(messageId, exchange, routingKey, content, null);
 
-        if (insertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("消息持久化失败");
         }
 
@@ -42,9 +42,9 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         String content = GsonUtil.obj2Json(message);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        int insertRow = saveMessageQueueLog(messageId, exchange, routingKey, content, delay);
+        int row = saveMessageQueueLog(messageId, exchange, routingKey, content, delay);
 
-        if (insertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("消息持久化失败");
         }
 
@@ -71,8 +71,8 @@ public class RabbitMQServiceImpl implements RabbitMQService {
     }
 
     @Override
-    public void updateMessageQueueLog(MessageQueueLog messageQueueLog) {
-        messageQueueLogMapper.updateByPrimaryKeySelective(messageQueueLog);
+    public int updateMessageQueueLog(MessageQueueLog messageQueueLog) {
+        return messageQueueLogMapper.updateByPrimaryKeySelective(messageQueueLog);
     }
 
     private int saveMessageQueueLog(Long messageId, String exchange, String routingKey, String content, Integer delay) {

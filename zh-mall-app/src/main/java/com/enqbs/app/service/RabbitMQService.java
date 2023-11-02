@@ -27,6 +27,6 @@ public interface RabbitMQService {
     /*
     * 更新 MessageQueueLog
     * */
-    void updateMessageQueueLog(MessageQueueLog messageQueueLog);
+    int updateMessageQueueLog(MessageQueueLog messageQueueLog);
 
 }

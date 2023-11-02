@@ -1,5 +1,6 @@
 package com.enqbs.admin.service.user;
 
+import com.enqbs.admin.form.ChangeNicknameForm;
 import com.enqbs.admin.form.ChangePasswordForm;
 import com.enqbs.admin.form.LoginForm;
 import com.enqbs.admin.form.RegisterForm;
@@ -61,9 +62,9 @@ public class SysUserServiceImpl implements SysUserService {
         LoginUser loginUser = getLoginUser(sysUser, permissionList);
         cacheLoginUser(loginUser);
         String token = tokenService.getToken(loginUser);
-        Map<String, Object> map = new HashMap<>();
-        map.put("token", token);
-        return map;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("token", token);
+        return resultMap;
     }
 
     @Override
@@ -77,15 +78,15 @@ public class SysUserServiceImpl implements SysUserService {
         SysUser sysUser = new SysUser();
         sysUser.setUsername(form.getUsername());
         sysUser.setPassword(passwordEncoder.encode(form.getPassword()));
-        int insertRow = sysUserMapper.insertSelective(sysUser);
+        int row = sysUserMapper.insertSelective(sysUser);
 
-        if (insertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("用户账号密码保存失败");
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("userId", sysUser.getId());
-        return map;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("userId", sysUser.getId());
+        return resultMap;
     }
 
     @Override
@@ -108,17 +109,33 @@ public class SysUserServiceImpl implements SysUserService {
             throw new ServiceException("两次输入的密码不一样");
         }
 
-        SysUser user = sysUserMapper.selectByPrimaryKey(loginUser.getUserId());
-        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
-        int updateRow = sysUserMapper.updateByPrimaryKeySelective(user);
+        SysUser sysUser = new SysUser();
+        sysUser.setId(loginUser.getUserId());
+        sysUser.setPassword(passwordEncoder.encode(form.getNewPassword()));
+        int row = sysUserMapper.updateByPrimaryKeySelective(sysUser);
 
-        if (updateRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("修改密码失败");
         }
 
-        /* 修改密码成功，删除缓存信息需重新登录 */
+        logout();
+    }
+
+    @Override
+    public void changeNickname(ChangeNicknameForm form) {
+        LoginUser loginUser = tokenService.getLoginUser();
+        SysUser sysUser = new SysUser();
+        sysUser.setId(loginUser.getUserId());
+        sysUser.setNickName(form.getNickName());
+        int row = sysUserMapper.updateByPrimaryKeySelective(sysUser);
+
+        if (row <= 0) {
+            throw new ServiceException("修改昵称失败");
+        }
+
+        loginUser.setNickName(form.getNickName());
         removeCacheLoginUser(loginUser);
-        SecurityContextHolder.clearContext();
+        cacheLoginUser(loginUser);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.enqbs.admin.controller;
 
+import com.enqbs.admin.form.SysRelationshipBindingForm;
 import com.enqbs.admin.form.SysRoleForm;
 import com.enqbs.admin.service.user.SysMenuService;
+import com.enqbs.admin.service.user.SysRoleMenuService;
 import com.enqbs.admin.service.user.SysRoleService;
 import com.enqbs.admin.vo.SysMenuVO;
 import com.enqbs.admin.vo.SysRoleVO;
@@ -33,6 +35,9 @@ public class SysRoleController {
 
     @Resource
     private SysMenuService sysMenuService;
+
+    @Resource
+    private SysRoleMenuService sysRoleMenuService;
 
     @GetMapping("/role/list")
     public R<PageUtil<SysRoleVO>> roleList(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
@@ -94,6 +99,42 @@ public class SysRoleController {
         } else {
             throw new ServiceException("删除失败");
         }
+    }
+
+    @PostMapping("/role/bind")
+    @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
+    public R<Void> roleMenuBind(@Valid @RequestBody SysRelationshipBindingForm form) {
+        int row = sysRoleMenuService.batchInsertRoleMenu(form.getBindId(), form.getToIdSet());
+
+        if (row <= 0) {
+            throw new ServiceException("绑定权限失败");
+        }
+
+        return R.ok("绑定权限成功");
+    }
+
+    @PutMapping("/role/bind")
+    @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
+    public R<Void> roleMenuUpdate(@Valid @RequestBody SysRelationshipBindingForm form) {
+        int row = sysRoleMenuService.updateRoleMenu(form.getBindId(), form.getToIdSet());
+
+        if (row <= 0) {
+            throw new ServiceException("修改权限失败");
+        }
+
+        return R.ok("修改权限成功");
+    }
+
+    @DeleteMapping("/role/bind")
+    @PreAuthorize("hasAuthority('SYS_ROLE:DELETE')")
+    public R<Void> roleMenuDelete(@Valid @RequestBody SysRelationshipBindingForm form) {
+        int row = sysRoleMenuService.deleteRoleMenu(form.getBindId(), form.getToIdSet());
+
+        if (row <= 0) {
+            throw new ServiceException("删除权限失败");
+        }
+
+        return R.ok("删除权限成功");
     }
 
 }

@@ -65,9 +65,9 @@ public class UserServiceImpl implements UserService {
         LoginUser loginUser = getLoginUser(user, userAuths, userLevel);
         cacheLoginUser(loginUser);
         String token = tokenService.getToken(loginUser);
-        Map<String, Object> map = new HashMap<>();
-        map.put("token", token);
-        return map;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("token", token);
+        return resultMap;
     }
 
     @Override
@@ -79,24 +79,24 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("用户已存在");
         }
 
+        int row;
         User user = buildUser();
-        int insertUserRow = userMapper.insertSelective(user);
+        row = userMapper.insertSelective(user);
 
-        if (insertUserRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("用户信息保存失败");
         }
 
-        UserAuths userAuths = buildUserAuths(user.getId(), Constants.LOGIN_TYPE_USERNAME,
-                form.getUsername(), passwordEncoder.encode(form.getPassword()));
-        int insertUserAuthsRow = userAuthsMapper.insertSelective(userAuths);
+        UserAuths userAuths = buildUserAuths(user.getId(), Constants.LOGIN_TYPE_USERNAME, form.getUsername(), passwordEncoder.encode(form.getPassword()));
+        row = userAuthsMapper.insertSelective(userAuths);
 
-        if (insertUserAuthsRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("用户账号密码保存失败");
         }
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("userId", user.getId());
-        return map;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("userId", user.getId());
+        return resultMap;
     }
 
     @Override

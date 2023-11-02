@@ -62,9 +62,9 @@ public class PayInfoServiceImpl implements PayInfoService {
             payInfo.setNickName(userInfoVO.getNickName());
             payInfo.setPhoto(userInfoVO.getPhoto());
             payInfo.setPayAmount(orderVO.getAmount());
-            int insertRow = payInfoMapper.insertSelective(payInfo);
+            int row = payInfoMapper.insertSelective(payInfo);
 
-            if (insertRow <= 0) {
+            if (row <= 0) {
                 throw new ServiceException("支付信息保存失败");
             }
 
@@ -92,9 +92,9 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         payInfo.setStatus(PayStatusEnum.PAY_SUCCESS.getCode());
-        int updateRow = payInfoMapper.updateByPrimaryKeySelective(payInfo);
+        int row = payInfoMapper.updateByPrimaryKeySelective(payInfo);
 
-        if (updateRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("支付信息更新失败");
         }
 
@@ -110,9 +110,9 @@ public class PayInfoServiceImpl implements PayInfoService {
         payPlatform.setPayType(payTypeEnum.getPayType());
         payPlatform.setPlatform(payTypeEnum.getPayPlatform());
         payPlatform.setPlatformNumber(platformNo);
-        int insertRow = payPlatformMapper.insertSelective(payPlatform);
+        int row = payPlatformMapper.insertSelective(payPlatform);
 
-        if (insertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("支付平台信息保存失败");
         }
 

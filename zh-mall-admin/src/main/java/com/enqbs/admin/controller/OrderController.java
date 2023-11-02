@@ -54,9 +54,9 @@ public class OrderController {
     @PostMapping("/order/shipment/{orderNo}")
     @PreAuthorize("hasAuthority('ORDER:UPDATE')")
     public R<Void> orderShipment(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
-        int insertRow = orderService.insertOrderLogisticsInfo(orderNo, form);
+        int row = orderService.insertOrderLogisticsInfo(orderNo, form);
 
-        if (insertRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("发货失败");
         }
 
@@ -66,9 +66,9 @@ public class OrderController {
     @PutMapping("/order/logistics-info/{orderNo}")
     @PreAuthorize("hasAuthority('ORDER:UPDATE')")
     public R<Void> updateOrderLogisticsInfo(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
-        int updateRow = orderService.updateOrderLogisticsInfo(orderNo, form);
+        int row = orderService.updateOrderLogisticsInfo(orderNo, form);
 
-        if (updateRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("修改失败");
         }
 

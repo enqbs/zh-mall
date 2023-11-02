@@ -3,6 +3,7 @@ package com.enqbs.app.config;
 import com.enqbs.app.service.RabbitMQService;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.QueueEnum;
+import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.pojo.MessageQueueLog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -13,8 +14,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 /*
-* RabbitMQ 消息发布确认、消息回退配置
-* */
+ * RabbitMQ 消息发布确认、消息回退配置
+ * */
 @Slf4j
 @Configuration
 public class RabbitMQCallbackConfig {
@@ -32,8 +33,8 @@ public class RabbitMQCallbackConfig {
     }
 
     /*
-    * 发布确认
-    * */
+     * 发布确认
+     * */
     private void confirmCallback() {
         rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
             if (ObjectUtils.isNotEmpty(correlationData)) {
@@ -46,22 +47,27 @@ public class RabbitMQCallbackConfig {
                         /* TODO 发送失败消息处理 */
                         messageQueueLog.setStatus(Constants.MESSAGE_SEND_ERROR);
                     }
-                    rabbitMQService.updateMessageQueueLog(messageQueueLog);
-                    log.info("ConfirmCallback:{}", messageQueueLog);
+
+                    int row = rabbitMQService.updateMessageQueueLog(messageQueueLog);
+
+                    if (row <= 0) {
+                        throw new ServiceException("消息状态更新失败");
+                    }
                 }
+
+                log.info("ConfirmCallback:{}", messageQueueLog);
             }
         });
     }
 
     /*
-    * 消息回退
-    * */
+     * 消息回退
+     * */
     private void returnsCallback() {
         rabbitTemplate.setReturnsCallback(returned -> {
             /* TODO 回退消息处理 */
             if (!QueueEnum.ORDER_CLOSE_QUEUE.getExchange().equals(returned.getExchange())) {
-                log.info("Exchange:'{}',RoutingKey:'{}',ReplyText:'{}'",
-                        returned.getExchange(), returned.getRoutingKey(), returned.getReplyText());
+                log.info("Exchange:'{}',RoutingKey:'{}',ReplyText:'{}'", returned.getExchange(), returned.getRoutingKey(), returned.getReplyText());
             }
         });
     }

@@ -121,9 +121,9 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setStatus(OrderStatusEnum.NOT_RECEIPT.getCode());
-        int updateOrderRow = orderMapper.updateByPrimaryKeySelective(order);
+        int row = orderMapper.updateByPrimaryKeySelective(order);
 
-        if (updateOrderRow <= 0) {
+        if (row <= 0) {
             throw new ServiceException("订单状态修改失败");
         }
 
