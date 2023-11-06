@@ -38,7 +38,7 @@ public class UserController {
         return R.ok("注册成功", resultMap);
     }
 
-    @GetMapping("/user-info")
+    @GetMapping("/user/info")
     public R<Map<String, Object>> userInfo(@RequestHeader String token) throws Exception {
         String newToken = tokenService.refreshToken(token).get();
         UserInfoVO userInfoVO = userService.getUserInfoVO();

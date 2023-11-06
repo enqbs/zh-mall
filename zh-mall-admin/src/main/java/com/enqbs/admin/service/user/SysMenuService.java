@@ -17,8 +17,8 @@ public interface SysMenuService {
     Set<SysMenu> getSysMenuSet(String username);
 
     /*
-    * 权限列表、父级列表
-    * */
+     * 权限列表、父级列表
+     * */
     List<SysMenuVO> getSysMenuVOList();
 
     /*
@@ -27,8 +27,8 @@ public interface SysMenuService {
     PageUtil<SysMenuVO> getSysMenuVOList(Integer parentId, Integer roleId, Integer deleteStatus, Integer pageNum, Integer pageSize);
 
     /*
-    * 角色 ID 获取权限列表
-    * */
+     * 角色 ID 获取权限列表
+     * */
     Future<List<SysMenuVO>> getSysMenuVOList(Integer roleId);
 
     /*
