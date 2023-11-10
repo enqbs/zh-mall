@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 02/11/2023 02:09:07
+ Date: 10/11/2023 18:29:37
 */
 
 SET NAMES utf8mb4;
@@ -31,11 +31,7 @@ CREATE TABLE `sys_menu`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE,
-  INDEX `idx_sort`(`sort` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统菜单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -80,10 +76,7 @@ CREATE TABLE `sys_role`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_sort`(`sort` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -144,9 +137,7 @@ CREATE TABLE `sys_user`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `unq_username`(`username` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  INDEX `idx_username_create_time`(`username` ASC, `create_time` DESC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -169,6 +160,7 @@ CREATE TABLE `sys_user_role`  (
 -- Records of sys_user_role
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES (1, 1);
+INSERT INTO `sys_user_role` VALUES (2, 2);
 
 -- ----------------------------
 -- Table structure for tb_coupon
@@ -186,12 +178,8 @@ CREATE TABLE `tb_coupon`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_coupon
@@ -209,12 +197,8 @@ CREATE TABLE `tb_home_banner`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页横幅表' ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页横幅表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_banner
@@ -232,12 +216,8 @@ CREATE TABLE `tb_home_recommend_advertise`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页推荐广告表' ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页推荐广告表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_recommend_advertise
@@ -255,11 +235,7 @@ CREATE TABLE `tb_home_slide`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页轮播图表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -285,9 +261,7 @@ CREATE TABLE `tb_message_queue_log`  (
   `status` tinyint(1) NULL DEFAULT 0 COMMENT '状态，-1错误发送、0新建、1已发送',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`message_id`) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  PRIMARY KEY (`message_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'MQ消息持久化表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -320,13 +294,9 @@ CREATE TABLE `tb_order`  (
   `sign_receipt_time` datetime NULL DEFAULT NULL COMMENT '签收时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `unq_order_no`(`order_no` ASC) USING BTREE,
-  UNIQUE INDEX `unq_order_sc`(`order_sc` ASC) USING BTREE,
-  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
+  UNIQUE INDEX `unq_order_no_sc_user_id_create_time`(`order_no` ASC, `order_sc` ASC, `user_id` ASC, `create_time` DESC) USING BTREE,
+  INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order
@@ -394,12 +364,9 @@ CREATE TABLE `tb_order_refund`  (
   `refund_time` datetime NULL DEFAULT NULL COMMENT '退款时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `unq_order_no`(`order_no` ASC) USING BTREE,
-  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单申请退款表' ROW_FORMAT = DYNAMIC;
+  UNIQUE INDEX `unq_order_no_user_id_create_time`(`order_no` ASC, `user_id` ASC, `create_time` DESC) USING BTREE,
+  INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单申请退款表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order_refund
@@ -467,12 +434,9 @@ CREATE TABLE `tb_pay_info`  (
   `payment_time` datetime NULL DEFAULT NULL COMMENT '付款时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `unq_order_no`(`order_no` ASC) USING BTREE,
-  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付信息表' ROW_FORMAT = DYNAMIC;
+  UNIQUE INDEX `unq_order_no_user_id_create_time`(`order_no` ASC, `user_id` ASC, `create_time` DESC) USING BTREE,
+  INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_info
@@ -516,12 +480,9 @@ CREATE TABLE `tb_pay_refund`  (
   `refund_time` datetime NULL DEFAULT NULL COMMENT '退款时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `unq_order_no`(`order_no` ASC) USING BTREE,
-  UNIQUE INDEX `unq_platform_number`(`platform_number` ASC) USING BTREE,
-  INDEX `idx_pay_info_id`(`pay_info_id` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = DYNAMIC;
+  UNIQUE INDEX `unq_order_no_platform_number_create_time`(`order_no` ASC, `platform_number` ASC, `create_time` DESC) USING BTREE,
+  UNIQUE INDEX `unq_platform_number_create_time`(`platform_number` ASC, `create_time` DESC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_refund
@@ -548,12 +509,7 @@ CREATE TABLE `tb_product`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_category_id`(`product_category_id` ASC) USING BTREE,
-  INDEX `idx_saleable_status`(`saleable_status` ASC) USING BTREE,
-  INDEX `idx_new_status`(`new_status` ASC) USING BTREE,
-  INDEX `idx_recommend_status`(`recommend_status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  INDEX `idx_product_category_id_create_time`(`product_category_id` ASC, `create_time` DESC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -583,11 +539,7 @@ CREATE TABLE `tb_product_category`  (
   `sort` int UNSIGNED NULL DEFAULT 0 COMMENT '排序字段',
   `navi_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否首页导航显示,0:否、1:是',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE,
-  INDEX `idx_sort`(`sort` ASC) USING BTREE,
-  INDEX `idx_navi_status`(`navi_status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -612,9 +564,8 @@ CREATE TABLE `tb_product_category_attribute`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品分类规格名称',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_category_attribute
@@ -657,14 +608,8 @@ CREATE TABLE `tb_product_comment`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-  INDEX `idx_parent_id`(`parent_id` ASC) USING BTREE,
-  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
-  INDEX `idx_star`(`star` ASC) USING BTREE,
-  INDEX `idx_like`(`like` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = DYNAMIC;
+  INDEX `idx_product_id_create_time`(`product_id` ASC, `create_time` DESC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_comment
@@ -680,9 +625,8 @@ CREATE TABLE `tb_product_overview`  (
   `picture` json NULL COMMENT '商品概述图片',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品概述表' ROW_FORMAT = DYNAMIC;
+  INDEX `idx_product_id`(`product_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品概述表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_overview
@@ -698,9 +642,8 @@ CREATE TABLE `tb_product_spec`  (
   `picture` json NULL COMMENT '商品概述图片',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品参数表' ROW_FORMAT = DYNAMIC;
+  INDEX `idx_product_id`(`product_id` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品参数表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_spec
@@ -722,10 +665,7 @@ CREATE TABLE `tb_sku`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE,
-  INDEX `idx_saleable_status`(`saleable_status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  INDEX `idx_product_id_create_time`(`product_id` ASC, `create_time` DESC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -807,8 +747,7 @@ CREATE TABLE `tb_sku_stock`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_sku_id`(`sku_id` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE
+  INDEX `idx_sku_id`(`sku_id` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 62 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格库存表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -889,8 +828,7 @@ CREATE TABLE `tb_sku_stock_lock`  (
   `consume_version` int UNSIGNED NULL DEFAULT NULL COMMENT '消费版本号(乐观锁字段)',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`order_no`, `sku_id`) USING BTREE,
-  INDEX `idx_product_id`(`product_id` ASC) USING BTREE
+  PRIMARY KEY (`order_no`, `sku_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品规格锁定库存表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -913,10 +851,7 @@ CREATE TABLE `tb_user`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -938,12 +873,9 @@ CREATE TABLE `tb_user_auths`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
-  INDEX `idx_identifier`(`identifier` ASC) USING BTREE,
-  INDEX `idx_credential`(`credential` ASC) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE,
+  INDEX `idx_identifier_create_time`(`identifier` ASC, `create_time` DESC) USING BTREE,
+  INDEX `idx_credential_create_time`(`credential` ASC, `create_time` DESC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录类型表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -962,9 +894,7 @@ CREATE TABLE `tb_user_coupon`  (
   `consume_version` int UNSIGNED NULL DEFAULT NULL COMMENT '消费版本号(乐观锁字段)',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`coupon_id`, `user_id`) USING BTREE,
-  INDEX `idx_status`(`status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  PRIMARY KEY (`coupon_id`, `user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -984,10 +914,8 @@ CREATE TABLE `tb_user_level`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员等级表' ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员等级表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_level
@@ -1009,9 +937,7 @@ CREATE TABLE `tb_user_shipping_address`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
-  INDEX `idx_delete_status`(`delete_status` ASC) USING BTREE,
-  INDEX `idx_create_time`(`create_time` ASC) USING BTREE
+  INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
