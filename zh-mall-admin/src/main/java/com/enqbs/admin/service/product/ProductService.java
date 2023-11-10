@@ -3,6 +3,7 @@ package com.enqbs.admin.service.product;
 import com.enqbs.admin.form.ProductForm;
 import com.enqbs.admin.form.SkuForm;
 import com.enqbs.admin.vo.ProductVO;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
 
 public interface ProductService {
@@ -11,7 +12,8 @@ public interface ProductService {
      * 商品列表
      * */
     PageUtil<ProductVO> getProductVOList(Integer categoryId, Integer saleableStatus, Integer newStatus,
-                                         Integer recommendStatus, Integer deleteStatus, Integer pageNum, Integer pageSize);
+                                         Integer recommendStatus, Integer deleteStatus, SortEnum sortEnum,
+                                         Integer pageNum, Integer pageSize);
 
     /*
      * 商品详情

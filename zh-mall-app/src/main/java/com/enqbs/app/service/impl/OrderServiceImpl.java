@@ -20,6 +20,7 @@ import com.enqbs.app.pojo.vo.UserShippingAddressVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.enums.QueueEnum;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.common.util.PageUtil;
@@ -129,13 +130,13 @@ public class OrderServiceImpl implements OrderService {
 
         Set<Integer> productIdSet = cartProductVOList.stream().map(CartProductVO::getProductId).collect(Collectors.toSet());
         Set<Integer> skuIdSet = cartProductVOList.stream().map(CartProductVO::getSkuId).collect(Collectors.toSet());
-        List<ProductVO> productVOList = productService.getProductVOList(productIdSet);      // 购物车选中的商品
-        List<Sku> skuList = productService.getSkuList(skuIdSet);                            // 商品规格
-        List<SkuStock> stockList = skuStockService.getSkuStockList(skuIdSet);               // 商品规格库存
         /* List to Map */
-        Map<Integer, ProductVO> productVOMap = productVOList.stream().collect(Collectors.toMap(ProductVO::getId, productVO -> productVO));
-        Map<Integer, Sku> skuMap = skuList.stream().collect(Collectors.toMap(Sku::getId, sku -> sku));
-        Map<Integer, SkuStock> stockMap = stockList.stream().collect(Collectors.toMap(SkuStock::getSkuId, skuStock -> skuStock));
+        Map<Integer, ProductVO> productVOMap = productService.getProductVOList(productIdSet).stream()
+                .collect(Collectors.toMap(ProductVO::getId, productVO -> productVO));       // 购物车选中的商品
+        Map<Integer, Sku> skuMap = productService.getSkuList(skuIdSet).stream()
+                .collect(Collectors.toMap(Sku::getId, sku -> sku));                         // 商品规格
+        Map<Integer, SkuStock> stockMap = skuStockService.getSkuStockList(skuIdSet).stream()
+                .collect(Collectors.toMap(SkuStock::getSkuId, skuStock -> skuStock));       // 商品规格库存
 
         for (CartProductVO cartProductVO : cartProductVOList) {
             ProductVO productVO = productVOMap.get(cartProductVO.getProductId());
@@ -207,7 +208,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageUtil<OrderVO> getOrderVOList(Integer status, Integer pageNum, Integer pageSize) {
+    public PageUtil<OrderVO> getOrderVOList(Integer status, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         PageUtil<OrderVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
@@ -215,7 +216,7 @@ public class OrderServiceImpl implements OrderService {
         long total = 0L;
         List<OrderVO> orderVOList = new ArrayList<>();
         List<Order> orderList = orderMapper.selectListByParam(null, null, userInfoVO.getUserId(), null,
-                status, Constants.IS_NOT_DELETE, pageNum, pageSize);
+                status, Constants.IS_NOT_DELETE, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(orderList)) {
             pageUtil.setTotal(total);

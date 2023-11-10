@@ -6,6 +6,7 @@ import com.enqbs.admin.vo.ProductVO;
 import com.enqbs.admin.vo.SkuStockVO;
 import com.enqbs.admin.vo.SkuVO;
 import com.enqbs.common.constant.Constants;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductMapper;
@@ -41,13 +42,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageUtil<ProductVO> getProductVOList(Integer categoryId, Integer saleableStatus, Integer newStatus,
-                                                Integer recommendStatus, Integer deleteStatus, Integer pageNum, Integer pageSize) {
+                                                Integer recommendStatus, Integer deleteStatus, SortEnum sortEnum,
+                                                Integer pageNum, Integer pageSize) {
         PageUtil<ProductVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
         List<ProductVO> productVOList = new ArrayList<>();
-        List<Product> productList = productMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, pageNum, pageSize);
+        List<Product> productList = productMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(productList)) {
             pageUtil.setTotal(total);

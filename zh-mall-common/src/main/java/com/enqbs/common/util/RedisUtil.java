@@ -16,15 +16,11 @@ public class RedisUtil {
     private RedisTemplate<String, Object> redisTemplate;
 
     public void setObject(String key, Object value) {
-        setObject(key, value, null);
+        redisTemplate.opsForValue().set(key, value);
     }
 
     public void setObject(String key, Object value, Long timeout) {
-        redisTemplate.opsForValue().set(key, value);
-
-        if (timeout != null) {
-            redisTemplate.expire(key, timeout, TimeUnit.MILLISECONDS);
-        }
+        redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.MILLISECONDS);
     }
 
     public void setHash(String key, Object hashKey, Object value) {

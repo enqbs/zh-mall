@@ -4,6 +4,7 @@ import com.enqbs.app.form.OrderForm;
 import com.enqbs.app.service.OrderService;
 import com.enqbs.app.pojo.vo.OrderConfirmVO;
 import com.enqbs.app.pojo.vo.OrderVO;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
@@ -46,6 +47,7 @@ public class OrderController {
 
     @GetMapping("/order/list")
     public R<PageUtil<OrderVO>> orderList(@RequestParam(required = false) Integer status,
+                                          @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                           @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
         if (pageNum <= 0) {
@@ -56,7 +58,7 @@ public class OrderController {
             pageSize = 5;
         }
 
-        PageUtil<OrderVO> pageOrderVOList = orderService.getOrderVOList(status, pageNum, pageSize);
+        PageUtil<OrderVO> pageOrderVOList = orderService.getOrderVOList(status, sort, pageNum, pageSize);
         return R.ok(pageOrderVOList);
     }
 

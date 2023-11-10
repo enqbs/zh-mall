@@ -59,18 +59,18 @@ public class CartServiceImpl implements CartService {
 
         if (CollectionUtils.isEmpty(productIdSet)) {
             cartVO.setProductList(cartProductVOList);
-            cartVO.setSelectedAll(selectedAll);
+            cartVO.setSelectedAll(false);
             cartVO.setTotalQuantity(totalQuantity);
             cartVO.setTotalPrice(totalPrice);
             return cartVO;
         }
-
-        List<ProductVO> productVOList = productService.getProductVOList(productIdSet);      // 批量获取商品
+        /* 批量获取商品 */
+        Map<Integer, ProductVO> productVOMap = productService.getProductVOList(productIdSet).stream()
+                .collect(Collectors.toMap(ProductVO::getId, product -> product));
 
         for (Map.Entry<Object, Object> entry : redisMap.entrySet()) {
             Cart cart = (Cart) entry.getValue();
-            ProductVO productVO = productVOList.stream()
-                    .filter(product -> cart.getProductId().equals(product.getId())).collect(Collectors.toList()).get(0);
+            ProductVO productVO = productVOMap.get(cart.getProductId());
             List<SkuVO> skuVOList = productVO.getSkuList().stream()
                     .filter(skuVO -> cart.getSkuId().equals(skuVO.getId())).collect(Collectors.toList());
 
@@ -82,10 +82,10 @@ public class CartServiceImpl implements CartService {
             CartProductVO cartProductVO = buildCartProductVO(cart, productVO, skuVO);
             cartProductVOList.add(cartProductVO);
 
-            if (!cart.getSelected()) {
-                selectedAll = false;
-            } else {
+            if (cart.getSelected()) {
                 totalPrice = totalPrice.add(cartProductVO.getTotalPrice());     // 计算购物车选中商品总价
+            } else {
+                selectedAll = false;
             }
 
             totalQuantity += cart.getQuantity();

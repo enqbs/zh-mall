@@ -3,6 +3,7 @@ package com.enqbs.admin.controller;
 import com.enqbs.admin.form.LogisticsInfoForm;
 import com.enqbs.admin.service.order.OrderService;
 import com.enqbs.admin.vo.OrderVO;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
@@ -31,6 +32,7 @@ public class OrderController {
                                           @RequestParam(required = false) Integer paymentType,
                                           @RequestParam(required = false) Integer status,
                                           @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                          @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                           @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
         if (pageNum <= 0) {
@@ -41,7 +43,7 @@ public class OrderController {
             pageSize = 10;
         }
 
-        PageUtil<OrderVO> pageOrderVOList = orderService.getOrderVOList(orderNo, orderSc, userId, paymentType, status, deleteStatus, pageNum, pageSize);
+        PageUtil<OrderVO> pageOrderVOList = orderService.getOrderVOList(orderNo, orderSc, userId, paymentType, status, deleteStatus, sort, pageNum, pageSize);
         return R.ok(pageOrderVOList);
     }
 

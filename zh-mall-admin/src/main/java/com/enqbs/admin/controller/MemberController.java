@@ -2,6 +2,7 @@ package com.enqbs.admin.controller;
 
 import com.enqbs.admin.service.member.MemberService;
 import com.enqbs.admin.vo.MemberVO;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ public class MemberController {
                                             @RequestParam(required = false) String identifier,
                                             @RequestParam(required = false) Integer status,
                                             @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                            @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                             @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                             @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
         if (pageNum <= 0) {
@@ -33,7 +35,7 @@ public class MemberController {
             pageSize = 10;
         }
 
-        PageUtil<MemberVO> pageMemberVOList = memberService.getMemberVOList(id, uid, identifier, status, deleteStatus, pageNum, pageSize);
+        PageUtil<MemberVO> pageMemberVOList = memberService.getMemberVOList(id, uid, identifier, status, deleteStatus, sort, pageNum, pageSize);
         return R.ok(pageMemberVOList);
     }
 

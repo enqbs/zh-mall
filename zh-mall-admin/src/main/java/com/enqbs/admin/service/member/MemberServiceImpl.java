@@ -3,6 +3,7 @@ package com.enqbs.admin.service.member;
 import com.enqbs.admin.vo.MemberLevelVO;
 import com.enqbs.admin.vo.MemberVO;
 import com.enqbs.common.constant.Constants;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.UserLevelMapper;
 import com.enqbs.generator.dao.UserMapper;
@@ -31,19 +32,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public PageUtil<MemberVO> getMemberVOList(Integer id, Long uid, String identifier,
-                                              Integer status, Integer deleteStatus, Integer pageNum, Integer pageSize) {
+                                              Integer status, Integer deleteStatus, SortEnum sortEnum,
+                                              Integer pageNum, Integer pageSize) {
         PageUtil<MemberVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
         List<MemberVO> memberVOList = new ArrayList<>();
-        List<User> userList = userMapper.selectListByParam(id, uid, identifier, status, deleteStatus, pageNum, pageSize);
+        List<User> userList = userMapper.selectListByParam(id, uid, identifier, status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (!CollectionUtils.isEmpty(userList)) {
             total = userMapper.countByParam(id, uid, identifier, status, deleteStatus);
             Set<Integer> levelIdSet = userList.stream().map(User::getLevelId).collect(Collectors.toSet());
-            List<UserLevel> userLevelList = userLevelMapper.selectListByIdSet(levelIdSet);
-            Map<Integer, MemberLevelVO> memberLevelVOMap = userLevelList.stream()
+            Map<Integer, MemberLevelVO> memberLevelVOMap = userLevelMapper.selectListByIdSet(levelIdSet).stream()
                     .map(this::userLevel2MemberLevelVO).collect(Collectors.toMap(MemberLevelVO::getId, memberLevelVO -> memberLevelVO));
             userList.stream().map(this::user2MemberVO).collect(Collectors.toList()).forEach(memberVO -> {
                 memberVO.setLevelInfo(memberLevelVOMap.get(memberVO.getLevelId()));

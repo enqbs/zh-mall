@@ -3,6 +3,7 @@ package com.enqbs.admin.service.pay;
 import com.enqbs.admin.vo.PayInfoVO;
 import com.enqbs.admin.vo.PayPlatformVO;
 import com.enqbs.common.constant.Constants;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.PayInfoMapper;
 import com.enqbs.generator.dao.PayPlatformMapper;
@@ -32,13 +33,13 @@ public class PayInfoServiceImpl implements PayInfoService {
     @Override
     public PageUtil<PayInfoVO> getPayInfoVOList(Long orderNo, Integer userId, String payType,
                                                 String platform, String platformNumber, Integer status,
-                                                Integer deleteStatus, Integer pageNum, Integer pageSize) {
+                                                Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
         PageUtil<PayInfoVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
         List<PayInfoVO> payInfoVOList = new ArrayList<>();
-        List<PayInfo> payInfoList = payInfoMapper.selectListParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus, pageNum, pageSize);
+        List<PayInfo> payInfoList = payInfoMapper.selectListParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(payInfoList)) {
             pageUtil.setTotal(total);
@@ -48,8 +49,7 @@ public class PayInfoServiceImpl implements PayInfoService {
 
         total = payInfoMapper.countByParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus);
         Set<Long> payInfoIdSet = payInfoList.stream().map(PayInfo::getId).collect(Collectors.toSet());
-        List<PayPlatform> payPlatformList = payPlatformMapper.selectListByPayInfoIdSet(payInfoIdSet);
-        Map<Long, PayPlatformVO> platformVOMap = payPlatformList.stream()
+        Map<Long, PayPlatformVO> platformVOMap = payPlatformMapper.selectListByPayInfoIdSet(payInfoIdSet).stream()
                 .map(this::payPlatform2PayPlatformVO)
                 .collect(Collectors.toMap(PayPlatformVO::getPayInfoId, payPlatformVO -> payPlatformVO));
         payInfoList.stream().map(this::payInfo2PayInfoVO).collect(Collectors.toList()).forEach(payInfoVO -> {

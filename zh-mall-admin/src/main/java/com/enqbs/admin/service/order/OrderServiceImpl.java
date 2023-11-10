@@ -6,6 +6,7 @@ import com.enqbs.admin.vo.OrderLogisticsInfoVO;
 import com.enqbs.admin.vo.OrderShippingAddressVO;
 import com.enqbs.admin.vo.OrderVO;
 import com.enqbs.common.enums.OrderStatusEnum;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.OrderItemMapper;
@@ -43,13 +44,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public PageUtil<OrderVO> getOrderVOList(Long orderNo, String orderSc, Integer userId, Integer paymentType,
-                                            Integer status, Integer deleteStatus, Integer pageNum, Integer pageSize) {
+                                            Integer status, Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
         PageUtil<OrderVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
         List<OrderVO> orderVOList = new ArrayList<>();
-        List<Order> orderList = orderMapper.selectListByParam(orderNo, orderSc, userId, paymentType, status, deleteStatus, pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectListByParam(orderNo, orderSc, userId, paymentType, status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(orderList)) {
             pageUtil.setTotal(total);
@@ -59,19 +60,15 @@ public class OrderServiceImpl implements OrderService {
 
         total = orderMapper.countByParam(orderNo, orderSc, userId, paymentType, status, deleteStatus);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
-        List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNoSet(orderNoSet);
-        List<OrderShippingAddress> orderShippingAddressList = orderShippingAddressMapper.selectListByOrderNoSet(orderNoSet);
-        List<OrderLogisticsInfo> orderLogisticsInfoList = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
         /* List to Map */
-        Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemList.stream()
+        Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemMapper.selectListByOrderNoSet(orderNoSet).stream()
                 .map(this::orderItem2OrderItemVO).collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
-        Map<Long, OrderShippingAddressVO> orderShippingAddressVOMap = orderShippingAddressList.stream()
+        Map<Long, OrderShippingAddressVO> orderShippingAddressVOMap = orderShippingAddressMapper.selectListByOrderNoSet(orderNoSet).stream()
                 .map(this::orderShippingAddress2OrderShippingAddressVO)
                 .collect(Collectors.toMap(OrderShippingAddressVO::getOrderNo, orderShippingAddressVO -> orderShippingAddressVO));
-        Map<Long, OrderLogisticsInfoVO> orderLogisticsInfoVOMap = orderLogisticsInfoList.stream()
+        Map<Long, OrderLogisticsInfoVO> orderLogisticsInfoVOMap = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet).stream()
                 .map(this::orderLogisticsInfo2OrderLogisticsInfoVO)
                 .collect(Collectors.toMap(OrderLogisticsInfoVO::getOrderNo, orderLogisticsInfoVO -> orderLogisticsInfoVO));
-
         orderList.stream().map(this::order2OrderVO).collect(Collectors.toList()).forEach(orderVO -> {
             orderVO.setShippingAddress(orderShippingAddressVOMap.get(orderVO.getOrderNo()));
             orderVO.setLogisticsInfo(orderLogisticsInfoVOMap.get(orderVO.getOrderNo()));

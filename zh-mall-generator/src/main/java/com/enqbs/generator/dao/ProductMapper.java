@@ -29,6 +29,7 @@ public interface ProductMapper {
                                     @Param("newStatus") Integer newStatus,
                                     @Param("recommendStatus") Integer recommendStatus,
                                     @Param("deleteStatus") Integer deleteStatus,
+                                    @Param("sort") String sort,
                                     @Param("pageNum") Integer pageNum,
                                     @Param("pageSize") Integer pageSize);
 

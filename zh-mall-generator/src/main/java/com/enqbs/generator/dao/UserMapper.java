@@ -24,6 +24,7 @@ public interface UserMapper {
                                  @Param("identifier") String identifier,
                                  @Param("status") Integer status,
                                  @Param("deleteStatus") Integer deleteStatus,
+                                 @Param("sort") String sort,
                                  @Param("pageNum") Integer pageNum,
                                  @Param("pageSize") Integer pageSize);
 

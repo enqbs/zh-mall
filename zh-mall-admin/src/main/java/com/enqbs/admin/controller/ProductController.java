@@ -4,6 +4,7 @@ import com.enqbs.admin.form.ProductForm;
 import com.enqbs.admin.form.SkuForm;
 import com.enqbs.admin.service.product.ProductService;
 import com.enqbs.admin.vo.ProductVO;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
@@ -32,6 +33,7 @@ public class ProductController {
                                               @RequestParam(required = false) Integer newStatus,
                                               @RequestParam(required = false) Integer recommendStatus,
                                               @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                              @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
         if (pageNum <= 0) {
@@ -42,7 +44,7 @@ public class ProductController {
             pageSize = 10;
         }
 
-        PageUtil<ProductVO> pageProductVOList = productService.getProductVOList(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, pageNum, pageSize);
+        PageUtil<ProductVO> pageProductVOList = productService.getProductVOList(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sort, pageNum, pageSize);
         return R.ok(pageProductVOList);
     }
 

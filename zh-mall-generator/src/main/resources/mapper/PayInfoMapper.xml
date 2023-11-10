@@ -212,25 +212,31 @@
     <include refid="Base_Column_List_Join" />
     from tb_pay_info as pi
     join tb_pay_platform as pp on pp.pay_info_id = pi.id
-    where
-    <if test="orderNo != null">
-      pi.order_no = #{orderNo,jdbcType=BIGINT} and
-    </if>
-    <if test="userId != null">
-      pi.user_id = #{userId,jdbcType=INTEGER} and
-    </if>
-    <if test="status != null">
-      pi.status = #{status,jdbcType=INTEGER} and
-    </if>
-    pi.delete_status = #{deleteStatus,jdbcType=INTEGER}
-    <if test="payType != null">
-      and pp.pay_type = #{payType,jdbcType=VARCHAR}
-    </if>
-    <if test="platform != null">
-      and pp.platform = #{platform,jdbcType=VARCHAR}
-    </if>
-    <if test="platformNumber != null">
-      and pp.platform_number = #{platformNumber,jdbcType=VARCHAR}
+    <trim prefix="where " suffixOverrides="and">
+      <if test="orderNo != null">
+        pi.order_no = #{orderNo,jdbcType=BIGINT} and
+      </if>
+      <if test="userId != null">
+        pi.user_id = #{userId,jdbcType=INTEGER} and
+      </if>
+      <if test="status != null">
+        pi.status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        pi.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+      <if test="payType != null">
+        pp.pay_type = #{payType,jdbcType=VARCHAR} and
+      </if>
+      <if test="platform != null">
+        pp.platform = #{platform,jdbcType=VARCHAR} and
+      </if>
+      <if test="platformNumber != null">
+        pp.platform_number = #{platformNumber,jdbcType=VARCHAR} and
+      </if>
+    </trim>
+    <if test="sort != null">
+      order by pi.create_time ${sort}
     </if>
     <if test="pageNum != null and pageSize != null">
       <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
@@ -243,25 +249,28 @@
     count(*)
     from tb_pay_info as pi
     join tb_pay_platform as pp on pp.pay_info_id = pi.id
-    where
-    <if test="orderNo != null">
-      pi.order_no = #{orderNo,jdbcType=BIGINT} and
-    </if>
-    <if test="userId != null">
-      pi.user_id = #{userId,jdbcType=INTEGER} and
-    </if>
-    <if test="status != null">
-      pi.status = #{status,jdbcType=INTEGER} and
-    </if>
-    pi.delete_status = #{deleteStatus,jdbcType=INTEGER}
-    <if test="payType != null">
-      and pp.pay_type = #{payType,jdbcType=VARCHAR}
-    </if>
-    <if test="platform != null">
-      and pp.platform = #{platform,jdbcType=VARCHAR}
-    </if>
-    <if test="platformNumber != null">
-      and pp.platform_number = #{platformNumber,jdbcType=VARCHAR}
-    </if>
+    <trim prefix="where " suffixOverrides="and">
+      <if test="orderNo != null">
+        pi.order_no = #{orderNo,jdbcType=BIGINT} and
+      </if>
+      <if test="userId != null">
+        pi.user_id = #{userId,jdbcType=INTEGER} and
+      </if>
+      <if test="status != null">
+        pi.status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        pi.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+      <if test="payType != null">
+        pp.pay_type = #{payType,jdbcType=VARCHAR} and
+      </if>
+      <if test="platform != null">
+        pp.platform = #{platform,jdbcType=VARCHAR} and
+      </if>
+      <if test="platformNumber != null">
+        pp.platform_number = #{platformNumber,jdbcType=VARCHAR} and
+      </if>
+    </trim>
   </select>
 </mapper>

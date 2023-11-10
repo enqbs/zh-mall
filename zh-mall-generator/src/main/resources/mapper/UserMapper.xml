@@ -179,24 +179,32 @@
     <include refid="Base_Column_List_Join" />
     from tb_user AS u
     JOIN tb_user_auths AS ua ON ua.user_id = u.id
-    where
-    <if test="id != null">
-      u.id = #{id,jdbcType=INTEGER} and
+    <trim prefix="where " suffixOverrides="and">
+      <if test="id != null">
+        u.id = #{id,jdbcType=INTEGER} and
+      </if>
+      <if test="uid != null">
+        u.uid = #{uid,jdbcType=BIGINT} and
+      </if>
+      <if test="status != null">
+        u.status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        u.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+      <if test="identifier != null">
+        ua.identifier = #{identifier,jdbcType=VARCHAR} and
+      </if>
+      <if test="status != null">
+        ua.status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        ua.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
+    <if test="sort != null">
+      order by u.create_time ${sort}
     </if>
-    <if test="uid != null">
-      u.uid = #{uid,jdbcType=BIGINT} and
-    </if>
-    <if test="status != null">
-      u.status = #{status,jdbcType=INTEGER} and
-    </if>
-    u.delete_status = #{deleteStatus,jdbcType=INTEGER}
-    <if test="identifier != null">
-      and ua.identifier = #{identifier,jdbcType=VARCHAR}
-    </if>
-    <if test="status != null">
-      and ua.status = #{status,jdbcType=INTEGER}
-    </if>
-    and ua.delete_status = #{deleteStatus,jdbcType=INTEGER}
     <if test="pageNum != null and pageSize != null">
       <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
       limit #{pageStart}, #{pageSize}
@@ -205,26 +213,31 @@
 
   <select id="countByParam" parameterType="map" resultType="java.lang.Long">
     select
-    count(pi.*)
+    count(*)
     from tb_user AS u
     JOIN tb_user_auths AS ua ON ua.user_id = u.id
-    where
-    <if test="id != null">
-      u.id = #{id,jdbcType=INTEGER} and
-    </if>
-    <if test="uid != null">
-      u.uid = #{uid,jdbcType=BIGINT} and
-    </if>
-    <if test="status != null">
-      u.status = #{status,jdbcType=INTEGER} and
-    </if>
-    u.delete_status = #{deleteStatus,jdbcType=INTEGER}
-    <if test="identifier != null">
-      and ua.identifier = #{identifier,jdbcType=VARCHAR}
-    </if>
-    <if test="status != null">
-      and ua.status = #{status,jdbcType=INTEGER}
-    </if>
-    and ua.delete_status = #{deleteStatus,jdbcType=INTEGER}
+    <trim prefix="where " suffixOverrides="and">
+      <if test="id != null">
+        u.id = #{id,jdbcType=INTEGER} and
+      </if>
+      <if test="uid != null">
+        u.uid = #{uid,jdbcType=BIGINT} and
+      </if>
+      <if test="status != null">
+        u.status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        u.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+      <if test="identifier != null">
+        ua.identifier = #{identifier,jdbcType=VARCHAR} and
+      </if>
+      <if test="status != null">
+        ua.status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        ua.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
   </select>
 </mapper>
