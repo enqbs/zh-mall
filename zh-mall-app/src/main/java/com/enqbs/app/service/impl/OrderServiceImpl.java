@@ -108,7 +108,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public OrderVO insertOrder(OrderForm form) {
+    public Long insertOrder(OrderForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.ORDER_TOKEN_REDIS_KEY, userInfoVO.getUserId());
         Long result = redisUtil.executeScript(Constants.REDIS_SCRIPT, redisKey, form.getOrderToken());
@@ -132,11 +132,11 @@ public class OrderServiceImpl implements OrderService {
         Set<Integer> skuIdSet = cartProductVOList.stream().map(CartProductVO::getSkuId).collect(Collectors.toSet());
         /* List to Map */
         Map<Integer, ProductVO> productVOMap = productService.getProductVOList(productIdSet).stream()
-                .collect(Collectors.toMap(ProductVO::getId, productVO -> productVO));       // 购物车选中的商品
+                .collect(Collectors.toMap(ProductVO::getId, v -> v));                       // 购物车选中的商品
         Map<Integer, Sku> skuMap = productService.getSkuList(skuIdSet).stream()
-                .collect(Collectors.toMap(Sku::getId, sku -> sku));                         // 商品规格
+                .collect(Collectors.toMap(Sku::getId, v -> v));                             // 商品规格
         Map<Integer, SkuStock> stockMap = skuStockService.getSkuStockList(skuIdSet).stream()
-                .collect(Collectors.toMap(SkuStock::getSkuId, skuStock -> skuStock));       // 商品规格库存
+                .collect(Collectors.toMap(SkuStock::getSkuId, v -> v));                     // 商品规格库存
 
         for (CartProductVO cartProductVO : cartProductVOList) {
             ProductVO productVO = productVOMap.get(cartProductVO.getProductId());
@@ -164,10 +164,11 @@ public class OrderServiceImpl implements OrderService {
             BeanUtils.copyProperties(orderItemVO, orderItem);
             orderItem.setOrderNo(orderNo);
             orderItemList.add(orderItem);
-            SkuStockDTO skuStockDTO = getSkuStockDTO(orderNo, stock, cartProductVO);
+            SkuStockDTO skuStockDTO = getSkuStockDTO(stock, cartProductVO);
             skuStockDTOList.add(skuStockDTO);
         }
 
+        skuStockService.lockSkuStock(orderNo, skuStockDTOList);      // 锁定库存
         UserShippingAddressVO shippingAddressVO = shippingAddressService.getUserShippingAddressVO(form.getShippingAddressId());
         BeanUtils.copyProperties(shippingAddressVO, orderShippingAddress);
         orderShippingAddress.setOrderNo(orderNo);
@@ -176,14 +177,13 @@ public class OrderServiceImpl implements OrderService {
         order.setUserId(userInfoVO.getUserId());
         order.setAmount(amount);
         /* 保存订单信息 */
-        insertOrder(order);
-        batchInsertOrderItem(orderItemList);
-        insertOrderShippingAddress(orderShippingAddress);
-        skuStockService.lockSkuStock(skuStockDTOList);      // 锁定库存
+        insertOrder(orderNo, order);
+        batchInsertOrderItem(orderNo, orderItemList);
+        insertOrderShippingAddress(orderNo, orderShippingAddress);
         /* 发送延迟消息。15分钟订单超时 */
-        rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), order, ORDER_TIMEOUT);
         cartService.deleteCartProductVOListBySelected();
-        return getOrderVO(orderNo);
+        rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), order, ORDER_TIMEOUT);
+        return orderNo;
     }
 
     @Override
@@ -192,7 +192,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.selectByOrderNo(orderNo);
 
         if (ObjectUtils.isEmpty(order) || !userInfoVO.getUserId().equals(order.getUserId())) {
-            throw new ServiceException("订单不存在");
+            throw new ServiceException("订单不存在,订单号:" + orderNo);
         }
 
         List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(orderNo);
@@ -247,7 +247,7 @@ public class OrderServiceImpl implements OrderService {
         if (ObjectUtils.isEmpty(order)
                 || !OrderStatusEnum.NOT_RECEIPT.getCode().equals(order.getStatus())
                 || !userInfoVO.getUserId().equals(order.getUserId())) {
-            throw new ServiceException("无法签收该订单");
+            throw new ServiceException("无法签收该订单,订单号:" + orderNo);
         }
 
         order.setStatus(OrderStatusEnum.RECEIPT_SUCCESS.getCode());
@@ -264,17 +264,16 @@ public class OrderServiceImpl implements OrderService {
         if (ObjectUtils.isEmpty(order)
                 || !OrderStatusEnum.NOT_PAY.getCode().equals(order.getStatus())
                 || !userInfoVO.getUserId().equals(order.getUserId())) {
-            throw new ServiceException("无法取消该订单");
+            throw new ServiceException("无法取消该订单,订单号:" + orderNo);
         }
 
+        skuStockService.unLockSkuStock(orderNo, OrderStatusEnum.NOT_PAY);
         order.setDeleteStatus(Constants.IS_DELETE);
         int row = orderMapper.updateByPrimaryKeySelective(order);
 
         if (row <= 0) {
-            throw new ServiceException("订单取消失败");
+            throw new ServiceException("订单取消失败,订单号:" + orderNo);
         }
-
-        skuStockService.unLockSkuStock(orderNo);
     }
 
     @Override
@@ -285,16 +284,15 @@ public class OrderServiceImpl implements OrderService {
         if (ObjectUtils.isNotEmpty(timeoutOrder)
                 && OrderStatusEnum.NOT_PAY.getCode().equals(timeoutOrder.getStatus())
                 && ObjectUtils.isEmpty(timeoutOrder.getConsumeVersion())) {
+            skuStockService.unLockSkuStock(order.getOrderNo(), OrderStatusEnum.TIMEOUT);
             timeoutOrder.setStatus(OrderStatusEnum.TIMEOUT.getCode());
             timeoutOrder.setDeleteStatus(Constants.IS_DELETE);
             timeoutOrder.setConsumeVersion(1);
             int row = orderMapper.updateByPrimaryKeySelective(timeoutOrder);
 
             if (row <= 0) {
-                throw new ServiceException("订单关闭失败");
+                throw new ServiceException("订单关闭失败,订单号:" + timeoutOrder.getOrderNo());
             }
-
-            skuStockService.unLockSkuStock(order.getOrderNo());
         }
     }
 
@@ -306,16 +304,15 @@ public class OrderServiceImpl implements OrderService {
         if (ObjectUtils.isNotEmpty(paySuccessOrder)
                 && OrderStatusEnum.NOT_PAY.getCode().equals(paySuccessOrder.getStatus())
                 && ObjectUtils.isEmpty(paySuccessOrder.getConsumeVersion())) {
+            skuStockService.unLockSkuStock(payInfo.getOrderNo(), OrderStatusEnum.PAY_SUCCESS);
             paySuccessOrder.setStatus(OrderStatusEnum.PAY_SUCCESS.getCode());
             paySuccessOrder.setConsumeVersion(1);
             paySuccessOrder.setPaymentTime(new Date());
             int row = orderMapper.updateByPrimaryKeySelective(paySuccessOrder);
 
             if (row <= 0) {
-                throw new ServiceException("订单确认支付失败");
+                throw new ServiceException("订单确认支付失败,订单号:" + paySuccessOrder.getOrderNo());
             }
-
-            skuStockService.deleteSkuStock(payInfo.getOrderNo());
         }
     }
 
@@ -344,9 +341,8 @@ public class OrderServiceImpl implements OrderService {
         return orderItemVO;
     }
 
-    private SkuStockDTO getSkuStockDTO(Long orderNo, SkuStock stock, CartProductVO cartProductVO) {
+    private SkuStockDTO getSkuStockDTO(SkuStock stock, CartProductVO cartProductVO) {
         SkuStockDTO skuStockDTO = new SkuStockDTO();
-        skuStockDTO.setOrderNo(orderNo);
         skuStockDTO.setSkuId(cartProductVO.getSkuId());
         skuStockDTO.setProductId(cartProductVO.getProductId());
         skuStockDTO.setSkuStockId(stock.getId());
@@ -357,34 +353,34 @@ public class OrderServiceImpl implements OrderService {
         return skuStockDTO;
     }
 
-    private void insertOrder(Order order) {
+    private void insertOrder(Long orderNo, Order order) {
         int row = orderMapper.insertSelective(order);
 
         if (row <= 0) {
-            throw new ServiceException("订单信息保存失败");
+            throw new ServiceException("订单信息保存失败,订单号:" + orderNo);
         }
 
-        log.info("订单信息保存成功,{}", order);
+        log.info("订单信息保存成功,订单号:'{}'.", orderNo);
     }
 
-    private void batchInsertOrderItem(List<OrderItem> orderItemList) {
+    private void batchInsertOrderItem(Long orderNo, List<OrderItem> orderItemList) {
         int row = orderItemMapper.batchInsertByOrderItemList(orderItemList);
 
         if (row <= 0) {
-            throw new ServiceException("订单项保存失败");
+            throw new ServiceException("订单项保存失败,订单号:" + orderNo);
         }
 
-        log.info("订单项保存成功,{}", orderItemList);
+        log.info("订单项保存成功,订单号:'{}'.", orderNo);
     }
 
-    private void insertOrderShippingAddress(OrderShippingAddress orderShippingAddress) {
+    private void insertOrderShippingAddress(Long orderNo, OrderShippingAddress orderShippingAddress) {
         int row = orderShippingAddressMapper.insertSelective(orderShippingAddress);
 
         if (row <= 0) {
-            throw new ServiceException("订单收货地址保存失败");
+            throw new ServiceException("订单收货地址保存失败,订单号:" + orderNo);
         }
 
-        log.info("订单收货地址保存成功,{}", orderShippingAddress);
+        log.info("订单收货地址保存成功,订单号:'{}'.", orderNo);
     }
 
 }

@@ -43,8 +43,9 @@ public class OrderServiceImpl implements OrderService {
     private OrderLogisticsInfoMapper orderLogisticsInfoMapper;
 
     @Override
-    public PageUtil<OrderVO> getOrderVOList(Long orderNo, String orderSc, Integer userId, Integer paymentType,
-                                            Integer status, Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
+    public PageUtil<OrderVO> getOrderVOList(Long orderNo, String orderSc, Integer userId,
+                                            Integer paymentType, Integer status, Integer deleteStatus,
+                                            SortEnum sortEnum, Integer pageNum, Integer pageSize) {
         PageUtil<OrderVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
@@ -64,11 +65,10 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemMapper.selectListByOrderNoSet(orderNoSet).stream()
                 .map(this::orderItem2OrderItemVO).collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
         Map<Long, OrderShippingAddressVO> orderShippingAddressVOMap = orderShippingAddressMapper.selectListByOrderNoSet(orderNoSet).stream()
-                .map(this::orderShippingAddress2OrderShippingAddressVO)
-                .collect(Collectors.toMap(OrderShippingAddressVO::getOrderNo, orderShippingAddressVO -> orderShippingAddressVO));
+                .map(this::orderShippingAddress2OrderShippingAddressVO).collect(Collectors.toMap(OrderShippingAddressVO::getOrderNo, v -> v));
         Map<Long, OrderLogisticsInfoVO> orderLogisticsInfoVOMap = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet).stream()
-                .map(this::orderLogisticsInfo2OrderLogisticsInfoVO)
-                .collect(Collectors.toMap(OrderLogisticsInfoVO::getOrderNo, orderLogisticsInfoVO -> orderLogisticsInfoVO));
+                .map(this::orderLogisticsInfo2OrderLogisticsInfoVO).collect(Collectors.toMap(OrderLogisticsInfoVO::getOrderNo, v -> v));
+
         orderList.stream().map(this::order2OrderVO).collect(Collectors.toList()).forEach(orderVO -> {
             orderVO.setShippingAddress(orderShippingAddressVOMap.get(orderVO.getOrderNo()));
             orderVO.setLogisticsInfo(orderLogisticsInfoVOMap.get(orderVO.getOrderNo()));
@@ -110,18 +110,18 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.selectByOrderNo(orderNo);
 
         if (ObjectUtils.isEmpty(order)) {
-            throw new ServiceException("订单不存在");
+            throw new ServiceException("订单不存在,订单号:" + orderNo);
         }
 
         if (!OrderStatusEnum.PAY_SUCCESS.getCode().equals(order.getStatus())) {
-            throw new ServiceException("订单不满足发货条件");
+            throw new ServiceException("订单不满足发货条件,订单号:" + orderNo);
         }
 
         order.setStatus(OrderStatusEnum.NOT_RECEIPT.getCode());
         int row = orderMapper.updateByPrimaryKeySelective(order);
 
         if (row <= 0) {
-            throw new ServiceException("订单状态修改失败");
+            throw new ServiceException("订单状态修改失败,订单号:" + orderNo);
         }
 
         OrderLogisticsInfo orderLogisticsInfo = new OrderLogisticsInfo();

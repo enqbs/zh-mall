@@ -20,13 +20,8 @@ public interface RabbitMQService {
     void send(MessageQueueLog messageQueueLog);
 
     /*
-    * 获取 MessageQueueLog
+    * 更新 MessageQueueLog 状态
     * */
-    MessageQueueLog getMessageQueueLog(Long messageId);
-
-    /*
-    * 更新 MessageQueueLog
-    * */
-    int updateMessageQueueLog(MessageQueueLog messageQueueLog);
+    void updateMessageQueueLog(Long messageId, Integer status);
 
 }

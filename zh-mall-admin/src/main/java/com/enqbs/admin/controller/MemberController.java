@@ -35,14 +35,14 @@ public class MemberController {
             pageSize = 10;
         }
 
-        PageUtil<MemberVO> pageMemberVOList = memberService.getMemberVOList(id, uid, identifier, status, deleteStatus, sort, pageNum, pageSize);
-        return R.ok(pageMemberVOList);
+        PageUtil<MemberVO> pageMemberList = memberService.getMemberVOList(id, uid, identifier, status, deleteStatus, sort, pageNum, pageSize);
+        return R.ok(pageMemberList);
     }
 
     @GetMapping("/member/{id}")
     public R<MemberVO> memberDetail(@PathVariable Integer id) {
-        MemberVO memberVO = memberService.getMemberVO(id);
-        return R.ok(memberVO);
+        MemberVO memberInfo = memberService.getMemberVO(id);
+        return R.ok(memberInfo);
     }
 
 }

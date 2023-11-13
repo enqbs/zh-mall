@@ -66,19 +66,12 @@ public class CartServiceImpl implements CartService {
         }
         /* 批量获取商品 */
         Map<Integer, ProductVO> productVOMap = productService.getProductVOList(productIdSet).stream()
-                .collect(Collectors.toMap(ProductVO::getId, product -> product));
+                .collect(Collectors.toMap(ProductVO::getId, v -> v));
 
         for (Map.Entry<Object, Object> entry : redisMap.entrySet()) {
             Cart cart = (Cart) entry.getValue();
             ProductVO productVO = productVOMap.get(cart.getProductId());
-            List<SkuVO> skuVOList = productVO.getSkuList().stream()
-                    .filter(skuVO -> cart.getSkuId().equals(skuVO.getId())).collect(Collectors.toList());
-
-            if (CollectionUtils.isEmpty(skuVOList)) {
-                throw new ServiceException("商品下架或删除");
-            }
-
-            SkuVO skuVO = skuVOList.get(0);
+            SkuVO skuVO = productVO.getSkuList().stream().collect(Collectors.toMap(SkuVO::getId, v -> v)).get(cart.getSkuId());
             CartProductVO cartProductVO = buildCartProductVO(cart, productVO, skuVO);
             cartProductVOList.add(cartProductVO);
 
@@ -107,15 +100,13 @@ public class CartServiceImpl implements CartService {
             throw new ServiceException("商品不存在");
         }
 
-        List<SkuVO> skuVOList = productVO.getSkuList().stream()
-                .filter(skuVO -> form.getSkuId().equals(skuVO.getId())).collect(Collectors.toList());
+        SkuVO skuVO = productVO.getSkuList().stream().collect(Collectors.toMap(SkuVO::getId, v -> v)).get(form.getSkuId());
 
-        if (Constants.PRODUCT_NOT_SHELVES.equals(productVO.getSaleableStatus()) || CollectionUtils.isEmpty(skuVOList)) {
+        if (Constants.PRODUCT_NOT_SHELVES.equals(productVO.getSaleableStatus()) || ObjectUtils.isEmpty(skuVO)) {
             throw new ServiceException("商品下架或删除");
         }
 
         Cart cart;
-        SkuVO skuVO = skuVOList.get(0);
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
         Object redisMapValue = redisUtil.getRedisMapValue(redisKey, form.getSkuId());
 
@@ -126,7 +117,7 @@ public class CartServiceImpl implements CartService {
             cart.setQuantity(cart.getQuantity() + form.getQuantity());
         }
 
-        redisUtil.setHash(redisKey, skuVO.getId(), cart);
+        redisUtil.setHash(redisKey, form.getSkuId(), cart);
         return getCartVO();
     }
 
@@ -236,16 +227,20 @@ public class CartServiceImpl implements CartService {
 
     private CartProductVO buildCartProductVO(Cart cart, ProductVO productVO, SkuVO skuVO) {
         CartProductVO cartProductVO = new CartProductVO();
+
+        if (ObjectUtils.isNotEmpty(skuVO)) {
+            cartProductVO.setSkuId(skuVO.getId());
+            cartProductVO.setPicture(skuVO.getPicture());
+            cartProductVO.setSkuTitle(skuVO.getTitle());
+            cartProductVO.setParam(skuVO.getParam());
+            cartProductVO.setPrice(skuVO.getPrice());
+            cartProductVO.setTotalPrice(skuVO.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())));
+        }
+
         cartProductVO.setProductId(productVO.getId());
-        cartProductVO.setSkuId(skuVO.getId());
-        cartProductVO.setPicture(skuVO.getPicture());
         cartProductVO.setProductTitle(productVO.getTitle());
         cartProductVO.setProductSubTitle(productVO.getSubTitle());
-        cartProductVO.setSkuTitle(skuVO.getTitle());
-        cartProductVO.setParam(skuVO.getParam());
         cartProductVO.setQuantity(cart.getQuantity());
-        cartProductVO.setPrice(skuVO.getPrice());
-        cartProductVO.setTotalPrice(skuVO.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())));
         cartProductVO.setSaleableStatus(productVO.getSaleableStatus());
         cartProductVO.setSelected(cart.getSelected());
         return cartProductVO;

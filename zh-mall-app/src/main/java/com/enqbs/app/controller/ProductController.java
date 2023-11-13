@@ -25,20 +25,20 @@ public class ProductController {
 
     @GetMapping("/detail/{productId}")
     public R<ProductVO> productDetail(@PathVariable Integer productId) {
-        ProductVO productVO = productService.getProductVO(productId);
-        return R.ok(productVO);
+        ProductVO productInfo = productService.getProductVO(productId);
+        return R.ok(productInfo);
     }
 
     @GetMapping("/category/{categoryId}")
     public R<ProductCategoryVO> productCategory(@PathVariable Integer categoryId) {
-        ProductCategoryVO categoryVO = productCategoryService.getProductCategoryVO(categoryId);
-        return R.ok(categoryVO);
+        ProductCategoryVO category = productCategoryService.getProductCategoryVO(categoryId);
+        return R.ok(category);
     }
 
     @GetMapping("/category/list")
     public R<List<ProductCategoryVO>> productCategoryList() {
-        List<ProductCategoryVO> categoryVOList = productCategoryService.getProductCategoryVOList();
-        return R.ok(categoryVOList);
+        List<ProductCategoryVO> categoryList = productCategoryService.getProductCategoryVOList();
+        return R.ok(categoryList);
     }
 
 }

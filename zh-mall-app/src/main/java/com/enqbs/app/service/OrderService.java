@@ -18,7 +18,7 @@ public interface OrderService {
     /*
     * 保存订单信息订单
     * */
-    OrderVO insertOrder(OrderForm form);
+    Long insertOrder(OrderForm form);
 
     /*
     * 订单详情

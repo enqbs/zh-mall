@@ -44,19 +44,19 @@ public class ProductController {
             pageSize = 10;
         }
 
-        PageUtil<ProductVO> pageProductVOList = productService.getProductVOList(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sort, pageNum, pageSize);
-        return R.ok(pageProductVOList);
+        PageUtil<ProductVO> pageProductList = productService.getProductVOList(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sort, pageNum, pageSize);
+        return R.ok(pageProductList);
     }
 
     @GetMapping("/product/{productId}")
     public R<ProductVO> productDetail(@PathVariable Integer productId) {
-        ProductVO productVO = productService.getProductVO(productId);
-        return R.ok(productVO);
+        ProductVO productInfo = productService.getProductVO(productId);
+        return R.ok(productInfo);
     }
 
     @PostMapping("/product")
     @PreAuthorize("hasAuthority('PRODUCT:ADD')")
-    public R<Void> productAdd(@Valid @RequestBody ProductForm form) {
+    public R<Void> addProduct(@Valid @RequestBody ProductForm form) {
         int row = productService.insertProduct(form);
 
         if (row <= 0) {
@@ -68,7 +68,7 @@ public class ProductController {
 
     @PutMapping("/product/{productId}")
     @PreAuthorize("hasAuthority('PRODUCT:UPDATE')")
-    public R<Void> productUpdate(@PathVariable Integer productId, @Valid @RequestBody ProductForm form) {
+    public R<Void> updateProduct(@PathVariable Integer productId, @Valid @RequestBody ProductForm form) {
         int row = productService.updateProduct(productId, form);
 
         if (row <= 0) {
@@ -80,7 +80,7 @@ public class ProductController {
 
     @DeleteMapping("/product/{productId}")
     @PreAuthorize("hasAuthority('PRODUCT:DELETE')")
-    public R<Void> productDelete(@PathVariable Integer productId) {
+    public R<Void> deleteProduct(@PathVariable Integer productId) {
         int row = productService.deleteProduct(productId);
 
         if (row <= 0) {
@@ -92,21 +92,21 @@ public class ProductController {
 
     @PostMapping("/product/sku")
     @PreAuthorize("hasAuthority('PRODUCT:ADD')")
-    public R<Void> skuAdd(@Valid @RequestBody SkuForm form) {
+    public R<Void> addSku(@Valid @RequestBody SkuForm form) {
         productService.insertSku(form);
         return R.ok("商品规格保存成功");
     }
 
     @PutMapping("/product/sku/{skuId}")
     @PreAuthorize("hasAuthority('PRODUCT:UPDATE')")
-    public R<Void> skuUpdate(@PathVariable Integer skuId, @Valid @RequestBody SkuForm form) {
+    public R<Void> updateSku(@PathVariable Integer skuId, @Valid @RequestBody SkuForm form) {
         productService.updateSku(skuId, form);
         return R.ok("商品规格更行成功");
     }
 
     @DeleteMapping("/product/sku/{skuId}")
     @PreAuthorize("hasAuthority('PRODUCT:DELETE')")
-    public R<Void> skuDelete(@PathVariable Integer skuId) {
+    public R<Void> deleteSku(@PathVariable Integer skuId) {
         int row = productService.deleteSku(skuId);
 
         if (row <= 0) {

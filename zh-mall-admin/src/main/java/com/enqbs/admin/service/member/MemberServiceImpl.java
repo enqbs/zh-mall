@@ -45,7 +45,7 @@ public class MemberServiceImpl implements MemberService {
             total = userMapper.countByParam(id, uid, identifier, status, deleteStatus);
             Set<Integer> levelIdSet = userList.stream().map(User::getLevelId).collect(Collectors.toSet());
             Map<Integer, MemberLevelVO> memberLevelVOMap = userLevelMapper.selectListByIdSet(levelIdSet).stream()
-                    .map(this::userLevel2MemberLevelVO).collect(Collectors.toMap(MemberLevelVO::getId, memberLevelVO -> memberLevelVO));
+                    .map(this::userLevel2MemberLevelVO).collect(Collectors.toMap(MemberLevelVO::getId, v -> v));
             userList.stream().map(this::user2MemberVO).collect(Collectors.toList()).forEach(memberVO -> {
                 memberVO.setLevelInfo(memberLevelVOMap.get(memberVO.getLevelId()));
                 memberVOList.add(memberVO);
@@ -70,8 +70,7 @@ public class MemberServiceImpl implements MemberService {
         UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getLevelId());
 
         if (ObjectUtils.isNotEmpty(userLevel)) {
-            MemberLevelVO memberLevelVO = userLevel2MemberLevelVO(userLevel);
-            memberVO.setLevelInfo(memberLevelVO);
+            memberVO.setLevelInfo(userLevel2MemberLevelVO(userLevel));
         }
 
         return memberVO;

@@ -1,10 +1,10 @@
 spring:
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
-#    username: root
-#    password: root
-# ShardingSphere-JDBC 配置主从同步
+  #  datasource:
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+  #    username: root
+  #    password: root
+  # ShardingSphere-JDBC 配置主从同步
   shardingsphere:
     datasource:
       names: master, slave-01

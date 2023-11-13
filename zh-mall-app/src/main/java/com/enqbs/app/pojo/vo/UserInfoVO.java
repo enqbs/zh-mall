@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 
 public class UserInfoVO implements Serializable {
 
-    private String userToken;
-
     private Integer userId;
 
     private Long uid;
@@ -26,14 +24,6 @@ public class UserInfoVO implements Serializable {
     private Integer levelExperience;
 
     private BigDecimal discount;
-
-    public String getUserToken() {
-        return userToken;
-    }
-
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
-    }
 
     public Integer getUserId() {
         return userId;
@@ -118,8 +108,7 @@ public class UserInfoVO implements Serializable {
     @Override
     public String toString() {
         return "UserInfoVO{" +
-                "userToken='" + userToken + '\'' +
-                ", userId=" + userId +
+                "userId=" + userId +
                 ", uid=" + uid +
                 ", nickName='" + nickName + '\'' +
                 ", photo='" + photo + '\'' +

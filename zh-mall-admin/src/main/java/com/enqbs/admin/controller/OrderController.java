@@ -43,38 +43,38 @@ public class OrderController {
             pageSize = 10;
         }
 
-        PageUtil<OrderVO> pageOrderVOList = orderService.getOrderVOList(orderNo, orderSc, userId, paymentType, status, deleteStatus, sort, pageNum, pageSize);
-        return R.ok(pageOrderVOList);
+        PageUtil<OrderVO> pageOrderList = orderService.getOrderVOList(orderNo, orderSc, userId, paymentType, status, deleteStatus, sort, pageNum, pageSize);
+        return R.ok(pageOrderList);
     }
 
     @GetMapping("/order/{orderNo}")
     public R<OrderVO> orderDetail(@PathVariable Long orderNo) {
-        OrderVO orderVO = orderService.getOrderVO(orderNo);
-        return R.ok(orderVO);
+        OrderVO orderInfo = orderService.getOrderVO(orderNo);
+        return R.ok(orderInfo);
     }
 
     @PostMapping("/order/shipment/{orderNo}")
     @PreAuthorize("hasAuthority('ORDER:UPDATE')")
-    public R<Void> orderShipment(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
+    public R<Long> orderShipment(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
         int row = orderService.insertOrderLogisticsInfo(orderNo, form);
 
         if (row <= 0) {
-            throw new ServiceException("发货失败");
+            throw new ServiceException("发货失败,订单号:" + orderNo);
         }
 
-        return R.ok("发货成功");
+        return R.ok("发货成功", orderNo);
     }
 
     @PutMapping("/order/logistics-info/{orderNo}")
     @PreAuthorize("hasAuthority('ORDER:UPDATE')")
-    public R<Void> updateOrderLogisticsInfo(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
+    public R<Long> updateOrderLogisticsInfo(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
         int row = orderService.updateOrderLogisticsInfo(orderNo, form);
 
         if (row <= 0) {
-            throw new ServiceException("修改失败");
+            throw new ServiceException("修改订单快递信息失败,订单号:" + orderNo);
         }
 
-        return R.ok("修改成功");
+        return R.ok("修改订单快递信息成功", orderNo);
     }
 
 }

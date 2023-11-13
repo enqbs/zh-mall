@@ -18,7 +18,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_message_queue_log
     where message_id = #{messageId,jdbcType=BIGINT}

@@ -1,6 +1,7 @@
 package com.enqbs.app.service;
 
 import com.enqbs.app.pojo.dto.SkuStockDTO;
+import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.generator.pojo.SkuStock;
 
 import java.util.List;
@@ -16,16 +17,11 @@ public interface SkuStockService {
     /*
     * 锁定商品库存
     * */
-    void lockSkuStock(List<SkuStockDTO> skuStockDTOList);
+    void lockSkuStock(Long orderNo, List<SkuStockDTO> skuStockDTOList);
 
     /*
     * 解锁商品库存
     * */
-    void unLockSkuStock(Long orderNo);
-
-    /*
-    * 删减商品库存
-    * */
-    void deleteSkuStock(Long orderNo);
+    void unLockSkuStock(Long orderNo, OrderStatusEnum orderStatusEnum);
 
 }

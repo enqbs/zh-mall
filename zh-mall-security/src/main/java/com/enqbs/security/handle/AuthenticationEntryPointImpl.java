@@ -20,7 +20,7 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        log.error("请求地址:'{}',认证异常,msg:'{}'", request.getRequestURI(), authException.getMessage());
+        log.error("请求地址:'{}',认证异常,msg:'{}'.", request.getRequestURI(), authException.getMessage());
         String resultJson = GsonUtil.obj2Json(R.error(HttpStatus.SC_UNAUTHORIZED, "请登录后再操作"));
         WebUtil.renderString(response, HttpStatus.SC_UNAUTHORIZED, resultJson);
     }

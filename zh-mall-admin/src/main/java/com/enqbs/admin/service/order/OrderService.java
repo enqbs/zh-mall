@@ -10,8 +10,9 @@ public interface OrderService {
     /*
      * 订单列表
      * */
-    PageUtil<OrderVO> getOrderVOList(Long orderNo, String orderSc, Integer userId, Integer paymentType,
-                                     Integer status, Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize);
+    PageUtil<OrderVO> getOrderVOList(Long orderNo, String orderSc, Integer userId,
+                                     Integer paymentType, Integer status, Integer deleteStatus,
+                                     SortEnum sortEnum, Integer pageNum, Integer pageSize);
 
     /*
      * 订单详情

@@ -6,9 +6,11 @@ import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.generator.dao.MessageQueueLogMapper;
 import com.enqbs.generator.pojo.MessageQueueLog;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -30,7 +32,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         int row = saveMessageQueueLog(messageId, exchange, routingKey, content, null);
 
         if (row <= 0) {
-            throw new ServiceException("消息持久化失败");
+            throw new ServiceException("消息持久化失败,MessageID:" + messageId);
         }
 
         rabbitTemplate.convertAndSend(exchange, routingKey, content, correlationData);
@@ -45,7 +47,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         int row = saveMessageQueueLog(messageId, exchange, routingKey, content, delay);
 
         if (row <= 0) {
-            throw new ServiceException("消息持久化失败");
+            throw new ServiceException("消息持久化失败,MessageID:" + messageId);
         }
 
         rabbitTemplate.convertAndSend(exchange, routingKey, content, messagePostProcessor -> {
@@ -66,13 +68,22 @@ public class RabbitMQServiceImpl implements RabbitMQService {
     }
 
     @Override
-    public MessageQueueLog getMessageQueueLog(Long messageId) {
-        return messageQueueLogMapper.selectByPrimaryKey(messageId);
-    }
+    @Transactional(rollbackFor = Exception.class)
+    public void updateMessageQueueLog(Long messageId, Integer status) {
+        MessageQueueLog messageQueueLog = messageQueueLogMapper.selectByPrimaryKey(messageId);
 
-    @Override
-    public int updateMessageQueueLog(MessageQueueLog messageQueueLog) {
-        return messageQueueLogMapper.updateByPrimaryKeySelective(messageQueueLog);
+        if (ObjectUtils.isNotEmpty(messageQueueLog)) {
+            messageQueueLog.setStatus(status);
+        } else {
+            messageQueueLog = messageQueueLogMapper.selectByPrimaryKey(messageId);
+            messageQueueLog.setStatus(status);
+        }
+
+        int row = messageQueueLogMapper.updateByPrimaryKeySelective(messageQueueLog);
+
+        if (row <= 0) {
+            throw new ServiceException("消息状态更新失败,MessageID:" + messageId);
+        }
     }
 
     private int saveMessageQueueLog(Long messageId, String exchange, String routingKey, String content, Integer delay) {

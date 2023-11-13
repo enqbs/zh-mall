@@ -3,7 +3,7 @@ package com.enqbs.app.controller;
 import com.alipay.api.AlipayApiException;
 import com.enqbs.app.service.PayInfoService;
 import com.enqbs.common.exception.ServiceException;
-import com.enqbs.generator.pojo.PayInfo;
+import com.enqbs.pay.enums.PayStatusEnum;
 import com.enqbs.pay.enums.PayTypeEnum;
 import com.enqbs.pay.factory.PayFactory;
 import com.enqbs.pay.service.PayService;
@@ -30,9 +30,8 @@ public class PayInfoController {
 
     @GetMapping("/pay/{orderNo}")
     public ModelAndView alipayPagePay(@PathVariable Long orderNo) throws AlipayApiException {
-        PayInfo payInfo = payInfoService.insertPayInfo(orderNo);
         PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PAGE);
-        String pay = payService.pay(PayTypeEnum.ALIPAY_PAGE, orderNo, payInfo.getPayAmount());
+        String pay = payService.pay(PayTypeEnum.ALIPAY_PAGE, orderNo, payInfoService.getPayAmount(orderNo));
         Map<String, Object> map = new HashMap<>();
         map.put("body", pay);
         return new ModelAndView("alipay_page_pay", map);
@@ -40,16 +39,16 @@ public class PayInfoController {
 
     @PostMapping("/pay/async-notify")
     public void asyncNotify(HttpServletRequest request, HttpServletResponse response) {
+        String orderNo = request.getParameter("out_trade_no");
+        String platformNo = request.getParameter("trade_no");
         PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PAGE);
         boolean result = payService.asyncNotify(request, response);
 
         if (result) {
-            String outTradeNo = request.getParameter("out_trade_no");
-            String tradeNo = request.getParameter("trade_no");
-            payInfoService.updatePayInfo(PayTypeEnum.ALIPAY_PAGE, outTradeNo, tradeNo);
-            payService.closePay(outTradeNo, tradeNo);       // 关闭支付
+            payInfoService.updatePayInfo(PayTypeEnum.ALIPAY_PAGE, PayStatusEnum.PAY_SUCCESS, orderNo, platformNo);
+            payService.closePay(orderNo, platformNo);       // 关闭支付
         } else {
-            throw new ServiceException("支付回调通知异常");
+            throw new ServiceException("支付回调通知异常,订单号:" + orderNo + ",支付平台流水号:" + platformNo);
         }
     }
 

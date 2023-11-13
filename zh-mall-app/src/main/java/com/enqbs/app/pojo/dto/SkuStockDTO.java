@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 public class SkuStockDTO implements Serializable {
 
-    private Long orderNo;
-
     private Integer skuId;
 
     private Integer productId;
@@ -19,14 +17,6 @@ public class SkuStockDTO implements Serializable {
     private Integer stock;
 
     private Integer quantity;
-
-    public Long getOrderNo() {
-        return orderNo;
-    }
-
-    public void setOrderNo(Long orderNo) {
-        this.orderNo = orderNo;
-    }
 
     public Integer getSkuId() {
         return skuId;
@@ -87,8 +77,7 @@ public class SkuStockDTO implements Serializable {
     @Override
     public String toString() {
         return "SkuStockDTO{" +
-                "orderNo=" + orderNo +
-                ", skuId=" + skuId +
+                "skuId=" + skuId +
                 ", productId=" + productId +
                 ", skuStockId=" + skuStockId +
                 ", actualStock=" + actualStock +

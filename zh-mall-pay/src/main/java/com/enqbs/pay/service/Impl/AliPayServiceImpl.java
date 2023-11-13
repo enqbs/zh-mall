@@ -85,9 +85,9 @@ public class AliPayServiceImpl implements PayService {
             AlipayTradeCloseResponse response = alipayClosePay(bizContent);
 
             if (response.isSuccess()) {
-                log.info("关闭支付成功,orderNo:'{}',payPlatformNo:'{}'", orderNo, payPlatformNo);
+                log.info("关闭支付成功,订单号:'{}',支付平台流水号:'{}'.", orderNo, payPlatformNo);
             } else {
-                throw new ServiceException("关闭支付失败");
+                throw new ServiceException("关闭支付失败,订单号:" + orderNo + ",支付平台流水号:" + payPlatformNo);
             }
         } catch (AlipayApiException e) {
             e.printStackTrace();

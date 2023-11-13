@@ -17,7 +17,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_sku_stock
     where id = #{id,jdbcType=INTEGER}
@@ -29,12 +29,12 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.SkuStock">
-    insert into tb_sku_stock (id, sku_id, actual_stock, 
-      lock_stock, stock, delete_status, 
-      create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{skuId,jdbcType=INTEGER}, #{actualStock,jdbcType=INTEGER}, 
-      #{lockStock,jdbcType=INTEGER}, #{stock,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into tb_sku_stock (id, sku_id, actual_stock,
+                              lock_stock, stock, delete_status,
+                              create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{skuId,jdbcType=INTEGER}, #{actualStock,jdbcType=INTEGER},
+            #{lockStock,jdbcType=INTEGER}, #{stock,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER},
+            #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.SkuStock">
@@ -124,12 +124,12 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.SkuStock">
     update tb_sku_stock
     set sku_id = #{skuId,jdbcType=INTEGER},
-      actual_stock = #{actualStock,jdbcType=INTEGER},
-      lock_stock = #{lockStock,jdbcType=INTEGER},
-      stock = #{stock,jdbcType=INTEGER},
-      delete_status = #{deleteStatus,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+        actual_stock = #{actualStock,jdbcType=INTEGER},
+        lock_stock = #{lockStock,jdbcType=INTEGER},
+        stock = #{stock,jdbcType=INTEGER},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -137,41 +137,70 @@
     select
     <include refid="Base_Column_List" />
     from tb_sku_stock
-    where
-    <foreach collection="skuIdSet" item="item" index="index" separator="or">
-      sku_id = #{item,jdbcType=INTEGER}
+    where sku_id in
+    <foreach collection="skuIdSet" item="item" index="index" open="(" close=")" separator=",">
+      #{item,jdbcType=INTEGER}
     </foreach>
     and delete_status = 0
     for update
   </select>
 
   <update id="batchUpdateBySkuStockList" parameterType="java.util.List">
-    <foreach collection="stockList" item="item" index="index" separator=";">
-      update `tb_sku_stock`
-      <set>
-        <if test="item.skuId != null">
-          `sku_id` = #{item.skuId,jdbcType=INTEGER},
-        </if>
-        <if test="item.actualStock != null">
-          `actual_stock` = #{item.actualStock,jdbcType=INTEGER},
-        </if>
-        <if test="item.lockStock != null">
-          `lock_stock` = #{item.lockStock,jdbcType=INTEGER},
-        </if>
-        <if test="item.stock != null">
-          `stock` = #{item.stock,jdbcType=INTEGER},
-        </if>
-        <if test="item.deleteStatus != null">
-          `delete_status` = #{item.deleteStatus,jdbcType=INTEGER},
-        </if>
-        <if test="item.createTime != null">
-          `create_time` = #{item.createTime,jdbcType=TIMESTAMP},
-        </if>
-        <if test="item.updateTime != null">
-          `update_time` = #{item.updateTime,jdbcType=TIMESTAMP},
-        </if>
-      </set>
-      where `id` = #{item.id,jdbcType=INTEGER}
+    update `tb_sku_stock`
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="sku_id = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.skuId != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then #{item.skuId,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="actual_stock = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.actualStock != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then #{item.actualStock,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="lock_stock = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.lockStock != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then #{item.lockStock,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="stock = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.stock != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then #{item.stock,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="delete_status = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.deleteStatus != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then #{item.deleteStatus,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="create_time = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.createTime != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then #{item.createTime,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="update_time = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.updateTime != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then #{item.updateTime,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where `id` in
+    <foreach collection="stockList" item="item" index="index" open="(" close=")" separator=",">
+      #{item.id,jdbcType=INTEGER}
     </foreach>
   </update>
 </mapper>

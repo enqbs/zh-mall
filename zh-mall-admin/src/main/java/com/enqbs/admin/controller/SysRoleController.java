@@ -51,23 +51,23 @@ public class SysRoleController {
             pageSize = 10;
         }
 
-        PageUtil<SysRoleVO> pageSysRoleVOList = sysRoleService.getSysRoleVOList(deleteStatus, pageNum, pageSize);
-        return R.ok(pageSysRoleVOList);
+        PageUtil<SysRoleVO> pageSysRoleList = sysRoleService.getSysRoleVOList(deleteStatus, pageNum, pageSize);
+        return R.ok(pageSysRoleList);
     }
 
     @GetMapping("/role/{roleId}")
     public R<Map<String, Object>> roleDetail(@PathVariable Integer roleId) throws ExecutionException, InterruptedException {
-        List<SysMenuVO> sysMenuVOList = sysMenuService.getSysMenuVOList(roleId).get();
-        SysRoleVO sysRoleVO = sysRoleService.getSysRoleVO(roleId);
+        List<SysMenuVO> sysMenuList = sysMenuService.getSysMenuVOList(roleId).get();
+        SysRoleVO sysRoleInfo = sysRoleService.getSysRoleVO(roleId);
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("roleInfo", sysRoleVO);
-        resultMap.put("menuList", sysMenuVOList);
+        resultMap.put("roleInfo", sysRoleInfo);
+        resultMap.put("menuList", sysMenuList);
         return R.ok(resultMap);
     }
 
     @PostMapping("/role")
     @PreAuthorize("hasAuthority('SYS_ROLE:ADD')")
-    public R<Void> roleAdd(@Valid @RequestBody SysRoleForm form) {
+    public R<Void> addRole(@Valid @RequestBody SysRoleForm form) {
         int row = sysRoleService.insetSysRole(form);
 
         if (row <= 0) {
@@ -79,7 +79,7 @@ public class SysRoleController {
 
     @PutMapping("/role/{roleId}")
     @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
-    public R<Void> roleUpdate(@PathVariable Integer roleId, @Valid @RequestBody SysRoleForm form) {
+    public R<Void> updateRole(@PathVariable Integer roleId, @Valid @RequestBody SysRoleForm form) {
         int row = sysRoleService.updateSysRole(roleId, form);
 
         if (row <= 0) {
@@ -91,7 +91,7 @@ public class SysRoleController {
 
     @DeleteMapping("/role/{roleId}")
     @PreAuthorize("hasAuthority('SYS_ROLE:DELETE')")
-    public R<Void> roleDelete(@PathVariable Integer roleId) {
+    public R<Void> deleteRole(@PathVariable Integer roleId) {
         int row = sysRoleService.deleteSysRole(roleId);
 
         if (row <= 0) {
@@ -115,7 +115,7 @@ public class SysRoleController {
 
     @PutMapping("/role/bind")
     @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
-    public R<Void> roleMenuUpdate(@Valid @RequestBody SysRelationshipBindingForm form) {
+    public R<Void> updateRoleMenu(@Valid @RequestBody SysRelationshipBindingForm form) {
         int row = sysRoleMenuService.updateRoleMenu(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
@@ -127,7 +127,7 @@ public class SysRoleController {
 
     @DeleteMapping("/role/bind")
     @PreAuthorize("hasAuthority('SYS_ROLE:DELETE')")
-    public R<Void> roleMenuDelete(@Valid @RequestBody SysRelationshipBindingForm form) {
+    public R<Void> deleteRoleMenu(@Valid @RequestBody SysRelationshipBindingForm form) {
         int row = sysRoleMenuService.deleteRoleMenu(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {

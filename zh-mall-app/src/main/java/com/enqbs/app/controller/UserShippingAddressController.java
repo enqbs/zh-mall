@@ -58,14 +58,14 @@ public class UserShippingAddressController {
 
     @GetMapping("/shipping/{shippingAddressId}")
     public R<UserShippingAddressVO> shippingAddressDetail(@PathVariable Integer shippingAddressId) {
-        UserShippingAddressVO shippingAddressVO = shippingAddressService.getUserShippingAddressVO(shippingAddressId);
-        return R.ok(shippingAddressVO);
+        UserShippingAddressVO shippingAddressInfo = shippingAddressService.getUserShippingAddressVO(shippingAddressId);
+        return R.ok(shippingAddressInfo);
     }
 
     @GetMapping("/shipping/list")
     public R<List<UserShippingAddressVO>> shippingAddressList() {
-        List<UserShippingAddressVO> shippingAddressVOList = shippingAddressService.getUserShippingAddressVOList();
-        return R.ok(shippingAddressVOList);
+        List<UserShippingAddressVO> shippingAddressList = shippingAddressService.getUserShippingAddressVOList();
+        return R.ok(shippingAddressList);
     }
 
 }

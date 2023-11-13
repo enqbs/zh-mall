@@ -53,9 +53,9 @@ public class SysUserController {
     @GetMapping("/user/info")
     public R<Map<String, Object>> userInfo(@RequestHeader String token) throws Exception {
         String newToken = tokenService.refreshToken(token).get();
-        SysUserInfoVO sysUserInfoVO = sysUserService.getSysUserInfoVO();
+        SysUserInfoVO sysUserInfo = sysUserService.getSysUserInfoVO();
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("userInfo", sysUserInfoVO);
+        resultMap.put("userInfo", sysUserInfo);
         resultMap.put("token", newToken);
         return R.ok(resultMap);
     }
@@ -92,7 +92,7 @@ public class SysUserController {
 
     @PutMapping("/user/bind")
     @PreAuthorize("hasAuthority('SYS_USER:UPDATE')")
-    public R<Void> userRoleUpdate(@Valid @RequestBody SysRelationshipBindingForm form) {
+    public R<Void> updateUserRole(@Valid @RequestBody SysRelationshipBindingForm form) {
         int row = sysUserRoleService.updateUserRole(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
@@ -104,7 +104,7 @@ public class SysUserController {
 
     @DeleteMapping("/user/bind")
     @PreAuthorize("hasAuthority('SYS_USER:DELETE')")
-    public R<Void> userRoleDelete(@Valid @RequestBody SysRelationshipBindingForm form) {
+    public R<Void> deleteUserRole(@Valid @RequestBody SysRelationshipBindingForm form) {
         int row = sysUserRoleService.deleteUserRole(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {

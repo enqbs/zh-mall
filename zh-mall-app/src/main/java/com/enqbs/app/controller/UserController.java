@@ -41,9 +41,9 @@ public class UserController {
     @GetMapping("/user/info")
     public R<Map<String, Object>> userInfo(@RequestHeader String token) throws Exception {
         String newToken = tokenService.refreshToken(token).get();
-        UserInfoVO userInfoVO = userService.getUserInfoVO();
+        UserInfoVO userInfo = userService.getUserInfoVO();
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("userInfo", userInfoVO);
+        resultMap.put("userInfo", userInfo);
         resultMap.put("token", newToken);
         return R.ok(resultMap);
     }

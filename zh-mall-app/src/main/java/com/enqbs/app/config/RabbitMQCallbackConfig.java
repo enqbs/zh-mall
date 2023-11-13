@@ -3,8 +3,6 @@ package com.enqbs.app.config;
 import com.enqbs.app.service.RabbitMQService;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.QueueEnum;
-import com.enqbs.common.exception.ServiceException;
-import com.enqbs.generator.pojo.MessageQueueLog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -38,24 +36,23 @@ public class RabbitMQCallbackConfig {
     private void confirmCallback() {
         rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
             if (ObjectUtils.isNotEmpty(correlationData)) {
-                MessageQueueLog messageQueueLog = rabbitMQService.getMessageQueueLog(Long.valueOf(correlationData.getId()));
+                boolean flag;
 
-                if (ObjectUtils.isNotEmpty(messageQueueLog)) {
-                    if (ack) {
-                        messageQueueLog.setStatus(Constants.MESSAGE_SEND_SUCCESS);
-                    } else {
-                        /* TODO 发送失败消息处理 */
-                        messageQueueLog.setStatus(Constants.MESSAGE_SEND_ERROR);
+                do {
+                    flag = false;
+
+                    try {
+                        if (ack) {
+                            rabbitMQService.updateMessageQueueLog(Long.valueOf(correlationData.getId()), Constants.MESSAGE_SEND_SUCCESS);
+                            log.info("ConfirmCallback:'{}',MessageID:'{}'.", true, correlationData.getId());
+                        } else {
+                            rabbitMQService.updateMessageQueueLog(Long.valueOf(correlationData.getId()), Constants.MESSAGE_SEND_ERROR);
+                            log.warn("ConfirmCallback:'{}',MessageID:'{}'.", false, correlationData.getId());
+                        }
+                    } catch (Exception e) {
+                        flag = true;
                     }
-
-                    int row = rabbitMQService.updateMessageQueueLog(messageQueueLog);
-
-                    if (row <= 0) {
-                        throw new ServiceException("消息状态更新失败");
-                    }
-                }
-
-                log.info("ConfirmCallback:{}", messageQueueLog);
+                } while (flag);
             }
         });
     }
@@ -67,7 +64,7 @@ public class RabbitMQCallbackConfig {
         rabbitTemplate.setReturnsCallback(returned -> {
             /* TODO 回退消息处理 */
             if (!QueueEnum.ORDER_CLOSE_QUEUE.getExchange().equals(returned.getExchange())) {
-                log.info("Exchange:'{}',RoutingKey:'{}',ReplyText:'{}'", returned.getExchange(), returned.getRoutingKey(), returned.getReplyText());
+                log.warn("Exchange:'{}',RoutingKey:'{}',ReplyText:'{}'.", returned.getExchange(), returned.getRoutingKey(), returned.getReplyText());
             }
         });
     }

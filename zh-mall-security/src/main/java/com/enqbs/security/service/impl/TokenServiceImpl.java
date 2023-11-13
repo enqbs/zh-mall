@@ -110,8 +110,8 @@ public class TokenServiceImpl implements TokenService {
                     throw new ServiceException("用户信息已过期,请重新登录");
                 }
             } else {
-                log.error("无效token:{}", token);
-                throw new ServiceException("无效的token");
+                log.error("无效Token:'{}'.", token);
+                throw new ServiceException("无效的Token:" + token);
             }
         }
     }

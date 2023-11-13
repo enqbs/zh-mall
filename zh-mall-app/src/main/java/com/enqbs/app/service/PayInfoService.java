@@ -1,18 +1,20 @@
 package com.enqbs.app.service;
 
-import com.enqbs.generator.pojo.PayInfo;
+import com.enqbs.pay.enums.PayStatusEnum;
 import com.enqbs.pay.enums.PayTypeEnum;
+
+import java.math.BigDecimal;
 
 public interface PayInfoService {
 
     /*
-    * 新增支付信息
-    * */
-    PayInfo insertPayInfo(Long orderNo);
+     * 获取支付金额
+     * */
+    BigDecimal getPayAmount(Long orderNo);
 
     /*
-    * 更新支付信息
-    * */
-    void updatePayInfo(PayTypeEnum payTypeEnum, String orderNo, String platformNo);
+     * 更新支付信息
+     * */
+    void updatePayInfo(PayTypeEnum payTypeEnum, PayStatusEnum payStatusEnum, String orderNo, String platformNo);
 
 }

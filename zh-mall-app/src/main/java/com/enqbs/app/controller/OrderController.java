@@ -29,20 +29,20 @@ public class OrderController {
 
     @GetMapping("/order/confirm")
     public R<OrderConfirmVO> orderConfirmationPage() {
-        OrderConfirmVO orderConfirmVO = orderService.getOrderConfirmVO();
-        return R.ok(orderConfirmVO);
+        OrderConfirmVO orderConfirmInfo = orderService.getOrderConfirmVO();
+        return R.ok(orderConfirmInfo);
     }
 
     @PostMapping("/order")
-    public R<OrderVO> orderSubmit(@Valid @RequestBody OrderForm form) {
-        OrderVO orderVO = orderService.insertOrder(form);
-        return R.ok(orderVO);
+    public R<Long> orderSubmit(@Valid @RequestBody OrderForm form) {
+        Long orderNo = orderService.insertOrder(form);
+        return R.ok(orderNo);
     }
 
     @GetMapping("/order/{orderNo}")
     public R<OrderVO> orderDetail(@PathVariable Long orderNo) {
-        OrderVO orderVO = orderService.getOrderVO(orderNo);
-        return R.ok(orderVO);
+        OrderVO orderInfo = orderService.getOrderVO(orderNo);
+        return R.ok(orderInfo);
     }
 
     @GetMapping("/order/list")
@@ -58,27 +58,27 @@ public class OrderController {
             pageSize = 5;
         }
 
-        PageUtil<OrderVO> pageOrderVOList = orderService.getOrderVOList(status, sort, pageNum, pageSize);
-        return R.ok(pageOrderVOList);
+        PageUtil<OrderVO> pageOrderList = orderService.getOrderVOList(status, sort, pageNum, pageSize);
+        return R.ok(pageOrderList);
     }
 
     @PutMapping("/order/receipt/{orderNo}")
-    public R<Void> orderReceipt(@PathVariable Long orderNo) {
+    public R<Long> orderReceipt(@PathVariable Long orderNo) {
         int row = orderService.sign4Order(orderNo);
 
         if (row <= 0) {
-            throw new ServiceException("订单签收失败");
+            throw new ServiceException("订单签收失败,订单号:" + orderNo);
         }
 
-        log.info("订单签收成功,订单号'{}'", orderNo);
-        return R.ok("订单签收成功");
+        log.info("订单签收成功,订单号'{}'.", orderNo);
+        return R.ok("订单签收成功", orderNo);
     }
 
     @PutMapping("/order/cancel/{orderNo}")
-    public R<Void> orderCancel(@PathVariable Long orderNo) {
+    public R<Long> orderCancel(@PathVariable Long orderNo) {
         orderService.cancelOrder(orderNo);
-        log.info("订单取消成功,订单号'{}'", orderNo);
-        return R.ok("订单取消成功");
+        log.info("订单取消成功,订单号'{}'.", orderNo);
+        return R.ok("订单取消成功", orderNo);
     }
 
 }

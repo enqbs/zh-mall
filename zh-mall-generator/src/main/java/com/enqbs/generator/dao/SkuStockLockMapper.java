@@ -26,8 +26,6 @@ public interface SkuStockLockMapper {
 
     int batchInsertBySkuStockLockList(@Param("skuStockLockList") List<SkuStockLock> skuStockLockList);
 
-    int batchUpdateBySkuStockLockList(@Param("skuStockLockList") List<SkuStockLock> skuStockLockList);
-
     List<SkuStockLock> selectListByOrderNoSet(@Param("orderNoSet") Set<Long> orderNoSet);
 
 }

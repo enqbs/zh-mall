@@ -37,14 +37,14 @@ public class PayInfoController {
             pageSize = 10;
         }
 
-        PageUtil<PayInfoVO> pagePayInfoVOList = payInfoService.getPayInfoVOList(orderNo, userId, payType, platform, platformNumber, status, deleteStatus, sort, pageNum, pageSize);
-        return R.ok(pagePayInfoVOList);
+        PageUtil<PayInfoVO> pagePayInfoList = payInfoService.getPayInfoVOList(orderNo, userId, payType, platform, platformNumber, status, deleteStatus, sort, pageNum, pageSize);
+        return R.ok(pagePayInfoList);
     }
 
     @GetMapping("/pay/info/{payInfoId}")
     public R<PayInfoVO> payInfoDetail(@PathVariable Long payInfoId) {
-        PayInfoVO payInfoVO = payInfoService.getPayInfoVO(payInfoId);
-        return R.ok(payInfoVO);
+        PayInfoVO payInfo = payInfoService.getPayInfoVO(payInfoId);
+        return R.ok(payInfo);
     }
 
 }

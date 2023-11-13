@@ -30,6 +30,17 @@ public class GlobalExceptionHandler {
     }
 
     /*
+    * 运行时异常
+    * */
+    @ResponseStatus
+    @ExceptionHandler(RuntimeException.class)
+    public R<Void> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+        String msg = e.getMessage();
+        log.warn("请求地址:'{}',运行时异常,msg:'{}'.", request.getRequestURI(), msg);
+        return R.error(msg);
+    }
+
+    /*
      * 表单校验异常
      * */
     @ResponseStatus

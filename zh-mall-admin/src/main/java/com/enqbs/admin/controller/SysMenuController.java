@@ -28,8 +28,8 @@ public class SysMenuController {
 
     @GetMapping("/menu/root-list")
     public R<List<SysMenuVO>> menuRootList() {
-        List<SysMenuVO> sysMenuVOList = sysMenuService.getSysMenuVOList();
-        return R.ok(sysMenuVOList);
+        List<SysMenuVO> sysMenuRootList = sysMenuService.getSysMenuVOList();
+        return R.ok(sysMenuRootList);
     }
 
     @GetMapping("/menu/list")
@@ -46,19 +46,19 @@ public class SysMenuController {
             pageSize = 10;
         }
 
-        PageUtil<SysMenuVO> pageSysMenuVOList = sysMenuService.getSysMenuVOList(parentId, roleId, deleteStatus, pageNum, pageSize);
-        return R.ok(pageSysMenuVOList);
+        PageUtil<SysMenuVO> pageSysMenuList = sysMenuService.getSysMenuVOList(parentId, roleId, deleteStatus, pageNum, pageSize);
+        return R.ok(pageSysMenuList);
     }
 
     @GetMapping("/menu/{menuId}")
     public R<SysMenuVO> menuDetail(@PathVariable Integer menuId) {
-        SysMenuVO sysMenuVO = sysMenuService.getSysMenuVO(menuId);
-        return R.ok(sysMenuVO);
+        SysMenuVO sysMenuInfo = sysMenuService.getSysMenuVO(menuId);
+        return R.ok(sysMenuInfo);
     }
 
     @PostMapping("/menu")
     @PreAuthorize("hasAuthority('SYS_MENU:ADD')")
-    public R<Void> menuAdd(@Valid @RequestBody SysMenuForm form) {
+    public R<Void> addMenu(@Valid @RequestBody SysMenuForm form) {
         int row = sysMenuService.insertSysMenu(form);
 
         if (row <= 0) {
@@ -70,7 +70,7 @@ public class SysMenuController {
 
     @PutMapping("/menu/{menuId}")
     @PreAuthorize("hasAuthority('SYS_MENU:UPDATE')")
-    public R<Void> menuUpdate(@PathVariable Integer menuId, @Valid @RequestBody SysMenuForm form) {
+    public R<Void> updateMenu(@PathVariable Integer menuId, @Valid @RequestBody SysMenuForm form) {
         int row = sysMenuService.updateSysMenu(menuId, form);
 
         if (row <= 0) {
@@ -82,7 +82,7 @@ public class SysMenuController {
 
     @DeleteMapping("/menu/{menuId}")
     @PreAuthorize("hasAuthority('SYS_MENU:DELETE')")
-    public R<Void> menuDelete(@PathVariable Integer menuId) {
+    public R<Void> deleteMenu(@PathVariable Integer menuId) {
         int row = sysMenuService.deleteSysMenu(menuId);
 
         if (row <= 0) {

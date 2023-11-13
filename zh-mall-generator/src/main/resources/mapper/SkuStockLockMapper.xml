@@ -143,7 +143,6 @@
     <include refid="Base_Column_List" />
     from tb_sku_stock_lock
     where order_no = #{orderNo,jdbcType=BIGINT}
-    for update
   </select>
 
   <insert id="batchInsertBySkuStockLockList" parameterType="com.enqbs.generator.pojo.SkuStockLock">
@@ -158,41 +157,13 @@
     </foreach>
   </insert>
 
-  <update id="batchUpdateBySkuStockLockList" parameterType="java.util.List">
-    <foreach collection="skuStockLockList" item="item" index="index" separator=";">
-      update tb_sku_stock_lock
-      <set>
-        <if test="item.productId != null">
-          product_id = #{item.productId,jdbcType=INTEGER},
-        </if>
-        <if test="item.count != null">
-          count = #{item.count,jdbcType=INTEGER},
-        </if>
-        <if test="item.status != null">
-          status = #{item.status,jdbcType=INTEGER},
-        </if>
-        <if test="item.consumeVersion != null">
-          consume_version = #{item.consumeVersion,jdbcType=INTEGER},
-        </if>
-        <if test="item.createTime != null">
-          create_time = #{item.createTime,jdbcType=TIMESTAMP},
-        </if>
-        <if test="item.updateTime != null">
-          update_time = #{item.updateTime,jdbcType=TIMESTAMP},
-        </if>
-      </set>
-      where order_no = #{item.orderNo,jdbcType=BIGINT}
-      and sku_id = #{item.skuId,jdbcType=INTEGER}
-    </foreach>
-  </update>
-
   <select id="selectListByOrderNoSet" parameterType="java.util.Set" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from tb_sku_stock_lock
-    where
-    <foreach collection="orderNoSet" item="item" index="index" separator="or">
-      order_no = #{item,jdbcType=BIGINT}
+    where order_no in
+    <foreach collection="orderNoSet" item="item" index="index" open="(" close=")" separator=",">
+      #{item,jdbcType=BIGINT}
     </foreach>
   </select>
 </mapper>

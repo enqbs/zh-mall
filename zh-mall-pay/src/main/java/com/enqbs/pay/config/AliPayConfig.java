@@ -3,9 +3,8 @@ package com.enqbs.pay.config;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
 
 @Configuration
 @ConfigurationProperties(prefix = "alipay")
@@ -71,7 +70,7 @@ public class AliPayConfig {
         this.alipayPublicKey = alipayPublicKey;
     }
 
-    @PostConstruct
+    @Bean
     public AlipayClient initAlipayClient() {
         /*
         * ("https://openapi.alipay.com/gateway.do","app_id","your private_key","json","utf-8","alipay_public_key","RSA2");

@@ -209,7 +209,7 @@ public class ProductServiceImpl implements ProductService {
     private void handleSkuVOListAndSkuStockVO(List<SkuVO> skuVOList) {
         Set<Integer> skuIdSet = skuVOList.stream().map(SkuVO::getId).collect(Collectors.toSet());
         List<SkuStockVO> skuStockVOList = getSkuStockVOList(skuIdSet);
-        Map<Integer, SkuStockVO> skuStockVOMap = skuStockVOList.stream().collect(Collectors.toMap(SkuStockVO::getSkuId, skuStockVO -> skuStockVO));
+        Map<Integer, SkuStockVO> skuStockVOMap = skuStockVOList.stream().collect(Collectors.toMap(SkuStockVO::getSkuId, v -> v));
         skuVOList.forEach(skuVO -> skuVO.setSkuStock(skuStockVOMap.get(skuVO.getId())));
     }
 

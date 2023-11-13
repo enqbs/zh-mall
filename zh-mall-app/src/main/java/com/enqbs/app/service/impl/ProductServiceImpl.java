@@ -38,10 +38,14 @@ public class ProductServiceImpl implements ProductService {
             return productVO;
         }
 
-        List<Sku> skuList = skuMapper.selectListByProductId(productId);
-        List<SkuVO> skuVOList = skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
         productVO = product2ProductVO(product);
-        productVO.setSkuList(skuVOList);
+        List<Sku> skuList = skuMapper.selectListByProductId(productId);
+
+        if (!CollectionUtils.isEmpty(skuList)) {
+            List<SkuVO> skuVOList = skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
+            productVO.setSkuList(skuVOList);
+        }
+
         return productVO;
     }
 

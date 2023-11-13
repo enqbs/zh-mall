@@ -281,7 +281,6 @@
     from tb_order
     where order_no = #{orderNo,jdbcType=BIGINT}
     and delete_status = 0
-    for update
   </select>
 
   <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
