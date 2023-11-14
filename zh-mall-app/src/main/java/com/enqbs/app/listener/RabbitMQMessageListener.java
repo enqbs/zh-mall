@@ -28,7 +28,7 @@ public class RabbitMQMessageListener {
 
     @Async("threadPoolTaskExecutor")
     @RabbitListener(queues = "order.close.queue")
-    public void listenerOrderCloseQueue(String body, Message message, Channel channel) {
+    public void listenerOrderCloseQueue(String body, Message message, Channel channel) throws IOException {
         int i = 0;
         boolean flag;
 
@@ -46,7 +46,8 @@ public class RabbitMQMessageListener {
             i += 1;
 
             if (10 == i) {
-                log.error("消息队列:'{}',确认失败,message:'{}'.", message.getMessageProperties().getConsumerQueue(), message);
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
                 break;
             }
         } while (flag);
@@ -54,7 +55,7 @@ public class RabbitMQMessageListener {
 
     @Async("threadPoolTaskExecutor")
     @RabbitListener(queues = "pay.success.queue")
-    public void listenerPaySuccessQueue(String body, Message message, Channel channel) {
+    public void listenerPaySuccessQueue(String body, Message message, Channel channel) throws IOException {
         int i = 0;
         boolean flag;
 
@@ -72,7 +73,8 @@ public class RabbitMQMessageListener {
             i += 1;
 
             if (10 == i) {
-                log.error("消息队列:'{}',确认失败,message:'{}'.", message.getMessageProperties().getConsumerQueue(), message);
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
                 break;
             }
         } while (flag);

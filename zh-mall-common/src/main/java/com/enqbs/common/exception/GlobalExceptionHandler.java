@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     public R<Void> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
         String msg = e.getMessage();
         log.warn("请求地址:'{}',运行时异常,msg:'{}'.", request.getRequestURI(), msg);
-        return R.error(msg);
+        return R.error("运行时异常,请稍后重试");
     }
 
     /*

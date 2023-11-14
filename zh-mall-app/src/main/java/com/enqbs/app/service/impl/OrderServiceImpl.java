@@ -76,6 +76,8 @@ public class OrderServiceImpl implements OrderService {
 
     private static final Integer ORDER_TIMEOUT = 900000;
 
+    private static final Object ORDER_LOCK = new Object();
+
     @Override
     public OrderConfirmVO getOrderConfirmVO() {
         OrderConfirmVO orderConfirmVO = new OrderConfirmVO();
@@ -346,9 +348,8 @@ public class OrderServiceImpl implements OrderService {
         skuStockDTO.setSkuId(cartProductVO.getSkuId());
         skuStockDTO.setProductId(cartProductVO.getProductId());
         skuStockDTO.setSkuStockId(stock.getId());
-        skuStockDTO.setActualStock(stock.getActualStock());
-        skuStockDTO.setLockStock(stock.getLockStock() + cartProductVO.getQuantity());
-        skuStockDTO.setStock(stock.getStock() - cartProductVO.getQuantity());
+        skuStockDTO.setLockStock(cartProductVO.getQuantity());
+        skuStockDTO.setStock(cartProductVO.getQuantity());
         skuStockDTO.setQuantity(cartProductVO.getQuantity());
         return skuStockDTO;
     }

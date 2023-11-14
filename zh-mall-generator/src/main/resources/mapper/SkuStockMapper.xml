@@ -142,58 +142,22 @@
       #{item,jdbcType=INTEGER}
     </foreach>
     and delete_status = 0
-    for update
   </select>
 
-  <update id="batchUpdateBySkuStockList" parameterType="java.util.List">
+  <update id="batchUpdateBySkuStockListLockStock" parameterType="java.util.List">
     update `tb_sku_stock`
     <trim prefix="set" suffixOverrides=",">
-      <trim prefix="sku_id = case" suffix="end,">
-        <foreach collection="stockList" item="item" index="index">
-          <if test="item.skuId != null">
-            when `id` = #{item.id,jdbcType=INTEGER} then #{item.skuId,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="actual_stock = case" suffix="end,">
-        <foreach collection="stockList" item="item" index="index">
-          <if test="item.actualStock != null">
-            when `id` = #{item.id,jdbcType=INTEGER} then #{item.actualStock,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
       <trim prefix="lock_stock = case" suffix="end,">
         <foreach collection="stockList" item="item" index="index">
           <if test="item.lockStock != null">
-            when `id` = #{item.id,jdbcType=INTEGER} then #{item.lockStock,jdbcType=INTEGER}
+            when `id` = #{item.id,jdbcType=INTEGER} then `lock_stock` + #{item.lockStock,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
       <trim prefix="stock = case" suffix="end,">
         <foreach collection="stockList" item="item" index="index">
           <if test="item.stock != null">
-            when `id` = #{item.id,jdbcType=INTEGER} then #{item.stock,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="delete_status = case" suffix="end,">
-        <foreach collection="stockList" item="item" index="index">
-          <if test="item.deleteStatus != null">
-            when `id` = #{item.id,jdbcType=INTEGER} then #{item.deleteStatus,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="create_time = case" suffix="end,">
-        <foreach collection="stockList" item="item" index="index">
-          <if test="item.createTime != null">
-            when `id` = #{item.id,jdbcType=INTEGER} then #{item.createTime,jdbcType=INTEGER}
-          </if>
-        </foreach>
-      </trim>
-      <trim prefix="update_time = case" suffix="end,">
-        <foreach collection="stockList" item="item" index="index">
-          <if test="item.updateTime != null">
-            when `id` = #{item.id,jdbcType=INTEGER} then #{item.updateTime,jdbcType=INTEGER}
+            when `id` = #{item.id,jdbcType=INTEGER} then `stock` - #{item.stock,jdbcType=INTEGER}
           </if>
         </foreach>
       </trim>
@@ -202,5 +166,64 @@
     <foreach collection="stockList" item="item" index="index" open="(" close=")" separator=",">
       #{item.id,jdbcType=INTEGER}
     </foreach>
+    and `stock` > 0
+    and `delete_status` = 0
+  </update>
+
+  <update id="batchUpdateBySkuStockListUnLockStockRollback" parameterType="java.util.List">
+    update `tb_sku_stock`
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="lock_stock = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.lockStock != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then `lock_stock` - #{item.lockStock,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="stock = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.stock != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then `stock` + #{item.stock,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where `id` in
+    <foreach collection="stockList" item="item" index="index" open="(" close=")" separator=",">
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+    and `delete_status` = 0
+  </update>
+
+  <update id="batchUpdateBySkuStockListUnLockStockDelete" parameterType="java.util.List">
+    update `tb_sku_stock`
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="actual_stock = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.actualStock != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then `actual_stock` - #{item.actualStock,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="lock_stock = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.lockStock != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then `lock_stock` - #{item.lockStock,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="stock = case" suffix="end,">
+        <foreach collection="stockList" item="item" index="index">
+          <if test="item.stock != null">
+            when `id` = #{item.id,jdbcType=INTEGER} then `stock` - #{item.stock,jdbcType=INTEGER}
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where `id` in
+    <foreach collection="stockList" item="item" index="index" open="(" close=")" separator=",">
+      #{item.id,jdbcType=INTEGER}
+    </foreach>
+    and `delete_status` = 0
   </update>
 </mapper>
