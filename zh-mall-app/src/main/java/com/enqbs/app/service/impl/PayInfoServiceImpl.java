@@ -51,14 +51,14 @@ public class PayInfoServiceImpl implements PayInfoService {
     public BigDecimal getPayAmount(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         OrderVO orderVO = orderService.getOrderVO(orderNo);
-
-        if (ObjectUtils.isNotEmpty(orderVO) && !OrderStatusEnum.NOT_PAY.getCode().equals(orderVO.getStatus())) {
-            throw new ServiceException("订单已关闭支付,订单号:" + orderNo);
-        }
-
         PayInfo payInfo = payInfoMapper.selectByOrderNo(orderNo);
 
-        if (ObjectUtils.isNotEmpty(payInfo) && !PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())) {
+        if (ObjectUtils.isEmpty(orderVO) || userInfoVO.getUserId().equals(orderVO.getUserId())) {
+            throw new ServiceException("订单不存在,订单号:" + orderNo);
+        }
+
+        if (ObjectUtils.isNotEmpty(orderVO) && !OrderStatusEnum.NOT_PAY.getCode().equals(orderVO.getStatus())
+                && ObjectUtils.isNotEmpty(payInfo) && !PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())) {
             throw new ServiceException("订单已关闭支付,订单号:" + orderNo);
         }
 
@@ -83,15 +83,10 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         payInfo.setStatus(payStatusEnum.getCode());
-        int row = payInfoMapper.updateByPrimaryKeySelective(payInfo);
-
-        if (row <= 0) {
-            throw new ServiceException("支付信息更新失败,订单号:" + orderNo + ",支付平台流水号:" + platformNo);
-        }
-
-        log.info("支付信息更新成功,订单号:'{}',支付平台流水号:'{}'.", orderNo, platformNo);
+        updatePayInfo(orderNo, platformNo, payInfo);
         insertPayPlatform(payTypeEnum, orderNo, platformNo, payInfo.getId());
         rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE.getExchange(), QueueEnum.PAY_SUCCESS_QUEUE.getRoutingKey(), payInfo);
+        log.info("支付平台信息保存成功,订单号:'{}',支付平台流水号:'{}'.", orderNo, platformNo);
     }
 
     private void insertPayInfo(Long orderNo, BigDecimal amount, UserInfoVO userInfo) {
@@ -108,6 +103,16 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         log.info("支付信息保存成功,订单号:'{}'.", orderNo);
+    }
+
+    private void updatePayInfo(String orderNo, String platformNo, PayInfo payInfo) {
+        int row = payInfoMapper.updateByPrimaryKeySelective(payInfo);
+
+        if (row <= 0) {
+            throw new ServiceException("支付信息更新失败,订单号:" + orderNo + ",支付平台流水号:" + platformNo);
+        }
+
+        log.info("支付信息更新成功,订单号:'{}',支付平台流水号:'{}'.", orderNo, platformNo);
     }
 
     private void insertPayPlatform(PayTypeEnum payTypeEnum, String orderNo, String platformNo, Long payInfoId) {

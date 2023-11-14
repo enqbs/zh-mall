@@ -76,8 +76,6 @@ public class OrderServiceImpl implements OrderService {
 
     private static final Integer ORDER_TIMEOUT = 900000;
 
-    private static final Object ORDER_LOCK = new Object();
-
     @Override
     public OrderConfirmVO getOrderConfirmVO() {
         OrderConfirmVO orderConfirmVO = new OrderConfirmVO();
@@ -183,8 +181,8 @@ public class OrderServiceImpl implements OrderService {
         batchInsertOrderItem(orderNo, orderItemList);
         insertOrderShippingAddress(orderNo, orderShippingAddress);
         /* 发送延迟消息。15分钟订单超时 */
-        cartService.deleteCartProductVOListBySelected();
         rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), order, ORDER_TIMEOUT);
+        cartService.deleteCartProductVOListBySelected();
         return orderNo;
     }
 

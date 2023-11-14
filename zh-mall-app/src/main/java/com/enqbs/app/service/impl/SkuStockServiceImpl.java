@@ -47,8 +47,8 @@ public class SkuStockServiceImpl implements SkuStockService {
     @Transactional(rollbackFor = Exception.class)
     public void unLockSkuStock(Long orderNo, OrderStatusEnum orderStatusEnum) {
         List<SkuStockLock> stockLockList = skuStockLockMapper.selectListByOrderNo(orderNo);
-        Map<Integer, SkuStockLock> skuStockLockMap = stockLockList.stream().collect(Collectors.toMap(SkuStockLock::getSkuId, v -> v));
         Set<Integer> skuIdSet = stockLockList.stream().map(SkuStockLock::getSkuId).collect(Collectors.toSet());
+        Map<Integer, SkuStockLock> skuStockLockMap = stockLockList.stream().collect(Collectors.toMap(SkuStockLock::getSkuId, v -> v));
         List<SkuStock> skuStockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
         skuStockList.forEach(skuStock -> {
             SkuStockLock skuStockLock = skuStockLockMap.get(skuStock.getSkuId());
@@ -56,8 +56,8 @@ public class SkuStockServiceImpl implements SkuStockService {
             skuStock.setLockStock(skuStockLock.getCount());
             skuStock.setStock(skuStockLock.getCount());
         });
-        deleteSkuStockLock(orderNo);
         batchUnLockSkuStock(orderNo, skuStockList, orderStatusEnum);
+        deleteSkuStockLock(orderNo);
         log.info("库存解锁成功,订单号:'{}'.", orderNo);
     }
 
