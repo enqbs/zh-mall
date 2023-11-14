@@ -187,51 +187,41 @@
   </select>
 
   <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
-    <!--    select-->
-    <!--    <include refid="Base_Column_List_Join" />-->
-    <!--    from-->
-    <!--    sys_menu as m-->
-    <!--    join sys_role_menu as rm on m.id = rm.menu_id-->
-    <!--    join sys_role as r on rm.role_id = r.id-->
-    <!--    where-->
-    <!--    <if test="parentId != null">-->
-    <!--      m.parent_id = #{parentId,jdbcType=INTEGER} and-->
-    <!--    </if>-->
-    <!--    <if test="roleId != null">-->
-    <!--      r.id = #{roleId,jdbcType=INTEGER} and-->
-    <!--    </if>-->
-    <!--    r.delete_status = #{deleteStatus,jdbcType=INTEGER}-->
-    <!--    and m.delete_status = #{deleteStatus,jdbcType=INTEGER}-->
-    <!--    <if test="pageNum != null and pageSize != null">-->
-    <!--      <bind name="pageStart" value="(pageNum - 1) * pageSize"/>-->
-    <!--      limit #{pageStart}, #{pageSize}-->
-    <!--    </if>-->
     select
     <if test="roleId == null">
       <include refid="Base_Column_List" />
       from sys_menu
-      where
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=INTEGER} and
-      </if>
-      delete_status = #{deleteStatus,jdbcType=INTEGER}
+      <trim prefix="where " suffixOverrides="and">
+        <if test="parentId != null">
+          parent_id = #{parentId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+      </trim>
     </if>
     <if test="roleId != null">
       <include refid="Base_Column_List_Join" />
-      from
-      sys_menu as m
+      from sys_menu as m
       join sys_role_menu as rm on m.id = rm.menu_id
       join sys_role as r on rm.role_id = r.id
-      where
-      <if test="parentId != null">
-        m.parent_id = #{parentId,jdbcType=INTEGER} and
-      </if>
-      m.delete_status = #{deleteStatus,jdbcType=INTEGER}
-      and r.id = #{roleId,jdbcType=INTEGER}
-      and r.delete_status = #{deleteStatus,jdbcType=INTEGER}
+      <trim prefix="where " suffixOverrides="and">
+        <if test="parentId != null">
+          m.parent_id = #{parentId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          m.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+        <if test="roleId != null">
+          r.id = #{roleId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          r.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+      </trim>
     </if>
     <if test="pageNum != null and pageSize != null">
-      <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
+      <bind name="pageStart" value="(pageNum - 1) * pageSize" />
       limit #{pageStart}, #{pageSize}
     </if>
   </select>
@@ -239,26 +229,35 @@
   <select id="countByParam" parameterType="map" resultType="java.lang.Long">
     select
     count(*)
-    from
     <if test="roleId == null">
-      sys_menu
-      where
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=INTEGER} and
-      </if>
-      delete_status = #{deleteStatus,jdbcType=INTEGER}
+      from sys_menu
+      <trim prefix="where " suffixOverrides="and">
+        <if test="parentId != null">
+          parent_id = #{parentId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+      </trim>
     </if>
     <if test="roleId != null">
-      sys_menu as m
+      from sys_menu as m
       join sys_role_menu as rm on m.id = rm.menu_id
       join sys_role as r on rm.role_id = r.id
-      where
-      <if test="parentId != null">
-        m.parent_id = #{parentId,jdbcType=INTEGER} and
-      </if>
-      m.delete_status = #{deleteStatus,jdbcType=INTEGER}
-      and r.id = #{roleId,jdbcType=INTEGER}
-      and r.delete_status = #{deleteStatus,jdbcType=INTEGER}
+      <trim prefix="where " suffixOverrides="and">
+        <if test="parentId != null">
+          m.parent_id = #{parentId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          m.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+        <if test="roleId != null">
+          r.id = #{roleId,jdbcType=INTEGER} and
+        </if>
+        <if test="parentId != null">
+          r.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+      </trim>
     </if>
   </select>
 </mapper>

@@ -126,12 +126,13 @@
     select
     <include refid="Base_Column_List" />
     from sys_role
-    where
-    <if test="deleteStatus != null">
-      delete_status = #{deleteStatus,jdbcType=INTEGER}
-    </if>
+    <trim prefix="where ">
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER}
+      </if>
+    </trim>
     <if test="pageNum != null and pageSize != null">
-      <bind name="pageStart" value="(pageNum - 1) * pageSize"/>
+      <bind name="pageStart" value="(pageNum - 1) * pageSize" />
       limit #{pageStart}, #{pageSize}
     </if>
   </select>
@@ -140,9 +141,10 @@
     select
     count(*)
     from sys_role
-    where
-    <if test="deleteStatus != null">
-      delete_status = #{deleteStatus,jdbcType=INTEGER}
-    </if>
+    <trim prefix="where ">
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER}
+      </if>
+    </trim>
   </select>
 </mapper>
