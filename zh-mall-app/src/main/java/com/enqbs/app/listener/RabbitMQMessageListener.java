@@ -41,14 +41,14 @@ public class RabbitMQMessageListener {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
                 flag = true;
-            }
 
-            i += 1;
+                if (10 == i) {
+                    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                    log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
+                    break;
+                }
 
-            if (10 == i) {
-                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
-                break;
+                i += 1;
             }
         } while (flag);
     }
@@ -68,14 +68,14 @@ public class RabbitMQMessageListener {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
                 flag = true;
-            }
 
-            i += 1;
+                if (10 == i) {
+                    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                    log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
+                    break;
+                }
 
-            if (10 == i) {
-                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
-                break;
+                i += 1;
             }
         } while (flag);
     }

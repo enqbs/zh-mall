@@ -41,11 +41,10 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
     @Override
     public int updateUserShippingAddress(Integer shippingAddressId, UserShippingAddressForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKey(shippingAddressId);
+        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKeyOrUserIdOrDeleteStatus(
+                shippingAddressId, userInfoVO.getUserId(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isEmpty(shippingAddress)
-                || !userInfoVO.getUserId().equals(shippingAddress.getUserId())
-                || Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
+        if (ObjectUtils.isEmpty(shippingAddress)) {
             throw new ServiceException("收货地址不存在");
         }
 
@@ -59,11 +58,10 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
     @Override
     public int deleteUserShippingAddress(Integer shippingAddressId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKey(shippingAddressId);
+        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKeyOrUserIdOrDeleteStatus(
+                shippingAddressId, userInfoVO.getUserId(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isEmpty(shippingAddress)
-                || !userInfoVO.getUserId().equals(shippingAddress.getUserId())
-                || Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
+        if (ObjectUtils.isEmpty(shippingAddress)) {
             throw new ServiceException("收货地址不存在");
         }
 
@@ -74,11 +72,10 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
     @Override
     public UserShippingAddressVO getUserShippingAddressVO(Integer shippingAddressId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKey(shippingAddressId);
+        UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKeyOrUserIdOrDeleteStatus(
+                shippingAddressId, userInfoVO.getUserId(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isEmpty(shippingAddress)
-                || !userInfoVO.getUserId().equals(shippingAddress.getUserId())
-                || Constants.IS_DELETE.equals(shippingAddress.getDeleteStatus())) {
+        if (ObjectUtils.isEmpty(shippingAddress)) {
             throw new ServiceException("收货地址不存在");
         }
 

@@ -5,6 +5,7 @@ import com.enqbs.admin.vo.OrderItemVO;
 import com.enqbs.admin.vo.OrderLogisticsInfoVO;
 import com.enqbs.admin.vo.OrderShippingAddressVO;
 import com.enqbs.admin.vo.OrderVO;
+import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
@@ -83,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderVO getOrderVO(Long orderNo) {
         OrderVO orderVO = new OrderVO();
-        Order order = orderMapper.selectByOrderNo(orderNo);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null, null, Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(order)) {
             return orderVO;
@@ -107,21 +108,18 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertOrderLogisticsInfo(Long orderNo, LogisticsInfoForm form) {
-        Order order = orderMapper.selectByOrderNo(orderNo);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null,
+                OrderStatusEnum.PAY_SUCCESS.getCode(), Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(order)) {
-            throw new ServiceException("订单不存在,订单号:" + orderNo);
-        }
-
-        if (!OrderStatusEnum.PAY_SUCCESS.getCode().equals(order.getStatus())) {
-            throw new ServiceException("订单不满足发货条件,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",订单不满足发货条件");
         }
 
         order.setStatus(OrderStatusEnum.NOT_RECEIPT.getCode());
         int row = orderMapper.updateByPrimaryKeySelective(order);
 
         if (row <= 0) {
-            throw new ServiceException("订单状态修改失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",订单状态修改失败");
         }
 
         OrderLogisticsInfo orderLogisticsInfo = new OrderLogisticsInfo();

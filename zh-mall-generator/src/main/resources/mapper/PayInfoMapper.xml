@@ -206,6 +206,23 @@
     and delete_status = 0
   </select>
 
+  <select id="selectByOrderNoOrStatusOrDeleteStatus" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_pay_info
+    <trim prefix="where " suffixOverrides="and">
+      <if test="orderNo != null">
+        order_no = #{orderNo,jdbcType=BIGINT} and
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
+  </select>
+
   <select id="selectListParam" parameterType="map" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List_Join" />

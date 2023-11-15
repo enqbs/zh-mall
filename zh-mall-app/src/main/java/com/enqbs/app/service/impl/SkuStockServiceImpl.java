@@ -40,7 +40,7 @@ public class SkuStockServiceImpl implements SkuStockService {
         List<SkuStockLock> skuStockLockList = skuStockDTOList.stream().map(e -> skuStockDTO2SkuStockLock(orderNo, e)).collect(Collectors.toList());
         batchLockSkuStock(orderNo, stockList);
         batchInsertSkuStockLock(orderNo, skuStockLockList);
-        log.info("库存锁定成功,订单号:'{}'.", orderNo);
+        log.info("订单号:'{}',库存锁定成功.", orderNo);
     }
 
     @Override
@@ -58,17 +58,15 @@ public class SkuStockServiceImpl implements SkuStockService {
         });
         batchUnLockSkuStock(orderNo, skuStockList, orderStatusEnum);
         deleteSkuStockLock(orderNo);
-        log.info("库存解锁成功,订单号:'{}'.", orderNo);
+        log.info("订单号:'{}',库存解锁成功.", orderNo);
     }
 
     private void batchLockSkuStock(Long orderNo, List<SkuStock> stockList) {
         int row = skuStockMapper.batchUpdateBySkuStockListLockStock(stockList);
 
         if (row < stockList.size()) {
-            throw new ServiceException("库存信息更新失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",库存信息更新失败");
         }
-
-        log.info("库存信息更新成功,订单号:'{}'.", orderNo);
     }
 
     private void batchUnLockSkuStock(Long orderNo, List<SkuStock> stockList, OrderStatusEnum orderStatusEnum) {
@@ -81,30 +79,24 @@ public class SkuStockServiceImpl implements SkuStockService {
         }
 
         if (row < stockList.size()) {
-            throw new ServiceException("库存信息更新失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",库存信息更新失败");
         }
-
-        log.info("库存信息更新成功,订单号:'{}'.", orderNo);
     }
 
     private void batchInsertSkuStockLock(Long orderNo, List<SkuStockLock> skuStockLockList) {
         int row = skuStockLockMapper.batchInsertBySkuStockLockList(skuStockLockList);
 
         if (row <= 0) {
-            throw new ServiceException("库存锁定信息保存失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",库存锁定信息保存失败");
         }
-
-        log.info("库存锁定信息保存成功,订单号:'{}'.", orderNo);
     }
 
     private void deleteSkuStockLock(Long orderNo) {
         int row = skuStockLockMapper.deleteByOrderNo(orderNo);
 
         if (row <= 0) {
-            throw new ServiceException("库存锁定信息更新失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",库存锁定信息更新失败");
         }
-
-        log.info("库存锁定信息更新成功,订单号:'{}'.", orderNo);
     }
 
     private SkuStock skuStockDTO2SkuStock(SkuStockDTO skuStockDTO) {

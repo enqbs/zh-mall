@@ -141,7 +141,6 @@
     <foreach collection="skuIdSet" item="item" index="index" open="(" close=")" separator=",">
       #{item,jdbcType=INTEGER}
     </foreach>
-    and delete_status = 0
   </select>
 
   <update id="batchUpdateBySkuStockListLockStock" parameterType="java.util.List">
@@ -166,8 +165,9 @@
     <foreach collection="stockList" item="item" index="index" open="(" close=")" separator=",">
       #{item.id,jdbcType=INTEGER}
     </foreach>
-    and `stock` > 0
-    and `delete_status` = 0
+    <foreach collection="stockList" item="item" index="index">
+      and `stock` - #{item.stock,jdbcType=INTEGER} >= 0
+    </foreach>
   </update>
 
   <update id="batchUpdateBySkuStockListUnLockStockRollback" parameterType="java.util.List">
@@ -192,7 +192,6 @@
     <foreach collection="stockList" item="item" index="index" open="(" close=")" separator=",">
       #{item.id,jdbcType=INTEGER}
     </foreach>
-    and `delete_status` = 0
   </update>
 
   <update id="batchUpdateBySkuStockListUnLockStockDelete" parameterType="java.util.List">
@@ -224,6 +223,5 @@
     <foreach collection="stockList" item="item" index="index" open="(" close=")" separator=",">
       #{item.id,jdbcType=INTEGER}
     </foreach>
-    and `delete_status` = 0
   </update>
 </mapper>

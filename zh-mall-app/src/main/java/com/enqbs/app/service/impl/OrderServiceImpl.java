@@ -183,16 +183,18 @@ public class OrderServiceImpl implements OrderService {
         /* 发送延迟消息。15分钟订单超时 */
         rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), order, ORDER_TIMEOUT);
         cartService.deleteCartProductVOListBySelected();
+        log.info("订单号:'{}',订单提交成功.", orderNo);
         return orderNo;
     }
 
     @Override
     public OrderVO getOrderVO(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        Order order = orderMapper.selectByOrderNo(orderNo);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(),
+                null, Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isEmpty(order) || !userInfoVO.getUserId().equals(order.getUserId())) {
-            throw new ServiceException("订单不存在,订单号:" + orderNo);
+        if (ObjectUtils.isEmpty(order)) {
+            throw new ServiceException("订单号:" + orderNo + ",订单不存在");
         }
 
         List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(orderNo);
@@ -240,31 +242,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int sign4Order(Long orderNo) {
+    @Transactional(rollbackFor = Exception.class)
+    public void sign4Order(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        Order order = orderMapper.selectByOrderNo(orderNo);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(),
+                OrderStatusEnum.NOT_RECEIPT.getCode(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isEmpty(order)
-                || !OrderStatusEnum.NOT_RECEIPT.getCode().equals(order.getStatus())
-                || !userInfoVO.getUserId().equals(order.getUserId())) {
-            throw new ServiceException("无法签收该订单,订单号:" + orderNo);
+        if (ObjectUtils.isEmpty(order)) {
+            throw new ServiceException("订单号:" + orderNo + ",无法签收该订单");
         }
 
         order.setStatus(OrderStatusEnum.RECEIPT_SUCCESS.getCode());
         order.setSignReceiptTime(new Date());
-        return orderMapper.updateByPrimaryKeySelective(order);
+        int row = orderMapper.updateByPrimaryKeySelective(order);
+
+        if (row <= 0) {
+            throw new ServiceException("订单号:" + orderNo + ",订单签收失败");
+        }
+
+        log.info("订单号'{}',订单签收成功.", orderNo);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void cancelOrder(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        Order order = orderMapper.selectByOrderNo(orderNo);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(),
+                OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isEmpty(order)
-                || !OrderStatusEnum.NOT_PAY.getCode().equals(order.getStatus())
-                || !userInfoVO.getUserId().equals(order.getUserId())) {
-            throw new ServiceException("无法取消该订单,订单号:" + orderNo);
+        if (ObjectUtils.isEmpty(order)) {
+            throw new ServiceException("订单号:" + orderNo + ",无法取消该订单");
         }
 
         skuStockService.unLockSkuStock(orderNo, OrderStatusEnum.NOT_PAY);
@@ -272,18 +279,19 @@ public class OrderServiceImpl implements OrderService {
         int row = orderMapper.updateByPrimaryKeySelective(order);
 
         if (row <= 0) {
-            throw new ServiceException("订单取消失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",订单取消失败");
         }
+
+        log.info("订单号:'{}',订单取消成功.", orderNo);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void handleTimeoutOrder(Order order) {
-        Order timeoutOrder = orderMapper.selectByOrderNo(order.getOrderNo());
+        Order timeoutOrder = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(order.getOrderNo(), null,
+                OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isNotEmpty(timeoutOrder)
-                && OrderStatusEnum.NOT_PAY.getCode().equals(timeoutOrder.getStatus())
-                && ObjectUtils.isEmpty(timeoutOrder.getConsumeVersion())) {
+        if (ObjectUtils.isNotEmpty(timeoutOrder) && ObjectUtils.isEmpty(timeoutOrder.getConsumeVersion())) {
             skuStockService.unLockSkuStock(order.getOrderNo(), OrderStatusEnum.TIMEOUT);
             timeoutOrder.setStatus(OrderStatusEnum.TIMEOUT.getCode());
             timeoutOrder.setDeleteStatus(Constants.IS_DELETE);
@@ -291,19 +299,20 @@ public class OrderServiceImpl implements OrderService {
             int row = orderMapper.updateByPrimaryKeySelective(timeoutOrder);
 
             if (row <= 0) {
-                throw new ServiceException("订单关闭失败,订单号:" + timeoutOrder.getOrderNo());
+                throw new ServiceException("订单号:" + timeoutOrder.getOrderNo() + ",订单关闭失败");
             }
+
+            log.info("订单号:'{}',订单关闭成功.", timeoutOrder.getOrderNo());
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void handlePaySuccessOrder(PayInfo payInfo) {
-        Order paySuccessOrder = orderMapper.selectByOrderNo(payInfo.getOrderNo());
+        Order paySuccessOrder = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(payInfo.getOrderNo(), null,
+                OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isNotEmpty(paySuccessOrder)
-                && OrderStatusEnum.NOT_PAY.getCode().equals(paySuccessOrder.getStatus())
-                && ObjectUtils.isEmpty(paySuccessOrder.getConsumeVersion())) {
+        if (ObjectUtils.isNotEmpty(paySuccessOrder) && ObjectUtils.isEmpty(paySuccessOrder.getConsumeVersion())) {
             skuStockService.unLockSkuStock(payInfo.getOrderNo(), OrderStatusEnum.PAY_SUCCESS);
             paySuccessOrder.setStatus(OrderStatusEnum.PAY_SUCCESS.getCode());
             paySuccessOrder.setConsumeVersion(1);
@@ -311,8 +320,10 @@ public class OrderServiceImpl implements OrderService {
             int row = orderMapper.updateByPrimaryKeySelective(paySuccessOrder);
 
             if (row <= 0) {
-                throw new ServiceException("订单确认支付失败,订单号:" + paySuccessOrder.getOrderNo());
+                throw new ServiceException("订单号:" + paySuccessOrder.getOrderNo() + ",订单确认支付失败");
             }
+
+            log.info("订单号:'{}',订单确认支付成功.", paySuccessOrder.getOrderNo());
         }
     }
 
@@ -356,30 +367,24 @@ public class OrderServiceImpl implements OrderService {
         int row = orderMapper.insertSelective(order);
 
         if (row <= 0) {
-            throw new ServiceException("订单信息保存失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",订单信息保存失败");
         }
-
-        log.info("订单信息保存成功,订单号:'{}'.", orderNo);
     }
 
     private void batchInsertOrderItem(Long orderNo, List<OrderItem> orderItemList) {
         int row = orderItemMapper.batchInsertByOrderItemList(orderItemList);
 
         if (row <= 0) {
-            throw new ServiceException("订单项保存失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",订单项保存失败");
         }
-
-        log.info("订单项保存成功,订单号:'{}'.", orderNo);
     }
 
     private void insertOrderShippingAddress(Long orderNo, OrderShippingAddress orderShippingAddress) {
         int row = orderShippingAddressMapper.insertSelective(orderShippingAddress);
 
         if (row <= 0) {
-            throw new ServiceException("订单收货地址保存失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",订单收货地址保存失败");
         }
-
-        log.info("订单收货地址保存成功,订单号:'{}'.", orderNo);
     }
 
 }

@@ -48,7 +48,7 @@ public class PayInfoController {
             payInfoService.updatePayInfo(PayTypeEnum.ALIPAY_PAGE, PayStatusEnum.PAY_SUCCESS, orderNo, platformNo);
             payService.closePay(orderNo, platformNo);       // 关闭支付
         } else {
-            throw new ServiceException("支付回调通知异常,订单号:" + orderNo + ",支付平台流水号:" + platformNo);
+            throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + platformNo + ",支付回调通知异常");
         }
     }
 

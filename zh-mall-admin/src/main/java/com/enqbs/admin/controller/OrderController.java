@@ -7,6 +7,7 @@ import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+@Slf4j
 @RestController
 public class OrderController {
 
@@ -59,9 +61,10 @@ public class OrderController {
         int row = orderService.insertOrderLogisticsInfo(orderNo, form);
 
         if (row <= 0) {
-            throw new ServiceException("发货失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",发货失败");
         }
 
+        log.info("订单号:'{}',发货成功.", orderNo);
         return R.ok("发货成功", orderNo);
     }
 
@@ -71,9 +74,10 @@ public class OrderController {
         int row = orderService.updateOrderLogisticsInfo(orderNo, form);
 
         if (row <= 0) {
-            throw new ServiceException("修改订单快递信息失败,订单号:" + orderNo);
+            throw new ServiceException("订单号:" + orderNo + ",修改订单快递信息失败");
         }
 
+        log.info("订单号:'{}',修改订单快递信息成功.", orderNo);
         return R.ok("修改订单快递信息成功", orderNo);
     }
 

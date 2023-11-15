@@ -5,10 +5,8 @@ import com.enqbs.app.service.OrderService;
 import com.enqbs.app.pojo.vo.OrderConfirmVO;
 import com.enqbs.app.pojo.vo.OrderVO;
 import com.enqbs.common.enums.SortEnum;
-import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-@Slf4j
 @RestController
 public class OrderController {
 
@@ -64,21 +61,14 @@ public class OrderController {
 
     @PutMapping("/order/receipt/{orderNo}")
     public R<Long> orderReceipt(@PathVariable Long orderNo) {
-        int row = orderService.sign4Order(orderNo);
-
-        if (row <= 0) {
-            throw new ServiceException("订单签收失败,订单号:" + orderNo);
-        }
-
-        log.info("订单签收成功,订单号'{}'.", orderNo);
-        return R.ok("订单签收成功", orderNo);
+        orderService.sign4Order(orderNo);
+        return R.ok("签收成功", orderNo);
     }
 
     @PutMapping("/order/cancel/{orderNo}")
     public R<Long> orderCancel(@PathVariable Long orderNo) {
         orderService.cancelOrder(orderNo);
-        log.info("订单取消成功,订单号'{}'.", orderNo);
-        return R.ok("订单取消成功", orderNo);
+        return R.ok("取消成功", orderNo);
     }
 
 }

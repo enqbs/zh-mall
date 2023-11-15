@@ -32,7 +32,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         int row = saveMessageQueueLog(messageId, exchange, routingKey, content, null);
 
         if (row <= 0) {
-            throw new ServiceException("消息持久化失败,MessageID:" + messageId);
+            throw new ServiceException("MessageID:" + messageId + ",消息持久化失败");
         }
 
         rabbitTemplate.convertAndSend(exchange, routingKey, content, correlationData);
@@ -47,7 +47,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         int row = saveMessageQueueLog(messageId, exchange, routingKey, content, delay);
 
         if (row <= 0) {
-            throw new ServiceException("消息持久化失败,MessageID:" + messageId);
+            throw new ServiceException("MessageID:" + messageId + ",消息持久化失败");
         }
 
         rabbitTemplate.convertAndSend(exchange, routingKey, content, messagePostProcessor -> {
@@ -82,7 +82,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         int row = messageQueueLogMapper.updateByPrimaryKeySelective(messageQueueLog);
 
         if (row <= 0) {
-            throw new ServiceException("消息状态更新失败,MessageID:" + messageId);
+            throw new ServiceException("MessageID:" + messageId + ",消息状态更新失败");
         }
     }
 

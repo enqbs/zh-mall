@@ -11,43 +11,43 @@ import com.enqbs.generator.pojo.PayInfo;
 public interface OrderService {
 
     /*
-    * 订单确认页
-    * */
+     * 订单确认页
+     * */
     OrderConfirmVO getOrderConfirmVO();
 
     /*
-    * 保存订单信息订单
-    * */
+     * 保存订单信息订单
+     * */
     Long insertOrder(OrderForm form);
 
     /*
-    * 订单详情
-    * */
+     * 订单详情
+     * */
     OrderVO getOrderVO(Long orderNo);
 
     /*
-    * 顶顶那列表
-    * */
+     * 顶顶那列表
+     * */
     PageUtil<OrderVO> getOrderVOList(Integer status, SortEnum sortEnum, Integer pageNum, Integer pageSize);
 
     /*
-    * 签收订单
-    * */
-    int sign4Order(Long orderNo);
+     * 签收订单
+     * */
+    void sign4Order(Long orderNo);
 
     /*
-    * 取消订单
-    * */
+     * 取消订单
+     * */
     void cancelOrder(Long orderNo);
 
     /*
-    * 处理过期订单
-    * */
+     * 处理过期订单
+     * */
     void handleTimeoutOrder(Order order);
 
     /*
-    * 处理支付成功订单
-    * */
+     * 处理支付成功订单
+     * */
     void handlePaySuccessOrder(PayInfo payInfo);
 
 }

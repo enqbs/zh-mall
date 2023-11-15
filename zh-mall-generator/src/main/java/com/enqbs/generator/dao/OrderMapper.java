@@ -19,7 +19,10 @@ public interface OrderMapper {
 
     int updateByPrimaryKey(Order record);
 
-    Order selectByOrderNo(Long orderNo);
+    Order selectByOrderNoOrUserIdOrStatusOrDeleteStatus(@Param("orderNo") Long orderNo,
+                                                        @Param("userId") Integer userId,
+                                                        @Param("status") Integer status,
+                                                        @Param("deleteStatus") Integer deleteStatus);
 
     List<Order> selectListByParam(@Param("orderNo") Long orderNo,
                                   @Param("orderSc") String orderSc,

@@ -1,6 +1,7 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.UserShippingAddress;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,6 +14,10 @@ public interface UserShippingAddressMapper {
     int insertSelective(UserShippingAddress record);
 
     UserShippingAddress selectByPrimaryKey(Integer id);
+
+    UserShippingAddress selectByPrimaryKeyOrUserIdOrDeleteStatus(@Param("id") Integer id,
+                                                                 @Param("userId") Integer userId,
+                                                                 @Param("deleteStatus") Integer deleteStatus);
 
     int updateByPrimaryKeySelective(UserShippingAddress record);
 

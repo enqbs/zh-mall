@@ -21,6 +21,10 @@ public interface PayInfoMapper {
 
     PayInfo selectByOrderNo(Long orderNo);
 
+    PayInfo selectByOrderNoOrStatusOrDeleteStatus(@Param("orderNo") Long orderNo,
+                                                  @Param("status") Integer status,
+                                                  @Param("deleteStatus") Integer deleteStatus);
+
     List<PayInfo> selectListParam(@Param("orderNo") Long orderNo,
                                   @Param("userId") Integer userId,
                                   @Param("payType") String payType,
