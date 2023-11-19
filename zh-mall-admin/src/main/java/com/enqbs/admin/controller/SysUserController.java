@@ -38,15 +38,19 @@ public class SysUserController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public R<Map<String, Object>> login(@Valid @RequestBody LoginForm form) {
-        Map<String, Object> resultMap = sysUserService.login(form);
+    public R<Map<String, String>> login(@Valid @RequestBody LoginForm form) {
+        String token = sysUserService.login(form);
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("token", token);
         return R.ok("登录成功", resultMap);
     }
 
     @PostMapping("/register")
     @PreAuthorize("hasAuthority('SYS_USER:ADD')")
-    public R<Map<String, Object>> register(@Valid @RequestBody RegisterForm form) {
-        Map<String, Object> resultMap = sysUserService.register(form);
+    public R<Map<String, Integer>> register(@Valid @RequestBody RegisterForm form) {
+        Integer userId = sysUserService.register(form);
+        Map<String, Integer> resultMap = new HashMap<>();
+        resultMap.put("userId", userId);
         return R.ok("注册成功", resultMap);
     }
 

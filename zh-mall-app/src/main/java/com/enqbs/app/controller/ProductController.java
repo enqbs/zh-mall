@@ -1,7 +1,7 @@
 package com.enqbs.app.controller;
 
-import com.enqbs.app.service.ProductCategoryService;
-import com.enqbs.app.service.ProductService;
+import com.enqbs.app.service.product.ProductCategoryService;
+import com.enqbs.app.service.product.ProductService;
 import com.enqbs.app.pojo.vo.ProductCategoryVO;
 import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.common.util.R;

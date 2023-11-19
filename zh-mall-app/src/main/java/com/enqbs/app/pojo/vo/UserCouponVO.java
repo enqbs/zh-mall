@@ -1,9 +1,9 @@
-package com.enqbs.generator.pojo;
+package com.enqbs.app.pojo.vo;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class UserCoupon implements Serializable {
+public class UserCouponVO implements Serializable {
 
     private Integer id;
 
@@ -15,15 +15,9 @@ public class UserCoupon implements Serializable {
 
     private Integer status;
 
-    private Integer deleteStatus;
-
-    private Integer consumeVersion;
-
     private Date createTime;
 
-    private Date updateTime;
-
-    private static final long serialVersionUID = 1L;
+    private CouponVO coupon;
 
     public Integer getId() {
         return id;
@@ -65,22 +59,6 @@ public class UserCoupon implements Serializable {
         this.status = status;
     }
 
-    public Integer getDeleteStatus() {
-        return deleteStatus;
-    }
-
-    public void setDeleteStatus(Integer deleteStatus) {
-        this.deleteStatus = deleteStatus;
-    }
-
-    public Integer getConsumeVersion() {
-        return consumeVersion;
-    }
-
-    public void setConsumeVersion(Integer consumeVersion) {
-        this.consumeVersion = consumeVersion;
-    }
-
     public Date getCreateTime() {
         return createTime;
     }
@@ -89,26 +67,24 @@ public class UserCoupon implements Serializable {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
-        return updateTime;
+    public CouponVO getCoupon() {
+        return coupon;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
+    public void setCoupon(CouponVO coupon) {
+        this.coupon = coupon;
     }
 
     @Override
     public String toString() {
-        return "UserCoupon{" +
+        return "UserCouponVO{" +
                 "id=" + id +
                 ", couponId=" + couponId +
                 ", userId=" + userId +
                 ", quantity=" + quantity +
                 ", status=" + status +
-                ", deleteStatus=" + deleteStatus +
-                ", consumeVersion=" + consumeVersion +
                 ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
+                ", coupon=" + coupon +
                 '}';
     }
 

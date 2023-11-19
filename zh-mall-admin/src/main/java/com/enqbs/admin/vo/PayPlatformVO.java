@@ -12,7 +12,7 @@ public class PayPlatformVO implements Serializable {
 
     private String platform;
 
-    private String platformNumber;
+    private String platformNo;
 
     public Long getPayInfoId() {
         return payInfoId;
@@ -46,12 +46,12 @@ public class PayPlatformVO implements Serializable {
         this.platform = platform;
     }
 
-    public String getPlatformNumber() {
-        return platformNumber;
+    public String getPlatformNo() {
+        return platformNo;
     }
 
-    public void setPlatformNumber(String platformNumber) {
-        this.platformNumber = platformNumber;
+    public void setPlatformNo(String platformNo) {
+        this.platformNo = platformNo;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class PayPlatformVO implements Serializable {
                 ", orderNo=" + orderNo +
                 ", payType='" + payType + '\'' +
                 ", platform='" + platform + '\'' +
-                ", platformNumber='" + platformNumber + '\'' +
+                ", platformNo='" + platformNo + '\'' +
                 '}';
     }
 

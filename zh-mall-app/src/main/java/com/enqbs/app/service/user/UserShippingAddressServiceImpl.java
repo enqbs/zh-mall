@@ -1,8 +1,6 @@
-package com.enqbs.app.service.impl;
+package com.enqbs.app.service.user;
 
 import com.enqbs.app.form.UserShippingAddressForm;
-import com.enqbs.app.service.UserService;
-import com.enqbs.app.service.UserShippingAddressService;
 import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.app.pojo.vo.UserShippingAddressVO;
 import com.enqbs.common.constant.Constants;
@@ -21,10 +19,10 @@ import java.util.stream.Collectors;
 public class UserShippingAddressServiceImpl implements UserShippingAddressService {
 
     @Resource
-    private UserService userService;
+    private UserShippingAddressMapper userShippingAddressMapper;
 
     @Resource
-    private UserShippingAddressMapper userShippingAddressMapper;
+    private UserService userService;
 
     @Override
     public int insertUserShippingAddress(UserShippingAddressForm form) {

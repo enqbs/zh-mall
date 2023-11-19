@@ -10,6 +10,8 @@ public class OrderLogisticsInfo implements Serializable {
 
     private String logisticsTitle;
 
+    private Integer deleteStatus;
+
     private Integer sharding;
 
     private static final long serialVersionUID = 1L;
@@ -38,6 +40,14 @@ public class OrderLogisticsInfo implements Serializable {
         this.logisticsTitle = logisticsTitle == null ? null : logisticsTitle.trim();
     }
 
+    public Integer getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(Integer deleteStatus) {
+        this.deleteStatus = deleteStatus;
+    }
+
     public Integer getSharding() {
         return sharding;
     }
@@ -52,6 +62,7 @@ public class OrderLogisticsInfo implements Serializable {
                 "orderNo=" + orderNo +
                 ", logisticsNo='" + logisticsNo + '\'' +
                 ", logisticsTitle='" + logisticsTitle + '\'' +
+                ", deleteStatus=" + deleteStatus +
                 ", sharding=" + sharding +
                 '}';
     }

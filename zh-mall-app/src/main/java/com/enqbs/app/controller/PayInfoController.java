@@ -1,7 +1,7 @@
 package com.enqbs.app.controller;
 
 import com.alipay.api.AlipayApiException;
-import com.enqbs.app.service.PayInfoService;
+import com.enqbs.app.service.pay.PayInfoService;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.pay.enums.PayStatusEnum;
 import com.enqbs.pay.enums.PayTypeEnum;

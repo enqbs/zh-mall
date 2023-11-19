@@ -14,7 +14,7 @@ public class PayRefundVO implements Serializable {
 
     private Integer platform;
 
-    private String platformNumber;
+    private String platformNo;
 
     private BigDecimal payAmount;
 
@@ -56,12 +56,12 @@ public class PayRefundVO implements Serializable {
         this.platform = platform;
     }
 
-    public String getPlatformNumber() {
-        return platformNumber;
+    public String getPlatformNo() {
+        return platformNo;
     }
 
-    public void setPlatformNumber(String platformNumber) {
-        this.platformNumber = platformNumber;
+    public void setPlatformNo(String platformNo) {
+        this.platformNo = platformNo;
     }
 
     public BigDecimal getPayAmount() {
@@ -103,7 +103,7 @@ public class PayRefundVO implements Serializable {
                 ", payInfoId=" + payInfoId +
                 ", orderNo=" + orderNo +
                 ", platform=" + platform +
-                ", platformNumber='" + platformNumber + '\'' +
+                ", platformNo='" + platformNo + '\'' +
                 ", payAmount=" + payAmount +
                 ", refundAmount=" + refundAmount +
                 ", createTime=" + createTime +

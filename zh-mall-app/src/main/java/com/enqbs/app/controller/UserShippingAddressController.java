@@ -1,7 +1,7 @@
 package com.enqbs.app.controller;
 
 import com.enqbs.app.form.UserShippingAddressForm;
-import com.enqbs.app.service.UserShippingAddressService;
+import com.enqbs.app.service.user.UserShippingAddressService;
 import com.enqbs.app.pojo.vo.UserShippingAddressVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.R;

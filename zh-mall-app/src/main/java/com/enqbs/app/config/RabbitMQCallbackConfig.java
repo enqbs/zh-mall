@@ -1,6 +1,6 @@
 package com.enqbs.app.config;
 
-import com.enqbs.app.service.RabbitMQService;
+import com.enqbs.app.service.mq.RabbitMQService;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.QueueEnum;
 import lombok.extern.slf4j.Slf4j;

@@ -1,8 +1,7 @@
-package com.enqbs.app.service.impl;
+package com.enqbs.app.service.user;
 
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
-import com.enqbs.app.service.UserService;
 import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
@@ -18,14 +17,13 @@ import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -40,16 +38,19 @@ public class UserServiceImpl implements UserService {
     private UserLevelMapper userLevelMapper;
 
     @Resource
-    private TokenService tokenService;
-
-    @Resource
     private RedisUtil redisUtil;
 
     @Resource
     private PasswordEncoder passwordEncoder;
 
+    @Resource
+    private TokenService tokenService;
+
+    @Resource
+    private ThreadPoolTaskExecutor executor;
+
     @Override
-    public Map<String, Object> login(LoginForm form) {
+    public String login(LoginForm form) {
         UserAuths userAuths = userAuthsMapper.selectByIdentifier(form.getUsername());
 
         if (ObjectUtils.isEmpty(userAuths)) {
@@ -63,16 +64,13 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.selectByPrimaryKey(userAuths.getUserId());
         UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getLevelId());
         LoginUser loginUser = getLoginUser(user, userAuths, userLevel);
-        cacheLoginUser(loginUser);
-        String token = tokenService.getToken(loginUser);
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("token", token);
-        return resultMap;
+        executor.execute(() -> cacheLoginUser(loginUser));
+        return tokenService.getToken(loginUser);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> registerByUsername(RegisterByUsernameForm form) {
+    public Integer registerByUsername(RegisterByUsernameForm form) {
         int count = userAuthsMapper.countByIdentifier(form.getUsername());
 
         if (count > 0) {
@@ -94,9 +92,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("用户账号密码保存失败");
         }
 
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("userId", user.getId());
-        return resultMap;
+        return user.getId();
     }
 
     @Override
@@ -110,7 +106,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout() {
         LoginUser loginUser = tokenService.getLoginUser();
-        removeCacheLoginUser(loginUser);
+        executor.execute(() -> removeCacheLoginUser(loginUser));
         SecurityContextHolder.clearContext();
     }
 

@@ -8,6 +8,8 @@ public class OrderConfirmVO implements Serializable {
 
     private List<UserShippingAddressVO> shippingAddressList;
 
+    private List<UserCouponVO> couponList;
+
     private List<OrderItemVO> orderItemList;
 
     private BigDecimal postage;
@@ -28,6 +30,14 @@ public class OrderConfirmVO implements Serializable {
 
     public void setShippingAddressList(List<UserShippingAddressVO> shippingAddressList) {
         this.shippingAddressList = shippingAddressList;
+    }
+
+    public List<UserCouponVO> getCouponList() {
+        return couponList;
+    }
+
+    public void setCouponList(List<UserCouponVO> couponList) {
+        this.couponList = couponList;
     }
 
     public List<OrderItemVO> getOrderItemList() {
@@ -90,6 +100,7 @@ public class OrderConfirmVO implements Serializable {
     public String toString() {
         return "OrderConfirmVO{" +
                 "shippingAddressList=" + shippingAddressList +
+                ", couponList=" + couponList +
                 ", orderItemList=" + orderItemList +
                 ", postage=" + postage +
                 ", amount=" + amount +

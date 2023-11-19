@@ -1,7 +1,5 @@
-package com.enqbs.app.service.impl;
+package com.enqbs.app.service.product;
 
-import com.enqbs.app.service.ProductCategoryService;
-import com.enqbs.app.service.ProductService;
 import com.enqbs.app.pojo.vo.ProductCategoryVO;
 import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.common.constant.Constants;
@@ -29,13 +27,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private ProductCategoryMapper productCategoryMapper;
 
     @Resource
-    private ProductService productService;
-
-    @Resource
     private RedisUtil redisUtil;
 
     @Resource
     private RedissonClient redissonClient;
+
+    @Resource
+    private ProductService productService;
 
     @Override
     public ProductCategoryVO getProductCategoryVO(Integer categoryId) {

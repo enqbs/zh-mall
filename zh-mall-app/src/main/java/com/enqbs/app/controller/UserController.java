@@ -2,7 +2,7 @@ package com.enqbs.app.controller;
 
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
-import com.enqbs.app.service.UserService;
+import com.enqbs.app.service.user.UserService;
 import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.common.util.R;
 import com.enqbs.security.service.TokenService;
@@ -27,14 +27,18 @@ public class UserController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public R<Map<String, Object>> login(@Valid @RequestBody LoginForm form) {
-        Map<String, Object> resultMap = userService.login(form);
+    public R<Map<String, String>> login(@Valid @RequestBody LoginForm form) {
+        String token = userService.login(form);
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("token", token);
         return R.ok("登录成功", resultMap);
     }
 
     @PostMapping("/register/username")
-    public R<Map<String, Object>> register(@Valid @RequestBody RegisterByUsernameForm form) {
-        Map<String, Object> resultMap = userService.registerByUsername(form);
+    public R<Map<String, Integer>> register(@Valid @RequestBody RegisterByUsernameForm form) {
+        Integer userId = userService.registerByUsername(form);
+        Map<String, Integer> resultMap = new HashMap<>();
+        resultMap.put("userId", userId);
         return R.ok("注册成功", resultMap);
     }
 

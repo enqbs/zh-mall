@@ -1,10 +1,8 @@
-package com.enqbs.app.service.impl;
+package com.enqbs.app.service.user;
 
 import com.enqbs.app.form.CartForm;
 import com.enqbs.app.pojo.Cart;
-import com.enqbs.app.service.CartService;
-import com.enqbs.app.service.ProductService;
-import com.enqbs.app.service.UserService;
+import com.enqbs.app.service.product.ProductService;
 import com.enqbs.app.pojo.vo.CartProductVO;
 import com.enqbs.app.pojo.vo.CartVO;
 import com.enqbs.app.pojo.vo.ProductVO;
@@ -30,13 +28,13 @@ import java.util.stream.Collectors;
 public class CartServiceImpl implements CartService {
 
     @Resource
+    private RedisUtil redisUtil;
+
+    @Resource
     private UserService userService;
 
     @Resource
     private ProductService productService;
-
-    @Resource
-    private RedisUtil redisUtil;
 
     @Override
     public CartVO getCartVO() {

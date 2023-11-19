@@ -1,4 +1,4 @@
-package com.enqbs.app.service;
+package com.enqbs.app.service.user;
 
 import com.enqbs.app.form.UserShippingAddressForm;
 import com.enqbs.app.pojo.vo.UserShippingAddressVO;

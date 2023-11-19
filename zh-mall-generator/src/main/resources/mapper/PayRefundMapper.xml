@@ -6,7 +6,7 @@
     <result column="pay_info_id" jdbcType="BIGINT" property="payInfoId" />
     <result column="order_no" jdbcType="BIGINT" property="orderNo" />
     <result column="platform" jdbcType="INTEGER" property="platform" />
-    <result column="platform_number" jdbcType="VARCHAR" property="platformNumber" />
+    <result column="platform_number" jdbcType="VARCHAR" property="platformNo" />
     <result column="pay_amount" jdbcType="DECIMAL" property="payAmount" />
     <result column="refund_amount" jdbcType="DECIMAL" property="refundAmount" />
     <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
@@ -18,12 +18,12 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, pay_info_id, order_no, platform, platform_number, pay_amount, refund_amount, 
+    id, pay_info_id, order_no, platform, platform_no, pay_amount, refund_amount,
     delete_status, consume_version, sharding, create_time, refund_time, update_time
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_pay_refund
     where id = #{id,jdbcType=BIGINT}
@@ -35,16 +35,16 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.PayRefund">
-    insert into tb_pay_refund (id, pay_info_id, order_no, 
-      platform, platform_number, pay_amount, 
-      refund_amount, delete_status, consume_version, 
-      sharding, create_time, refund_time, 
-      update_time)
-    values (#{id,jdbcType=BIGINT}, #{payInfoId,jdbcType=BIGINT}, #{orderNo,jdbcType=BIGINT}, 
-      #{platform,jdbcType=INTEGER}, #{platformNumber,jdbcType=VARCHAR}, #{payAmount,jdbcType=DECIMAL}, 
-      #{refundAmount,jdbcType=DECIMAL}, #{deleteStatus,jdbcType=INTEGER}, #{consumeVersion,jdbcType=INTEGER}, 
-      #{sharding,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{refundTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into tb_pay_refund (id, pay_info_id, order_no,
+                               platform, platform_no, pay_amount,
+                               refund_amount, delete_status, consume_version,
+                               sharding, create_time, refund_time,
+                               update_time)
+    values (#{id,jdbcType=BIGINT}, #{payInfoId,jdbcType=BIGINT}, #{orderNo,jdbcType=BIGINT},
+            #{platform,jdbcType=INTEGER}, #{platformNo,jdbcType=VARCHAR}, #{payAmount,jdbcType=DECIMAL},
+            #{refundAmount,jdbcType=DECIMAL}, #{deleteStatus,jdbcType=INTEGER}, #{consumeVersion,jdbcType=INTEGER},
+            #{sharding,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{refundTime,jdbcType=TIMESTAMP},
+            #{updateTime,jdbcType=TIMESTAMP})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.PayRefund">
@@ -62,8 +62,8 @@
       <if test="platform != null">
         platform,
       </if>
-      <if test="platformNumber != null">
-        platform_number,
+      <if test="platformNo != null">
+        platform_no,
       </if>
       <if test="payAmount != null">
         pay_amount,
@@ -103,8 +103,8 @@
       <if test="platform != null">
         #{platform,jdbcType=INTEGER},
       </if>
-      <if test="platformNumber != null">
-        #{platformNumber,jdbcType=VARCHAR},
+      <if test="platformNo != null">
+        #{platformNo,jdbcType=VARCHAR},
       </if>
       <if test="payAmount != null">
         #{payAmount,jdbcType=DECIMAL},
@@ -145,8 +145,8 @@
       <if test="platform != null">
         platform = #{platform,jdbcType=INTEGER},
       </if>
-      <if test="platformNumber != null">
-        platform_number = #{platformNumber,jdbcType=VARCHAR},
+      <if test="platformNo != null">
+        platform_no = #{platformNo,jdbcType=VARCHAR},
       </if>
       <if test="payAmount != null">
         pay_amount = #{payAmount,jdbcType=DECIMAL},
@@ -179,17 +179,17 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.PayRefund">
     update tb_pay_refund
     set pay_info_id = #{payInfoId,jdbcType=BIGINT},
-      order_no = #{orderNo,jdbcType=BIGINT},
-      platform = #{platform,jdbcType=INTEGER},
-      platform_number = #{platformNumber,jdbcType=VARCHAR},
-      pay_amount = #{payAmount,jdbcType=DECIMAL},
-      refund_amount = #{refundAmount,jdbcType=DECIMAL},
-      delete_status = #{deleteStatus,jdbcType=INTEGER},
-      consume_version = #{consumeVersion,jdbcType=INTEGER},
-      sharding = #{sharding,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      refund_time = #{refundTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+        order_no = #{orderNo,jdbcType=BIGINT},
+        platform = #{platform,jdbcType=INTEGER},
+        platform_no = #{platformNo,jdbcType=VARCHAR},
+        pay_amount = #{payAmount,jdbcType=DECIMAL},
+        refund_amount = #{refundAmount,jdbcType=DECIMAL},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        consume_version = #{consumeVersion,jdbcType=INTEGER},
+        sharding = #{sharding,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        refund_time = #{refundTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

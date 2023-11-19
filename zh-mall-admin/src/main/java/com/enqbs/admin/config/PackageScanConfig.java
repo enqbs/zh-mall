@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @MapperScan(basePackages = "com.enqbs.generator.dao")
-@ComponentScan(basePackages = "com.enqbs.*")
+@ComponentScan(basePackages = "com.enqbs")
 public class PackageScanConfig {
 }

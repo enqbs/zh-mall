@@ -1,11 +1,10 @@
-package com.enqbs.app.service.impl;
+package com.enqbs.app.service.pay;
 
 import com.enqbs.app.pojo.vo.OrderVO;
 import com.enqbs.app.pojo.vo.UserInfoVO;
-import com.enqbs.app.service.OrderService;
-import com.enqbs.app.service.PayInfoService;
-import com.enqbs.app.service.RabbitMQService;
-import com.enqbs.app.service.UserService;
+import com.enqbs.app.service.order.OrderService;
+import com.enqbs.app.service.mq.RabbitMQService;
+import com.enqbs.app.service.user.UserService;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.enums.QueueEnum;
@@ -50,24 +49,25 @@ public class PayInfoServiceImpl implements PayInfoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public BigDecimal getPayAmount(Long orderNo) {
-        UserInfoVO userInfoVO = userService.getUserInfoVO();
         OrderVO orderVO = orderService.getOrderVO(orderNo);
-        PayInfo payInfo = payInfoMapper.selectByOrderNoOrStatusOrDeleteStatus(orderNo, null, Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(orderVO)) {
             throw new ServiceException("订单号:" + orderNo + ",订单不存在");
         }
 
-        if (!OrderStatusEnum.NOT_PAY.getCode().equals(orderVO.getStatus())
-                && ObjectUtils.isNotEmpty(payInfo) && !PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())) {
+        UserInfoVO userInfoVO = userService.getUserInfoVO();
+        PayInfo payInfo = payInfoMapper.selectByOrderNoOrStatusOrDeleteStatus(orderNo, PayStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
+
+        if (ObjectUtils.isNotEmpty(payInfo) && !PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())
+                && !OrderStatusEnum.NOT_PAY.getCode().equals(orderVO.getStatus())) {
             throw new ServiceException("订单号:" + orderNo + ",订单已关闭支付");
         }
 
         if (ObjectUtils.isEmpty(payInfo)) {
-            insertPayInfo(orderNo, orderVO.getAmount(), userInfoVO);
+            insertPayInfo(orderNo, orderVO.getActualAmount(), userInfoVO);
         }
 
-        return orderVO.getAmount();
+        return orderVO.getActualAmount();
     }
 
     @Override
@@ -85,9 +85,8 @@ public class PayInfoServiceImpl implements PayInfoService {
 
         payInfo.setStatus(payStatusEnum.getCode());
         updatePayInfo(orderNo, platformNo, payInfo);
-        insertPayPlatform(payTypeEnum, orderNo, platformNo, payInfo.getId());
+        insertPayPlatform(payInfo.getId(), payTypeEnum, orderNo, platformNo);
         rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE.getExchange(), QueueEnum.PAY_SUCCESS_QUEUE.getRoutingKey(), payInfo);
-
     }
 
     private void insertPayInfo(Long orderNo, BigDecimal amount, UserInfoVO userInfo) {
@@ -97,6 +96,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         payInfo.setNickName(userInfo.getNickName());
         payInfo.setPhoto(userInfo.getPhoto());
         payInfo.setPayAmount(amount);
+        payInfo.setStatus(PayStatusEnum.NOT_PAY.getCode());
         int row = payInfoMapper.insertSelective(payInfo);
 
         if (row <= 0) {
@@ -116,13 +116,13 @@ public class PayInfoServiceImpl implements PayInfoService {
         log.info("订单号:'{}',支付平台流水号:'{}',支付信息更新成功.", orderNo, platformNo);
     }
 
-    private void insertPayPlatform(PayTypeEnum payTypeEnum, String orderNo, String platformNo, Long payInfoId) {
+    private void insertPayPlatform(Long payInfoId, PayTypeEnum payTypeEnum, String orderNo, String platformNo) {
         PayPlatform payPlatform = new PayPlatform();
         payPlatform.setPayInfoId(payInfoId);
         payPlatform.setOrderNo(Long.valueOf(orderNo));
         payPlatform.setPayType(payTypeEnum.getPayType());
         payPlatform.setPlatform(payTypeEnum.getPayPlatform());
-        payPlatform.setPlatformNumber(platformNo);
+        payPlatform.setPlatformNo(platformNo);
         int row = payPlatformMapper.insertSelective(payPlatform);
 
         if (row <= 0) {

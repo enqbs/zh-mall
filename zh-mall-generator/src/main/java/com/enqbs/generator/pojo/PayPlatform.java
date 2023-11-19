@@ -12,7 +12,7 @@ public class PayPlatform implements Serializable {
 
     private String platform;
 
-    private String platformNumber;
+    private String platformNo;
 
     private Integer sharding;
 
@@ -50,12 +50,12 @@ public class PayPlatform implements Serializable {
         this.platform = platform == null ? null : platform.trim();
     }
 
-    public String getPlatformNumber() {
-        return platformNumber;
+    public String getPlatformNo() {
+        return platformNo;
     }
 
-    public void setPlatformNumber(String platformNumber) {
-        this.platformNumber = platformNumber == null ? null : platformNumber.trim();
+    public void setPlatformNo(String platformNo) {
+        this.platformNo = platformNo == null ? null : platformNo.trim();
     }
 
     public Integer getSharding() {
@@ -73,7 +73,7 @@ public class PayPlatform implements Serializable {
                 ", orderNo=" + orderNo +
                 ", payType='" + payType + '\'' +
                 ", platform='" + platform + '\'' +
-                ", platformNumber='" + platformNumber + '\'' +
+                ", platformNo='" + platformNo + '\'' +
                 ", sharding=" + sharding +
                 '}';
     }

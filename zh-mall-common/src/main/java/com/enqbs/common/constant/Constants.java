@@ -11,6 +11,14 @@ public class Constants {
 
     public static final Integer PRODUCT_NOT_SHELVES = 0;
 
+    public static final Integer COUPON_VALID = 1;
+
+    public static final Integer COUPON_INVALID = 0;
+
+    public static final Integer COUPON_USED = 1;
+
+    public static final Integer COUPON_UNUSED = 0;
+
     /* web */
     public static final String SUCCESS = "success";
 
@@ -34,6 +42,8 @@ public class Constants {
 
     public static final String USER_CART_REDIS_KEY = "user:cart:%s";
 
+    public static final String USER_COUPON_LOCK = "user:coupon.lock:%s";
+
     public static final String SYS_USER_REDIS_KEY = "sys:user:token:%s";
 
     public static final String PRODUCT_CATEGORY_LIST = "product:category:list";
@@ -41,6 +51,8 @@ public class Constants {
     public static final String PRODUCT_CATEGORY_LIST_LOCK = "product:category:list.lock";
 
     public static final String ORDER_TOKEN_REDIS_KEY = "order:token:%s";
+
+    public static final String ORDER_CONFIRM_REDIS_KEY = "order:confirm:%s";
 
     /* rabbitmq */
     public static final String EXCHANGE_TYPE_DELAYED = "x-delayed-message";

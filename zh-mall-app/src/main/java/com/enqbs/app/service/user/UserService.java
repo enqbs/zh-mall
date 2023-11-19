@@ -1,22 +1,20 @@
-package com.enqbs.app.service;
+package com.enqbs.app.service.user;
 
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
 import com.enqbs.app.pojo.vo.UserInfoVO;
-
-import java.util.Map;
 
 public interface UserService {
 
     /*
      * 登录
      * */
-    Map<String, Object> login(LoginForm form);
+    String login(LoginForm form);
 
     /*
      * 注册
      * */
-    Map<String, Object> registerByUsername(RegisterByUsernameForm form);
+    Integer registerByUsername(RegisterByUsernameForm form);
 
     /*
      * 获取用户信息

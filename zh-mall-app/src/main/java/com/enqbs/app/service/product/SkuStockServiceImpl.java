@@ -1,7 +1,6 @@
-package com.enqbs.app.service.impl;
+package com.enqbs.app.service.product;
 
 import com.enqbs.app.pojo.dto.SkuStockDTO;
-import com.enqbs.app.service.SkuStockService;
 import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.dao.SkuStockLockMapper;
@@ -36,9 +35,9 @@ public class SkuStockServiceImpl implements SkuStockService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void lockSkuStock(Long orderNo, List<SkuStockDTO> skuStockDTOList) {
-        List<SkuStock> stockList = skuStockDTOList.stream().map(this::skuStockDTO2SkuStock).collect(Collectors.toList());
+        List<SkuStock> skuStockList = skuStockDTOList.stream().map(this::skuStockDTO2SkuStock).collect(Collectors.toList());
         List<SkuStockLock> skuStockLockList = skuStockDTOList.stream().map(e -> skuStockDTO2SkuStockLock(orderNo, e)).collect(Collectors.toList());
-        batchLockSkuStock(orderNo, stockList);
+        batchLockSkuStock(orderNo, skuStockList);
         batchInsertSkuStockLock(orderNo, skuStockLockList);
         log.info("订单号:'{}',库存锁定成功.", orderNo);
     }
@@ -61,24 +60,24 @@ public class SkuStockServiceImpl implements SkuStockService {
         log.info("订单号:'{}',库存解锁成功.", orderNo);
     }
 
-    private void batchLockSkuStock(Long orderNo, List<SkuStock> stockList) {
-        int row = skuStockMapper.batchUpdateBySkuStockListLockStock(stockList);
+    private void batchLockSkuStock(Long orderNo, List<SkuStock> skuStockList) {
+        int row = skuStockMapper.batchUpdateBySkuStockListLockStock(skuStockList);
 
-        if (row < stockList.size()) {
+        if (row < skuStockList.size()) {
             throw new ServiceException("订单号:" + orderNo + ",库存信息更新失败");
         }
     }
 
-    private void batchUnLockSkuStock(Long orderNo, List<SkuStock> stockList, OrderStatusEnum orderStatusEnum) {
+    private void batchUnLockSkuStock(Long orderNo, List<SkuStock> skuStockList, OrderStatusEnum orderStatusEnum) {
         int row;
 
         if (OrderStatusEnum.PAY_SUCCESS.equals(orderStatusEnum)) {
-            row = skuStockMapper.batchUpdateBySkuStockListUnLockStockDelete(stockList);
+            row = skuStockMapper.batchUpdateBySkuStockListUnLockStockDelete(skuStockList);
         } else {
-            row = skuStockMapper.batchUpdateBySkuStockListUnLockStockRollback(stockList);
+            row = skuStockMapper.batchUpdateBySkuStockListUnLockStockRollback(skuStockList);
         }
 
-        if (row < stockList.size()) {
+        if (row < skuStockList.size()) {
             throw new ServiceException("订单号:" + orderNo + ",库存信息更新失败");
         }
     }

@@ -1,6 +1,5 @@
-package com.enqbs.app.service.impl;
+package com.enqbs.app.service.product;
 
-import com.enqbs.app.service.ProductService;
 import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.app.pojo.vo.SkuVO;
 import com.enqbs.common.constant.Constants;

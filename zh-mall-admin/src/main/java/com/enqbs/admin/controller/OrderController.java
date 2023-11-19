@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -57,28 +59,32 @@ public class OrderController {
 
     @PostMapping("/order/shipment/{orderNo}")
     @PreAuthorize("hasAuthority('ORDER:UPDATE')")
-    public R<Long> orderShipment(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
+    public R<Map<String, Long>> orderShipment(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
         int row = orderService.insertOrderLogisticsInfo(orderNo, form);
 
         if (row <= 0) {
             throw new ServiceException("订单号:" + orderNo + ",发货失败");
         }
 
+        Map<String, Long> resultMap = new HashMap<>();
+        resultMap.put("orderNo", orderNo);
         log.info("订单号:'{}',发货成功.", orderNo);
-        return R.ok("发货成功", orderNo);
+        return R.ok("发货成功", resultMap);
     }
 
     @PutMapping("/order/logistics-info/{orderNo}")
     @PreAuthorize("hasAuthority('ORDER:UPDATE')")
-    public R<Long> updateOrderLogisticsInfo(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
+    public R<Map<String, Long>> updateOrderLogisticsInfo(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
         int row = orderService.updateOrderLogisticsInfo(orderNo, form);
 
         if (row <= 0) {
             throw new ServiceException("订单号:" + orderNo + ",修改订单快递信息失败");
         }
 
+        Map<String, Long> resultMap = new HashMap<>();
+        resultMap.put("orderNo", orderNo);
         log.info("订单号:'{}',修改订单快递信息成功.", orderNo);
-        return R.ok("修改订单快递信息成功", orderNo);
+        return R.ok("修改订单快递信息成功", resultMap);
     }
 
 }

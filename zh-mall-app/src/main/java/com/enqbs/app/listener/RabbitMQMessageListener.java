@@ -1,6 +1,6 @@
 package com.enqbs.app.listener;
 
-import com.enqbs.app.service.OrderService;
+import com.enqbs.app.service.order.OrderService;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.RedisUtil;
@@ -21,10 +21,10 @@ import java.io.IOException;
 public class RabbitMQMessageListener {
 
     @Resource
-    private OrderService orderService;
+    private RedisUtil redisUtil;
 
     @Resource
-    private RedisUtil redisUtil;
+    private OrderService orderService;
 
     @Async("threadPoolTaskExecutor")
     @RabbitListener(queues = "order.close.queue")
@@ -41,15 +41,15 @@ public class RabbitMQMessageListener {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
                 flag = true;
-
-                if (10 == i) {
-                    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                    log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
-                    break;
-                }
-
-                i += 1;
             }
+
+            if (10 == i) {
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
+                break;
+            }
+
+            i += 1;
         } while (flag);
     }
 
@@ -68,15 +68,15 @@ public class RabbitMQMessageListener {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
                 flag = true;
-
-                if (10 == i) {
-                    channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                    log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
-                    break;
-                }
-
-                i += 1;
             }
+
+            if (10 == i) {
+                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
+                break;
+            }
+
+            i += 1;
         } while (flag);
     }
 

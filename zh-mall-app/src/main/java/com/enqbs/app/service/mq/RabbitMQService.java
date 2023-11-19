@@ -1,4 +1,4 @@
-package com.enqbs.app.service;
+package com.enqbs.app.service.mq;
 
 import com.enqbs.generator.pojo.MessageQueueLog;
 

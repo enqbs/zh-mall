@@ -16,14 +16,13 @@ import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,19 +33,22 @@ public class SysUserServiceImpl implements SysUserService {
     private SysUserMapper sysUserMapper;
 
     @Resource
+    private RedisUtil redisUtil;
+
+    @Resource
+    private PasswordEncoder passwordEncoder;
+
+    @Resource
     private SysMenuService sysMenuService;
 
     @Resource
     private TokenService tokenService;
 
     @Resource
-    private RedisUtil redisUtil;
-
-    @Resource
-    private PasswordEncoder passwordEncoder;
+    private ThreadPoolTaskExecutor executor;
 
     @Override
-    public Map<String, Object> login(LoginForm form) {
+    public String login(LoginForm form) {
         SysUser sysUser = sysUserMapper.selectByUsername(form.getUsername());
 
         if (ObjectUtils.isEmpty(sysUser)) {
@@ -60,15 +62,12 @@ public class SysUserServiceImpl implements SysUserService {
         Set<SysMenu> sysMenuSet = sysMenuService.getSysMenuSet(form.getUsername());
         List<String> permissionList = sysMenuSet.stream().map(SysMenu::getPermissionsKey).collect(Collectors.toList());
         LoginUser loginUser = getLoginUser(sysUser, permissionList);
-        cacheLoginUser(loginUser);
-        String token = tokenService.getToken(loginUser);
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("token", token);
-        return resultMap;
+        executor.execute(() -> cacheLoginUser(loginUser));
+        return tokenService.getToken(loginUser);
     }
 
     @Override
-    public Map<String, Object> register(RegisterForm form) {
+    public Integer register(RegisterForm form) {
         int count = sysUserMapper.countByUsername(form.getUsername());
 
         if (count > 0) {
@@ -84,9 +83,7 @@ public class SysUserServiceImpl implements SysUserService {
             throw new ServiceException("用户账号密码保存失败");
         }
 
-        Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("userId", sysUser.getId());
-        return resultMap;
+        return sysUser.getId();
     }
 
     @Override
@@ -133,15 +130,17 @@ public class SysUserServiceImpl implements SysUserService {
             throw new ServiceException("修改昵称失败");
         }
 
-        loginUser.setNickName(form.getNickName());
-        removeCacheLoginUser(loginUser);
-        cacheLoginUser(loginUser);
+        executor.execute(() -> {
+            loginUser.setNickName(form.getNickName());
+            removeCacheLoginUser(loginUser);
+            cacheLoginUser(loginUser);
+        });
     }
 
     @Override
     public void logout() {
         LoginUser loginUser = tokenService.getLoginUser();
-        removeCacheLoginUser(loginUser);
+        executor.execute(() -> removeCacheLoginUser(loginUser));
         SecurityContextHolder.clearContext();
     }
 

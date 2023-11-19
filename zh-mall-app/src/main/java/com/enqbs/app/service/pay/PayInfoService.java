@@ -1,4 +1,4 @@
-package com.enqbs.app.service;
+package com.enqbs.app.service.pay;
 
 import com.enqbs.pay.enums.PayStatusEnum;
 import com.enqbs.pay.enums.PayTypeEnum;

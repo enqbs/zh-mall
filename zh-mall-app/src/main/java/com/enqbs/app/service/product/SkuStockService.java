@@ -1,4 +1,4 @@
-package com.enqbs.app.service;
+package com.enqbs.app.service.product;
 
 import com.enqbs.app.pojo.dto.SkuStockDTO;
 import com.enqbs.common.enums.OrderStatusEnum;

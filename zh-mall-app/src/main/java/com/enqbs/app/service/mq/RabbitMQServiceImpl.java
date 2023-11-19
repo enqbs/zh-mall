@@ -1,6 +1,5 @@
-package com.enqbs.app.service.impl;
+package com.enqbs.app.service.mq;
 
-import com.enqbs.app.service.RabbitMQService;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;

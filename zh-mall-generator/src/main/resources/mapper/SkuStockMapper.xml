@@ -166,7 +166,7 @@
       #{item.id,jdbcType=INTEGER}
     </foreach>
     <foreach collection="stockList" item="item" index="index">
-      and `stock` - #{item.stock,jdbcType=INTEGER} >= 0
+      and `stock` >= #{item.stock,jdbcType=INTEGER}
     </foreach>
   </update>
 

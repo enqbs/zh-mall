@@ -44,6 +44,7 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
+
         <table tableName="sys_menu" domainObjectName="SysMenu" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
             <columnOverride column="delete_status" jdbcType="INTEGER" javaType="Integer" />
         </table>
@@ -90,7 +91,9 @@
             <columnOverride column="sku_param" jdbcType="VARCHAR" javaType="String" />
         </table>
 
-        <table tableName="tb_order_logistics_info" domainObjectName="OrderLogisticsInfo" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false" />
+        <table tableName="tb_order_logistics_info" domainObjectName="OrderLogisticsInfo" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
+            <columnOverride column="delete_status" jdbcType="INTEGER" javaType="Integer" />
+        </table>
 
         <table tableName="tb_order_refund" domainObjectName="OrderRefund" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
             <columnOverride column="picture" jdbcType="VARCHAR" javaType="String" />
@@ -180,6 +183,7 @@
 
         <table tableName="tb_user_coupon" domainObjectName="UserCoupon" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">
             <columnOverride column="status" jdbcType="INTEGER" javaType="Integer" />
+            <columnOverride column="delete_status" jdbcType="INTEGER" javaType="Integer" />
         </table>
 
         <table tableName="tb_user_level" domainObjectName="UserLevel" enableCountByExample="false" enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false">

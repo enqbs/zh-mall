@@ -6,19 +6,17 @@ import com.enqbs.admin.form.LoginForm;
 import com.enqbs.admin.form.RegisterForm;
 import com.enqbs.admin.vo.SysUserInfoVO;
 
-import java.util.Map;
-
 public interface SysUserService {
 
     /*
      * 登录
      * */
-    Map<String, Object> login(LoginForm form);
+    String login(LoginForm form);
 
     /*
      * 注册
      * */
-    Map<String, Object> register(RegisterForm form);
+    Integer register(RegisterForm form);
 
     /*
      * 获取用户信息
