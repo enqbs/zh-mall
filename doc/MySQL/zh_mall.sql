@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 10/11/2023 18:29:37
+ Date: 18/11/2023 23:52:59
 */
 
 SET NAMES utf8mb4;
@@ -137,7 +137,7 @@ CREATE TABLE `sys_user`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_username_create_time`(`username` ASC, `create_time` DESC) USING BTREE
+  UNIQUE INDEX `unq_username_create_time`(`username` ASC, `create_time` DESC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -174,16 +174,17 @@ CREATE TABLE `tb_coupon`  (
   `quantity` int UNSIGNED NULL DEFAULT NULL COMMENT '优惠券数量',
   `start_date` date NULL DEFAULT NULL COMMENT '起始日期',
   `end_date` date NULL DEFAULT NULL COMMENT '结束日期',
-  `status` tinyint UNSIGNED NULL DEFAULT 1 COMMENT '是否有效,0:无效、1:有效',
+  `status` tinyint UNSIGNED NOT NULL DEFAULT 1 COMMENT '是否有效,0:无效、1:有效',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_coupon
 -- ----------------------------
+INSERT INTO `tb_coupon` VALUES (1, NULL, 10.00, 100.00, 100, '2023-11-18', '2024-01-01', 1, 0, '2023-11-18 05:52:21', '2023-11-18 15:04:39');
 
 -- ----------------------------
 -- Table structure for tb_home_banner
@@ -282,7 +283,7 @@ CREATE TABLE `tb_order`  (
   `amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '订单金额',
   `coupon_amount` decimal(10, 2) UNSIGNED NULL DEFAULT NULL COMMENT '优惠券金额',
   `discount_amount` decimal(10, 2) UNSIGNED NULL DEFAULT NULL COMMENT '会员优惠(折扣)金额',
-  `actual_amount` decimal(10, 2) UNSIGNED NULL DEFAULT NULL COMMENT '实付金额',
+  `actual_amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '实付金额',
   `payment_type` tinyint UNSIGNED NULL DEFAULT NULL COMMENT '支付方式,1:支付宝、2:微信支付、3:其他',
   `status` tinyint NOT NULL DEFAULT 0 COMMENT '订单状态,-1:订单超时、0:未支付、1:已支付(待发货)、2:待收货、3:已签收',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
@@ -333,7 +334,8 @@ DROP TABLE IF EXISTS `tb_order_logistics_info`;
 CREATE TABLE `tb_order_logistics_info`  (
   `order_no` bigint UNSIGNED NOT NULL COMMENT '订单号',
   `logistics_no` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '物流单号',
-  `logistics_title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '物流公司名称',
+  `logistics_title` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '物流公司名称',
+  `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
   PRIMARY KEY (`order_no`, `logistics_no`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单物流表' ROW_FORMAT = DYNAMIC;
@@ -355,8 +357,8 @@ CREATE TABLE `tb_order_refund`  (
   `picture` json NULL COMMENT '图片',
   `content` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '申请退款理由',
   `reply` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '系统管理员回复',
-  `refund_amount` decimal(10, 2) UNSIGNED NULL DEFAULT NULL COMMENT '退款金额',
-  `status` tinyint UNSIGNED NULL DEFAULT 0 COMMENT '退款状态,0:正在处理、1:已退款、2:退款失败',
+  `refund_amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '退款金额',
+  `status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '退款状态,0:正在处理、1:已退款、2:退款失败',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `consume_version` int UNSIGNED NULL DEFAULT NULL COMMENT '消费版本号(乐观锁字段)',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
@@ -403,9 +405,9 @@ CREATE TABLE `tb_order_refund_item`  (
 DROP TABLE IF EXISTS `tb_order_shipping_address`;
 CREATE TABLE `tb_order_shipping_address`  (
   `order_no` bigint UNSIGNED NOT NULL COMMENT '订单号',
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收件人名称',
-  `tel_no` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收件人电话',
-  `address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收件人地址',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收件人名称',
+  `tel_no` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收件人电话',
+  `address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收件人地址',
   `detail_address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收件人详细地址',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
   PRIMARY KEY (`order_no`) USING BTREE
@@ -426,7 +428,7 @@ CREATE TABLE `tb_pay_info`  (
   `nick_name` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户昵称',
   `photo` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户头像',
   `pay_amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '支付金额',
-  `status` tinyint UNSIGNED NULL DEFAULT 0 COMMENT '支付状态,0:未支付、1:已支付、2:已超时',
+  `status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '支付状态,0:未支付、1:已支付、2:已超时',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `consume_version` int UNSIGNED NULL DEFAULT NULL COMMENT '消费版本号(乐观锁字段)',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
@@ -451,10 +453,10 @@ CREATE TABLE `tb_pay_platform`  (
   `order_no` bigint UNSIGNED NOT NULL COMMENT '订单号',
   `pay_type` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '支付方式',
   `platform` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '支付平台',
-  `platform_number` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '支付平台流水号',
+  `platform_no` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '支付平台流水号',
   `sharding` int UNSIGNED NULL DEFAULT NULL COMMENT '数据分片保留字段',
   PRIMARY KEY (`pay_info_id`, `order_no`) USING BTREE,
-  UNIQUE INDEX `unq_platform_number`(`platform_number` ASC) USING BTREE
+  UNIQUE INDEX `unq_order_platform_no`(`order_no` ASC, `platform_no` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付平台表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -469,8 +471,8 @@ CREATE TABLE `tb_pay_refund`  (
   `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `pay_info_id` bigint UNSIGNED NOT NULL COMMENT '支付信息ID',
   `order_no` bigint UNSIGNED NOT NULL COMMENT '订单号',
-  `platform` tinyint UNSIGNED NOT NULL COMMENT '支付平台,1:支付宝、2:微信支付、3:其他',
-  `platform_number` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '支付平台流水号',
+  `platform` tinyint UNSIGNED NULL DEFAULT NULL COMMENT '支付平台,1:支付宝、2:微信支付、3:其他',
+  `platform_no` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '支付平台流水号',
   `pay_amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '支付金额',
   `refund_amount` decimal(10, 2) UNSIGNED NOT NULL COMMENT '退款金额',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
@@ -480,8 +482,7 @@ CREATE TABLE `tb_pay_refund`  (
   `refund_time` datetime NULL DEFAULT NULL COMMENT '退款时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `unq_order_no_platform_number_create_time`(`order_no` ASC, `platform_number` ASC, `create_time` DESC) USING BTREE,
-  UNIQUE INDEX `unq_platform_number_create_time`(`platform_number` ASC, `create_time` DESC) USING BTREE
+  UNIQUE INDEX `unq_order_no_create_time`(`order_no` ASC, `create_time` DESC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -537,7 +538,7 @@ CREATE TABLE `tb_product_category`  (
   `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分类名称',
   `icon` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'icon地址',
   `sort` int UNSIGNED NULL DEFAULT 0 COMMENT '排序字段',
-  `navi_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否首页导航显示,0:否、1:是',
+  `navi_status` tinyint UNSIGNED NULL DEFAULT 0 COMMENT '是否首页导航显示,0:否、1:是',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = DYNAMIC;
@@ -562,7 +563,7 @@ INSERT INTO `tb_product_category` VALUES (10, 0, '生活 箱包', NULL, 0, 0, 0)
 DROP TABLE IF EXISTS `tb_product_category_attribute`;
 CREATE TABLE `tb_product_category_attribute`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品分类规格名称',
+  `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品分类规格名称',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = DYNAMIC;
@@ -594,7 +595,7 @@ CREATE TABLE `tb_product_comment`  (
   `product_id` int UNSIGNED NOT NULL COMMENT '商品ID',
   `parent_id` int NULL DEFAULT 0 COMMENT '父ID',
   `order_no` bigint NULL DEFAULT NULL COMMENT '订单号',
-  `user_id` int UNSIGNED NULL DEFAULT NULL COMMENT '用户ID',
+  `user_id` int UNSIGNED NOT NULL COMMENT '用户ID',
   `to_user_id` int NULL DEFAULT NULL COMMENT '被回复的用户ID',
   `nick_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '用户昵称',
   `to_nick_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '被回复的用户昵称',
@@ -660,7 +661,7 @@ CREATE TABLE `tb_sku`  (
   `title` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品规格标题',
   `param` json NULL COMMENT '商品规格参数',
   `price` decimal(10, 2) UNSIGNED NOT NULL COMMENT '商品规格单价',
-  `saleable_status` tinyint UNSIGNED NULL DEFAULT 1 COMMENT '是否上架,0:否、1:是',
+  `saleable_status` tinyint UNSIGNED NOT NULL DEFAULT 1 COMMENT '是否上架,0:否、1:是',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -753,11 +754,11 @@ CREATE TABLE `tb_sku_stock`  (
 -- ----------------------------
 -- Records of tb_sku_stock
 -- ----------------------------
-INSERT INTO `tb_sku_stock` VALUES (1, 1, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-22 06:21:10');
-INSERT INTO `tb_sku_stock` VALUES (2, 2, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-22 06:21:10');
-INSERT INTO `tb_sku_stock` VALUES (3, 3, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-22 06:21:10');
-INSERT INTO `tb_sku_stock` VALUES (4, 4, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
-INSERT INTO `tb_sku_stock` VALUES (5, 5, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
+INSERT INTO `tb_sku_stock` VALUES (1, 1, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-17 12:25:36');
+INSERT INTO `tb_sku_stock` VALUES (2, 2, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-17 12:25:36');
+INSERT INTO `tb_sku_stock` VALUES (3, 3, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-17 12:25:36');
+INSERT INTO `tb_sku_stock` VALUES (4, 4, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-11 13:07:11');
+INSERT INTO `tb_sku_stock` VALUES (5, 5, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-11 13:07:14');
 INSERT INTO `tb_sku_stock` VALUES (6, 6, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
 INSERT INTO `tb_sku_stock` VALUES (7, 7, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
 INSERT INTO `tb_sku_stock` VALUES (8, 8, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
@@ -852,7 +853,7 @@ CREATE TABLE `tb_user`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user
@@ -876,7 +877,7 @@ CREATE TABLE `tb_user_auths`  (
   INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE,
   INDEX `idx_identifier_create_time`(`identifier` ASC, `create_time` DESC) USING BTREE,
   INDEX `idx_credential_create_time`(`credential` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录类型表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录类型表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_auths
@@ -887,15 +888,19 @@ CREATE TABLE `tb_user_auths`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_user_coupon`;
 CREATE TABLE `tb_user_coupon`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
   `coupon_id` int UNSIGNED NOT NULL COMMENT '优惠券ID',
   `user_id` int UNSIGNED NOT NULL COMMENT '用户ID',
   `quantity` int UNSIGNED NULL DEFAULT NULL COMMENT '优惠券数量',
-  `status` tinyint UNSIGNED NULL DEFAULT 0 COMMENT '优惠券状态,0:未使用、1:已使用、2:已过期',
+  `status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '优惠券状态,0:未使用、1:已使用',
+  `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   `consume_version` int UNSIGNED NULL DEFAULT NULL COMMENT '消费版本号(乐观锁字段)',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`coupon_id`, `user_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = DYNAMIC;
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `unq_coupon_id_user_id_create_time`(`coupon_id` ASC, `user_id` ASC, `create_time` DESC) USING BTREE,
+  INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_coupon
@@ -929,8 +934,8 @@ CREATE TABLE `tb_user_shipping_address`  (
   `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `user_id` int UNSIGNED NOT NULL COMMENT '用户ID',
   `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收货人姓名',
-  `tel_no` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收件人电话',
-  `address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收件人地址',
+  `tel_no` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收件人电话',
+  `address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收件人地址',
   `detail_address` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '收件人详细地址',
   `default_status` tinyint UNSIGNED NULL DEFAULT 0 COMMENT '是否为默认地址,0:否、1:是',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
@@ -938,7 +943,7 @@ CREATE TABLE `tb_user_shipping_address`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_shipping_address
