@@ -4,16 +4,14 @@ import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.app.pojo.vo.SkuVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.generator.dao.ProductMapper;
-import com.enqbs.generator.dao.SkuMapper;
 import com.enqbs.generator.pojo.Product;
-import com.enqbs.generator.pojo.Sku;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductMapper productMapper;
 
     @Resource
-    private SkuMapper skuMapper;
+    private SkuService skuService;
 
     @Override
     public ProductVO getProductVO(Integer productId) {
@@ -38,10 +36,9 @@ public class ProductServiceImpl implements ProductService {
         }
 
         productVO = product2ProductVO(product);
-        List<Sku> skuList = skuMapper.selectListByProductId(productId);
+        List<SkuVO> skuVOList = skuService.getSkuVOList(productId);
 
-        if (!CollectionUtils.isEmpty(skuList)) {
-            List<SkuVO> skuVOList = skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(skuVOList)) {
             productVO.setSkuList(skuVOList);
         }
 
@@ -56,31 +53,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductVO> getProductVOList(Set<Integer> productIdSet) {
-        List<ProductVO> productVOList = new ArrayList<>();
+
         List<Product> productList = productMapper.selectListByProductIdSet(productIdSet);
 
         if (CollectionUtils.isEmpty(productList)) {
-            return productVOList;
+            return Collections.emptyList();
         }
 
-        List<Sku> skuList = skuMapper.selectListByProductIdSet(productIdSet);
-        Map<Integer, List<SkuVO>> skuVOListMap = skuList.stream().map(this::sku2SkuVO).collect(Collectors.groupingBy(SkuVO::getProductId));
-        productList.stream().map(this::product2ProductVO).collect(Collectors.toList()).forEach(productVO -> {
+
+        Map<Integer, List<SkuVO>> skuVOListMap = skuService.getSkuVOList(Collections.emptySet(), productIdSet).stream()
+                .collect(Collectors.groupingBy(SkuVO::getProductId));
+        return productList.stream().map(e -> {
+            ProductVO productVO = product2ProductVO(e);
             productVO.setSkuList(skuVOListMap.get(productVO.getId()));
-            productVOList.add(productVO);
-        });
-        return productVOList;
-    }
-
-    @Override
-    public List<Sku> getSkuList(Set<Integer> skuIdSet) {
-        return skuMapper.selectListByIdSet(skuIdSet);
-    }
-
-    private SkuVO sku2SkuVO(Sku sku) {
-        SkuVO skuVO = new SkuVO();
-        BeanUtils.copyProperties(sku, skuVO);
-        return skuVO;
+            return productVO;
+        }).collect(Collectors.toList());
     }
 
     private ProductVO product2ProductVO(Product product) {

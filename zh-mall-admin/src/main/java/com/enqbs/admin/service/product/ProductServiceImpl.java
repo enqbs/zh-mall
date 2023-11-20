@@ -1,28 +1,21 @@
 package com.enqbs.admin.service.product;
 
 import com.enqbs.admin.form.ProductForm;
-import com.enqbs.admin.form.SkuForm;
 import com.enqbs.admin.vo.ProductVO;
 import com.enqbs.admin.vo.SkuStockVO;
 import com.enqbs.admin.vo.SkuVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.SortEnum;
-import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductMapper;
-import com.enqbs.generator.dao.SkuMapper;
-import com.enqbs.generator.dao.SkuStockMapper;
 import com.enqbs.generator.pojo.Product;
-import com.enqbs.generator.pojo.Sku;
-import com.enqbs.generator.pojo.SkuStock;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,10 +28,10 @@ public class ProductServiceImpl implements ProductService {
     private ProductMapper productMapper;
 
     @Resource
-    private SkuMapper skuMapper;
+    private SkuService skuService;
 
     @Resource
-    private SkuStockMapper skuStockMapper;
+    private SkuStockService skuStockService;
 
     @Override
     public PageUtil<ProductVO> getProductVOList(Integer categoryId, Integer saleableStatus, Integer newStatus,
@@ -48,24 +41,22 @@ public class ProductServiceImpl implements ProductService {
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
-        List<ProductVO> productVOList = new ArrayList<>();
+        List<ProductVO> productVOList = Collections.emptyList();
         List<Product> productList = productMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
-        if (CollectionUtils.isEmpty(productList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(productVOList);
-            return pageUtil;
+        if (!CollectionUtils.isEmpty(productList)) {
+            total = productMapper.countByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus);
+            Set<Integer> productIdSet = productList.stream().map(Product::getId).collect(Collectors.toSet());
+            List<SkuVO> skuVOList = skuService.getSkuVOList(productIdSet);
+            handleSkuVOListAndSkuStockVO(skuVOList);
+            Map<Integer, List<SkuVO>> skuVOListMap = skuVOList.stream().collect(Collectors.groupingBy(SkuVO::getProductId));
+            productVOList = productList.stream().map(e -> {
+                ProductVO productVO = product2ProductVO(e);
+                productVO.setSkuList(skuVOListMap.get(productVO.getId()));
+                return productVO;
+            }).collect(Collectors.toList());
         }
 
-        total = productMapper.countByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus);
-        Set<Integer> productIdSet = productList.stream().map(Product::getId).collect(Collectors.toSet());
-        List<SkuVO> skuVOList = getSkuVOList(productIdSet);
-        handleSkuVOListAndSkuStockVO(skuVOList);
-        Map<Integer, List<SkuVO>> skuVOListMap = skuVOList.stream().collect(Collectors.groupingBy(SkuVO::getProductId));
-        productList.stream().map(this::product2ProductVO).collect(Collectors.toList()).forEach(productVO -> {
-            productVO.setSkuList(skuVOListMap.get(productVO.getId()));
-            productVOList.add(productVO);
-        });
         pageUtil.setTotal(total);
         pageUtil.setList(productVOList);
         return pageUtil;
@@ -80,7 +71,7 @@ public class ProductServiceImpl implements ProductService {
             return productVO;
         }
 
-        List<SkuVO> skuVOList = getSkuVOList(productId);
+        List<SkuVO> skuVOList = skuService.getSkuVOList(productId);
         handleSkuVOListAndSkuStockVO(skuVOList);
         productVO = product2ProductVO(product);
         productVO.setSkuList(skuVOList);
@@ -88,77 +79,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public int insertProduct(ProductForm form) {
+    public int insert(ProductForm form) {
         Product product = productForm2Product(form);
         return productMapper.insertSelective(product);
     }
 
     @Override
-    public int updateProduct(Integer productId, ProductForm form) {
+    public int update(Integer productId, ProductForm form) {
         Product product = productForm2Product(form);
         product.setId(productId);
         return productMapper.updateByPrimaryKeySelective(product);
     }
 
     @Override
-    public int deleteProduct(Integer productId) {
+    public int delete(Integer productId) {
         Product product = new Product();
         product.setId(productId);
         product.setDeleteStatus(Constants.IS_DELETE);
         return productMapper.updateByPrimaryKeySelective(product);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void insertSku(SkuForm form) {
-        int row;
-        Sku sku = skuForm2Sku(form);
-        row = skuMapper.insertSelective(sku);
-
-        if (row <= 0) {
-            throw new ServiceException("商品规格保存失败");
-        }
-
-        SkuStock skuStock = new SkuStock();
-        skuStock.setSkuId(sku.getId());
-        skuStock.setActualStock(form.getStock());
-        skuStock.setStock(form.getStock());
-        row = skuStockMapper.insertSelective(skuStock);
-
-        if (row <= 0) {
-            throw new ServiceException("商品规格库存保存失败");
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateSku(Integer skuId, SkuForm form) {
-        int row;
-        Sku sku = skuForm2Sku(form);
-        sku.setId(skuId);
-        row = skuMapper.updateByPrimaryKeySelective(sku);
-
-        if (row <= 0) {
-            throw new ServiceException("商品规格更新失败");
-        }
-
-        SkuStock skuStock = new SkuStock();
-        skuStock.setSkuId(skuId);
-        skuStock.setActualStock(form.getStock());
-        skuStock.setStock(form.getStock());
-        row = skuStockMapper.updateByPrimaryKeySelective(skuStock);
-
-        if (row <= 0) {
-            throw new ServiceException("商品规格库存更新失败");
-        }
-    }
-
-    @Override
-    public int deleteSku(Integer skuId) {
-        Sku sku = new Sku();
-        sku.setId(skuId);
-        sku.setDeleteStatus(Constants.IS_DELETE);
-        return skuMapper.updateByPrimaryKeySelective(sku);
     }
 
     private Product productForm2Product(ProductForm form) {
@@ -173,42 +111,9 @@ public class ProductServiceImpl implements ProductService {
         return productVO;
     }
 
-    private List<SkuVO> getSkuVOList(Set<Integer> productIdSet) {
-        List<Sku> skuList = skuMapper.selectListByProductIdSet(productIdSet);
-        return skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
-    }
-
-    private List<SkuVO> getSkuVOList(Integer productId) {
-        List<Sku> skuList = skuMapper.selectListByProductId(productId);
-        return skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
-    }
-
-    private List<SkuStockVO> getSkuStockVOList(Set<Integer> skuIdSet) {
-        List<SkuStock> skuStockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
-        return skuStockList.stream().map(this::skuStock2SkuStockVO).collect(Collectors.toList());
-    }
-
-    private Sku skuForm2Sku(SkuForm form) {
-        Sku sku = new Sku();
-        BeanUtils.copyProperties(form, sku);
-        return sku;
-    }
-
-    private SkuVO sku2SkuVO(Sku sku) {
-        SkuVO skuVO = new SkuVO();
-        BeanUtils.copyProperties(sku, skuVO);
-        return skuVO;
-    }
-
-    private SkuStockVO skuStock2SkuStockVO(SkuStock skuStock) {
-        SkuStockVO skuStockVO = new SkuStockVO();
-        BeanUtils.copyProperties(skuStock, skuStockVO);
-        return skuStockVO;
-    }
-
     private void handleSkuVOListAndSkuStockVO(List<SkuVO> skuVOList) {
         Set<Integer> skuIdSet = skuVOList.stream().map(SkuVO::getId).collect(Collectors.toSet());
-        List<SkuStockVO> skuStockVOList = getSkuStockVOList(skuIdSet);
+        List<SkuStockVO> skuStockVOList = skuStockService.getSkuStockVOList(skuIdSet);
         Map<Integer, SkuStockVO> skuStockVOMap = skuStockVOList.stream().collect(Collectors.toMap(SkuStockVO::getSkuId, v -> v));
         skuVOList.forEach(skuVO -> skuVO.setSkuStock(skuStockVOMap.get(skuVO.getId())));
     }

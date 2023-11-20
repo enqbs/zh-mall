@@ -5,8 +5,15 @@ import com.enqbs.admin.form.ChangePasswordForm;
 import com.enqbs.admin.form.LoginForm;
 import com.enqbs.admin.form.RegisterForm;
 import com.enqbs.admin.vo.SysUserInfoVO;
+import com.enqbs.common.enums.SortEnum;
+import com.enqbs.common.util.PageUtil;
 
 public interface SysUserService {
+
+    /*
+    * 系统用户列表
+    * */
+    PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize);
 
     /*
      * 登录

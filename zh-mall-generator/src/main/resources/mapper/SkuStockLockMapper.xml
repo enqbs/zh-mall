@@ -156,14 +156,4 @@
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP})
     </foreach>
   </insert>
-
-  <select id="selectListByOrderNoSet" parameterType="java.util.Set" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from tb_sku_stock_lock
-    where order_no in
-    <foreach collection="orderNoSet" item="item" index="index" open="(" close=")" separator=",">
-      #{item,jdbcType=BIGINT}
-    </foreach>
-  </select>
 </mapper>

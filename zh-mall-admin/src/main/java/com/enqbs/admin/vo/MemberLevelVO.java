@@ -16,6 +16,8 @@ public class MemberLevelVO implements Serializable {
 
     private BigDecimal discount;
 
+    private Integer deleteStatus;
+
     private Date createTime;
 
     private Date updateTime;
@@ -60,6 +62,14 @@ public class MemberLevelVO implements Serializable {
         this.discount = discount;
     }
 
+    public Integer getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(Integer deleteStatus) {
+        this.deleteStatus = deleteStatus;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -84,6 +94,7 @@ public class MemberLevelVO implements Serializable {
                 ", title='" + title + '\'' +
                 ", experience=" + experience +
                 ", discount=" + discount +
+                ", deleteStatus=" + deleteStatus +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';

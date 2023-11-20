@@ -91,7 +91,6 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartVO add(CartForm form) {
-        UserInfoVO userInfoVO = userService.getUserInfoVO();
         ProductVO productVO = productService.getProductVO(form.getProductId());
 
         if (ObjectUtils.isEmpty(productVO)) {
@@ -104,14 +103,13 @@ public class CartServiceImpl implements CartService {
             throw new ServiceException("商品下架或删除");
         }
 
-        Cart cart;
+        UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
-        Object redisMapValue = redisUtil.getRedisMapValue(redisKey, form.getSkuId());
+        Cart cart = (Cart) redisUtil.getRedisMapValue(redisKey, form.getSkuId());
 
-        if (ObjectUtils.isEmpty(redisMapValue)) {
+        if (ObjectUtils.isEmpty(cart)) {
             cart = new Cart(form.getProductId(), form.getSkuId(), form.getQuantity(), form.getSelected());
         } else {
-            cart = (Cart) redisMapValue;
             cart.setQuantity(cart.getQuantity() + form.getQuantity());
         }
 

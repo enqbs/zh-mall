@@ -7,8 +7,6 @@ import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.common.util.RedisUtil;
-import com.enqbs.generator.dao.UserAuthsMapper;
-import com.enqbs.generator.dao.UserLevelMapper;
 import com.enqbs.generator.dao.UserMapper;
 import com.enqbs.generator.pojo.User;
 import com.enqbs.generator.pojo.UserAuths;
@@ -32,16 +30,16 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Resource
-    private UserAuthsMapper userAuthsMapper;
-
-    @Resource
-    private UserLevelMapper userLevelMapper;
-
-    @Resource
     private RedisUtil redisUtil;
 
     @Resource
     private PasswordEncoder passwordEncoder;
+
+    @Resource
+    private UserAuthsService userAuthsService;
+
+    @Resource
+    private UserLevelService userLevelService;
 
     @Resource
     private TokenService tokenService;
@@ -51,7 +49,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(LoginForm form) {
-        UserAuths userAuths = userAuthsMapper.selectByIdentifier(form.getUsername());
+        UserAuths userAuths = userAuthsService.getUserAuths(null, form.getUsername(), null);
 
         if (ObjectUtils.isEmpty(userAuths)) {
             throw new ServiceException("用户不存在");
@@ -62,7 +60,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userMapper.selectByPrimaryKey(userAuths.getUserId());
-        UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getLevelId());
+        UserLevel userLevel = userLevelService.getUserLevel(user.getLevelId());
         LoginUser loginUser = getLoginUser(user, userAuths, userLevel);
         executor.execute(() -> cacheLoginUser(loginUser));
         return tokenService.getToken(loginUser);
@@ -71,7 +69,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer registerByUsername(RegisterByUsernameForm form) {
-        int count = userAuthsMapper.countByIdentifier(form.getUsername());
+        int count = userAuthsService.countUserAuths(null, form.getUsername(), null);
 
         if (count > 0) {
             throw new ServiceException("用户已存在");
@@ -85,8 +83,9 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("用户信息保存失败");
         }
 
-        UserAuths userAuths = buildUserAuths(user.getId(), Constants.LOGIN_TYPE_USERNAME, form.getUsername(), passwordEncoder.encode(form.getPassword()));
-        row = userAuthsMapper.insertSelective(userAuths);
+        UserAuths userAuths = buildUserAuths(user.getId(), Constants.LOGIN_TYPE_USERNAME,
+                form.getUsername(), passwordEncoder.encode(form.getPassword()));
+        row = userAuthsService.insert(userAuths);
 
         if (row <= 0) {
             throw new ServiceException("用户账号密码保存失败");

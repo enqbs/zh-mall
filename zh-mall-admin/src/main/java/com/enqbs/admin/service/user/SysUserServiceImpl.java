@@ -6,8 +6,10 @@ import com.enqbs.admin.form.LoginForm;
 import com.enqbs.admin.form.RegisterForm;
 import com.enqbs.admin.vo.SysUserInfoVO;
 import com.enqbs.common.constant.Constants;
+import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.IDUtil;
+import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.RedisUtil;
 import com.enqbs.generator.dao.SysUserMapper;
 import com.enqbs.generator.pojo.SysMenu;
@@ -20,8 +22,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,6 +50,27 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Resource
     private ThreadPoolTaskExecutor executor;
+
+    @Override
+    public PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
+        PageUtil<SysUserInfoVO> pageUtil = new PageUtil<>();
+        pageUtil.setNum(pageNum);
+        pageUtil.setSize(pageSize);
+        long total = 0L;
+        List<SysUser> sysUserList = sysUserMapper.selectListByParam(deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+
+        if (CollectionUtils.isEmpty(sysUserList)) {
+            pageUtil.setTotal(total);
+            pageUtil.setList(Collections.emptyList());
+            return pageUtil;
+        }
+
+        total = sysUserMapper.countByParam(deleteStatus);
+        List<SysUserInfoVO> sysUserInfoVOList = sysUserList.stream().map(this::sysUserInfo2SysUserInfoVO).collect(Collectors.toList());
+        pageUtil.setTotal(total);
+        pageUtil.setList(sysUserInfoVOList);
+        return pageUtil;
+    }
 
     @Override
     public String login(LoginForm form) {
@@ -166,6 +191,12 @@ public class SysUserServiceImpl implements SysUserService {
     private void removeCacheLoginUser(LoginUser loginUser) {
         String redisKey = String.format(Constants.SYS_USER_REDIS_KEY, loginUser.getUserToken());
         redisUtil.deleteObject(redisKey);
+    }
+
+    private SysUserInfoVO sysUserInfo2SysUserInfoVO(SysUser sysUser) {
+        SysUserInfoVO sysUserInfoVO = new SysUserInfoVO();
+        BeanUtils.copyProperties(sysUser, sysUserInfoVO);
+        return sysUserInfoVO;
     }
 
 }

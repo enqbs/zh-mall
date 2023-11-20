@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,18 +22,19 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping("/menu")
 public class SysMenuController {
 
     @Resource
     private SysMenuService sysMenuService;
 
-    @GetMapping("/menu/root-list")
+    @GetMapping("/root-list")
     public R<List<SysMenuVO>> menuRootList() {
         List<SysMenuVO> sysMenuRootList = sysMenuService.getSysMenuVOList();
         return R.ok(sysMenuRootList);
     }
 
-    @GetMapping("/menu/list")
+    @GetMapping("/list")
     public R<PageUtil<SysMenuVO>> menuList(@RequestParam(required = false) Integer parentId,
                                            @RequestParam(required = false) Integer roleId,
                                            @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
@@ -50,13 +52,13 @@ public class SysMenuController {
         return R.ok(pageSysMenuList);
     }
 
-    @GetMapping("/menu/{menuId}")
+    @GetMapping("/{menuId}")
     public R<SysMenuVO> menuDetail(@PathVariable Integer menuId) {
         SysMenuVO sysMenuInfo = sysMenuService.getSysMenuVO(menuId);
         return R.ok(sysMenuInfo);
     }
 
-    @PostMapping("/menu")
+    @PostMapping
     @PreAuthorize("hasAuthority('SYS_MENU:ADD')")
     public R<Void> addMenu(@Valid @RequestBody SysMenuForm form) {
         int row = sysMenuService.insertSysMenu(form);
@@ -68,7 +70,7 @@ public class SysMenuController {
         return R.ok("菜单新增成功");
     }
 
-    @PutMapping("/menu/{menuId}")
+    @PutMapping("/{menuId}")
     @PreAuthorize("hasAuthority('SYS_MENU:UPDATE')")
     public R<Void> updateMenu(@PathVariable Integer menuId, @Valid @RequestBody SysMenuForm form) {
         int row = sysMenuService.updateSysMenu(menuId, form);
@@ -80,7 +82,7 @@ public class SysMenuController {
         return R.ok("菜单修改成功");
     }
 
-    @DeleteMapping("/menu/{menuId}")
+    @DeleteMapping("/{menuId}")
     @PreAuthorize("hasAuthority('SYS_MENU:DELETE')")
     public R<Void> deleteMenu(@PathVariable Integer menuId) {
         int row = sysMenuService.deleteSysMenu(menuId);

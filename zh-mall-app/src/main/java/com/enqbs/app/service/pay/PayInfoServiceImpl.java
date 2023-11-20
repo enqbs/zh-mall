@@ -10,10 +10,7 @@ import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.enums.QueueEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.dao.PayInfoMapper;
-import com.enqbs.generator.dao.PayPlatformMapper;
-import com.enqbs.generator.dao.PayRefundMapper;
 import com.enqbs.generator.pojo.PayInfo;
-import com.enqbs.generator.pojo.PayPlatform;
 import com.enqbs.pay.enums.PayStatusEnum;
 import com.enqbs.pay.enums.PayTypeEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +29,13 @@ public class PayInfoServiceImpl implements PayInfoService {
     private PayInfoMapper payInfoMapper;
 
     @Resource
-    private PayPlatformMapper payPlatformMapper;
-
-    @Resource
-    private PayRefundMapper payRefundMapper;
-
-    @Resource
-    private UserService userService;
+    private PayPlatformService payPlatformService;
 
     @Resource
     private OrderService orderService;
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private RabbitMQService rabbitMQService;
@@ -64,7 +58,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         if (ObjectUtils.isEmpty(payInfo)) {
-            insertPayInfo(orderNo, orderVO.getActualAmount(), userInfoVO);
+            insert(orderNo, orderVO.getActualAmount(), userInfoVO);
         }
 
         return orderVO.getActualAmount();
@@ -72,7 +66,7 @@ public class PayInfoServiceImpl implements PayInfoService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updatePayInfo(PayTypeEnum payTypeEnum, PayStatusEnum payStatusEnum, String orderNo, String platformNo) {
+    public void update(PayTypeEnum payTypeEnum, PayStatusEnum payStatusEnum, String orderNo, String platformNo) {
         PayInfo payInfo = payInfoMapper.selectByOrderNoOrStatusOrDeleteStatus(Long.valueOf(orderNo), null, Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(payInfo)) {
@@ -84,12 +78,12 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         payInfo.setStatus(payStatusEnum.getCode());
-        updatePayInfo(orderNo, platformNo, payInfo);
-        insertPayPlatform(payInfo.getId(), payTypeEnum, orderNo, platformNo);
-        rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE.getExchange(), QueueEnum.PAY_SUCCESS_QUEUE.getRoutingKey(), payInfo);
+        update(orderNo, platformNo, payInfo);
+        payPlatformService.insert(payInfo.getId(), payTypeEnum, orderNo, platformNo);
+        rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE.getExchange(), QueueEnum.PAY_SUCCESS_QUEUE.getRoutingKey(), orderNo);
     }
 
-    private void insertPayInfo(Long orderNo, BigDecimal amount, UserInfoVO userInfo) {
+    private void insert(Long orderNo, BigDecimal amount, UserInfoVO userInfo) {
         PayInfo payInfo = new PayInfo();
         payInfo.setOrderNo(orderNo);
         payInfo.setUserId(userInfo.getUserId());
@@ -106,7 +100,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         log.info("订单号:'{}',支付信息保存成功.", orderNo);
     }
 
-    private void updatePayInfo(String orderNo, String platformNo, PayInfo payInfo) {
+    private void update(String orderNo, String platformNo, PayInfo payInfo) {
         int row = payInfoMapper.updateByPrimaryKeySelective(payInfo);
 
         if (row <= 0) {
@@ -114,22 +108,6 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         log.info("订单号:'{}',支付平台流水号:'{}',支付信息更新成功.", orderNo, platformNo);
-    }
-
-    private void insertPayPlatform(Long payInfoId, PayTypeEnum payTypeEnum, String orderNo, String platformNo) {
-        PayPlatform payPlatform = new PayPlatform();
-        payPlatform.setPayInfoId(payInfoId);
-        payPlatform.setOrderNo(Long.valueOf(orderNo));
-        payPlatform.setPayType(payTypeEnum.getPayType());
-        payPlatform.setPlatform(payTypeEnum.getPayPlatform());
-        payPlatform.setPlatformNo(platformNo);
-        int row = payPlatformMapper.insertSelective(payPlatform);
-
-        if (row <= 0) {
-            throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + platformNo + ",支付平台信息保存失败");
-        }
-
-        log.info("订单号:'{}',支付平台流水号:'{}',支付平台信息保存成功.", orderNo, platformNo);
     }
 
 }

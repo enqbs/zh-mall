@@ -11,7 +11,7 @@ public class OrderForm {
     @NotNull(message = "请选择收货地址")
     private Integer shippingAddressId;
 
-    private Integer couponsId;
+    private Integer couponId;
 
     public String getOrderToken() {
         return orderToken;
@@ -29,12 +29,12 @@ public class OrderForm {
         this.shippingAddressId = shippingAddressId;
     }
 
-    public Integer getCouponsId() {
-        return couponsId;
+    public Integer getCouponId() {
+        return couponId;
     }
 
-    public void setCouponsId(Integer couponsId) {
-        this.couponsId = couponsId;
+    public void setCouponId(Integer couponId) {
+        this.couponId = couponId;
     }
 
 }

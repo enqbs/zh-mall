@@ -4,8 +4,6 @@ import com.enqbs.app.service.order.OrderService;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.RedisUtil;
-import com.enqbs.generator.pojo.Order;
-import com.enqbs.generator.pojo.PayInfo;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
@@ -28,7 +26,7 @@ public class RabbitMQMessageListener {
 
     @Async("threadPoolTaskExecutor")
     @RabbitListener(queues = "order.close.queue")
-    public void listenerOrderCloseQueue(String body, Message message, Channel channel) throws IOException {
+    public void listenerOrderCloseQueue(String content, Message message, Channel channel) throws IOException {
         int i = 0;
         boolean flag;
 
@@ -36,8 +34,8 @@ public class RabbitMQMessageListener {
             flag = false;
 
             try {
-                Order messageQueueOrder = GsonUtil.json2Obj(body, Order.class);
-                orderService.handleTimeoutOrder(messageQueueOrder);
+                Long orderNo = GsonUtil.json2Obj(content, Long.class);
+                orderService.handleTimeoutOrder(orderNo);
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
                 flag = true;
@@ -45,7 +43,8 @@ public class RabbitMQMessageListener {
 
             if (10 == i) {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
+                log.error("消息队列:'{}',确认失败,content:'{}',message:'{}'.",
+                        message.getMessageProperties().getConsumerQueue(), content, message);
                 break;
             }
 
@@ -55,7 +54,7 @@ public class RabbitMQMessageListener {
 
     @Async("threadPoolTaskExecutor")
     @RabbitListener(queues = "pay.success.queue")
-    public void listenerPaySuccessQueue(String body, Message message, Channel channel) throws IOException {
+    public void listenerPaySuccessQueue(String content, Message message, Channel channel) throws IOException {
         int i = 0;
         boolean flag;
 
@@ -63,8 +62,8 @@ public class RabbitMQMessageListener {
             flag = false;
 
             try {
-                PayInfo messageQueuePayInfo = GsonUtil.json2Obj(body, PayInfo.class);
-                orderService.handlePaySuccessOrder(messageQueuePayInfo);
+                Long orderNo = GsonUtil.json2Obj(content, Long.class);
+                orderService.handlePaySuccessOrder(orderNo);
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
                 flag = true;
@@ -72,7 +71,8 @@ public class RabbitMQMessageListener {
 
             if (10 == i) {
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                log.error("消息队列:'{}',确认失败,body:'{}',message:'{}'.", message.getMessageProperties().getConsumerQueue(), body, message);
+                log.error("消息队列:'{}',确认失败,content:'{}',message:'{}'.",
+                        message.getMessageProperties().getConsumerQueue(), content, message);
                 break;
             }
 
@@ -82,7 +82,7 @@ public class RabbitMQMessageListener {
 
     @Async("threadPoolTaskExecutor")
     @RabbitListener(queues = "canal.data.queue")
-    public void listenerCanalSyncQueue(String body, Message message, Channel channel) throws IOException {
+    public void listenerCanalSyncQueue(Message message, Channel channel) throws IOException {
         /*
          * body:{
          *         "data":[{"id":"1","parent_id":"0","name":"手机","icon":null,"sort":"0","navi_status":"0","delete_status":"0"}],

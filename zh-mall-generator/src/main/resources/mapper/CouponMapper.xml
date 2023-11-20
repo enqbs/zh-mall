@@ -185,4 +185,57 @@
       #{item,jdbcType=INTEGER}
     </foreach>
   </select>
+
+  <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_coupon
+    <trim prefix="where " suffixOverrides="and">
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER} and
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=DATE} and
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=DATE} and
+      </if>
+      <if test="sstatus != null">
+        status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
+    <if test="sort">
+      order by create_time ${sort}
+    </if>
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize" />
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByParam" parameterType="map" resultType="java.lang.Long">
+    select
+    count(*)
+    from tb_coupon
+    <trim prefix="where " suffixOverrides="and">
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=INTEGER} and
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=DATE} and
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=DATE} and
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
+  </select>
 </mapper>

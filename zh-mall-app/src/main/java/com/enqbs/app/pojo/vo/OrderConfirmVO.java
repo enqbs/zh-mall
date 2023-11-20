@@ -1,16 +1,22 @@
 package com.enqbs.app.pojo.vo;
 
+import com.google.gson.annotations.Expose;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class OrderConfirmVO implements Serializable {
 
+    @Expose(serialize = false, deserialize = false)
     private List<UserShippingAddressVO> shippingAddressList;
 
+    @Expose(serialize = false, deserialize = false)
     private List<UserCouponVO> couponList;
 
     private List<OrderItemVO> orderItemList;
+
+    private Integer couponId;
 
     private BigDecimal postage;
 
@@ -46,6 +52,14 @@ public class OrderConfirmVO implements Serializable {
 
     public void setOrderItemList(List<OrderItemVO> orderItemList) {
         this.orderItemList = orderItemList;
+    }
+
+    public Integer getCouponId() {
+        return couponId;
+    }
+
+    public void setCouponId(Integer couponId) {
+        this.couponId = couponId;
     }
 
     public BigDecimal getPostage() {
@@ -102,6 +116,7 @@ public class OrderConfirmVO implements Serializable {
                 "shippingAddressList=" + shippingAddressList +
                 ", couponList=" + couponList +
                 ", orderItemList=" + orderItemList +
+                ", couponId=" + couponId +
                 ", postage=" + postage +
                 ", amount=" + amount +
                 ", couponAmount=" + couponAmount +

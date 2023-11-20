@@ -25,7 +25,7 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
     private UserService userService;
 
     @Override
-    public int insertUserShippingAddress(UserShippingAddressForm form) {
+    public int insert(UserShippingAddressForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         UserShippingAddress shippingAddress = new UserShippingAddress();
         shippingAddress.setUserId(userInfoVO.getUserId());
@@ -37,7 +37,7 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
     }
 
     @Override
-    public int updateUserShippingAddress(Integer shippingAddressId, UserShippingAddressForm form) {
+    public int update(Integer shippingAddressId, UserShippingAddressForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKeyOrUserIdOrDeleteStatus(
                 shippingAddressId, userInfoVO.getUserId(), Constants.IS_NOT_DELETE);
@@ -54,7 +54,7 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
     }
 
     @Override
-    public int deleteUserShippingAddress(Integer shippingAddressId) {
+    public int delete(Integer shippingAddressId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         UserShippingAddress shippingAddress = userShippingAddressMapper.selectByPrimaryKeyOrUserIdOrDeleteStatus(
                 shippingAddressId, userInfoVO.getUserId(), Constants.IS_NOT_DELETE);

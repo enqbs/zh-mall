@@ -7,12 +7,12 @@ public interface RabbitMQService {
     /*
      * 发送普通消息
      * */
-    void send(String exchange, String routingKey, Object message);
+    void send(String exchange, String routingKey, Object content);
 
     /*
      * 发送 delay 消息
      * */
-    void send(String exchange, String routingKey, Object message, Integer delay);
+    void send(String exchange, String routingKey, Object content, Integer delay);
 
     /*
      * 从 MessageQueueLog 中发送消息

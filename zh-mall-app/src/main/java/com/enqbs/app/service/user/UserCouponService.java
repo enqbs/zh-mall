@@ -31,21 +31,21 @@ public interface UserCouponService {
     /*
      * 保存用户优惠券信息
      * */
-    void insertUserCoupon(Integer couponId, Integer userId, Integer quantity);
+    void insert(Integer couponId, Integer userId, Integer quantity);
 
     /*
      * 扣除用户优惠券
      * */
-    void deductUserCoupon(Long orderNo, Integer couponId);
+    void deduct(Long orderNo, Integer couponId);
 
     /*
      * 回滚用户优惠券
      * */
-    void rollbackUserCoupon(Long orderNo, Integer couponId);
+    void rollback(Long orderNo, Integer couponId);
 
     /*
-    * 用户删除优惠券
-    * */
+     * 用户删除优惠券
+     * */
     int delete(Integer couponId);
 
 }

@@ -4,7 +4,6 @@ import com.enqbs.generator.pojo.SkuStockLock;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Set;
 
 public interface SkuStockLockMapper {
 
@@ -25,7 +24,5 @@ public interface SkuStockLockMapper {
     List<SkuStockLock> selectListByOrderNo(Long orderNo);
 
     int batchInsertBySkuStockLockList(@Param("skuStockLockList") List<SkuStockLock> skuStockLockList);
-
-    List<SkuStockLock> selectListByOrderNoSet(@Param("orderNoSet") Set<Long> orderNoSet);
 
 }

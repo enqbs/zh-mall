@@ -3,7 +3,6 @@ package com.enqbs.app.service.product;
 import com.enqbs.app.pojo.dto.SkuStockDTO;
 import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.exception.ServiceException;
-import com.enqbs.generator.dao.SkuStockLockMapper;
 import com.enqbs.generator.dao.SkuStockMapper;
 import com.enqbs.generator.pojo.SkuStock;
 import com.enqbs.generator.pojo.SkuStockLock;
@@ -25,7 +24,7 @@ public class SkuStockServiceImpl implements SkuStockService {
     private SkuStockMapper skuStockMapper;
 
     @Resource
-    private SkuStockLockMapper skuStockLockMapper;
+    private SkuStockLockService skuStockLockService;
 
     @Override
     public List<SkuStock> getSkuStockList(Set<Integer> skuIdSet) {
@@ -37,15 +36,15 @@ public class SkuStockServiceImpl implements SkuStockService {
     public void lockSkuStock(Long orderNo, List<SkuStockDTO> skuStockDTOList) {
         List<SkuStock> skuStockList = skuStockDTOList.stream().map(this::skuStockDTO2SkuStock).collect(Collectors.toList());
         List<SkuStockLock> skuStockLockList = skuStockDTOList.stream().map(e -> skuStockDTO2SkuStockLock(orderNo, e)).collect(Collectors.toList());
+        skuStockLockService.batchInsert(orderNo, skuStockLockList);
         batchLockSkuStock(orderNo, skuStockList);
-        batchInsertSkuStockLock(orderNo, skuStockLockList);
         log.info("订单号:'{}',库存锁定成功.", orderNo);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void unLockSkuStock(Long orderNo, OrderStatusEnum orderStatusEnum) {
-        List<SkuStockLock> stockLockList = skuStockLockMapper.selectListByOrderNo(orderNo);
+        List<SkuStockLock> stockLockList = skuStockLockService.getSkuStockLockList(orderNo);
         Set<Integer> skuIdSet = stockLockList.stream().map(SkuStockLock::getSkuId).collect(Collectors.toSet());
         Map<Integer, SkuStockLock> skuStockLockMap = stockLockList.stream().collect(Collectors.toMap(SkuStockLock::getSkuId, v -> v));
         List<SkuStock> skuStockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
@@ -55,8 +54,8 @@ public class SkuStockServiceImpl implements SkuStockService {
             skuStock.setLockStock(skuStockLock.getCount());
             skuStock.setStock(skuStockLock.getCount());
         });
+        skuStockLockService.delete(orderNo);
         batchUnLockSkuStock(orderNo, skuStockList, orderStatusEnum);
-        deleteSkuStockLock(orderNo);
         log.info("订单号:'{}',库存解锁成功.", orderNo);
     }
 
@@ -79,22 +78,6 @@ public class SkuStockServiceImpl implements SkuStockService {
 
         if (row < skuStockList.size()) {
             throw new ServiceException("订单号:" + orderNo + ",库存信息更新失败");
-        }
-    }
-
-    private void batchInsertSkuStockLock(Long orderNo, List<SkuStockLock> skuStockLockList) {
-        int row = skuStockLockMapper.batchInsertBySkuStockLockList(skuStockLockList);
-
-        if (row <= 0) {
-            throw new ServiceException("订单号:" + orderNo + ",库存锁定信息保存失败");
-        }
-    }
-
-    private void deleteSkuStockLock(Long orderNo) {
-        int row = skuStockLockMapper.deleteByOrderNo(orderNo);
-
-        if (row <= 0) {
-            throw new ServiceException("订单号:" + orderNo + ",库存锁定信息更新失败");
         }
     }
 

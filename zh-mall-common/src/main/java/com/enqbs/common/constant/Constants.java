@@ -57,8 +57,6 @@ public class Constants {
     /* rabbitmq */
     public static final String EXCHANGE_TYPE_DELAYED = "x-delayed-message";
 
-    public static final String EXCHANGE_TYPE_DIRECT = "direct";
-
     public static final Integer MESSAGE_SEND_SUCCESS = 1;
 
     public static final Integer MESSAGE_SEND_ERROR = -1;
@@ -66,10 +64,10 @@ public class Constants {
     /* 登录方式标识 */
     public static final String LOGIN_TYPE_USERNAME = "username";
 
-    public static final String LOGIN_TYPE_PHONE = "phone";
-
-    public static final String LOGIN_TYPE_EMAIL = "Email";
-
-    public static final String LOGIN_TYPE_ALIPAY_PC = "alipay_pc";
+//    public static final String LOGIN_TYPE_PHONE = "phone";
+//
+//    public static final String LOGIN_TYPE_EMAIL = "Email";
+//
+//    public static final String LOGIN_TYPE_ALIPAY_PC = "alipay_pc";
 
 }

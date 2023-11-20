@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,38 +23,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/order")
 public class OrderController {
 
     @Resource
     private OrderService orderService;
 
-    @GetMapping("/order/confirm")
+    @GetMapping("/confirm")
     public R<OrderConfirmVO> orderConfirmationPage() {
         OrderConfirmVO orderConfirmInfo = orderService.getOrderConfirmVO();
         return R.ok(orderConfirmInfo);
     }
 
-    @GetMapping("/order/coupon")
+    @GetMapping("/coupon")
     public R<OrderConfirmVO> orderConfirmationPage(@Valid @RequestBody OrderConfirmForm form) {
         OrderConfirmVO orderConfirmInfo = orderService.getOrderConfirmVO(form);
         return R.ok(orderConfirmInfo);
     }
 
-    @PostMapping("/order")
-    public R<Map<String, Long>> orderSubmit(@Valid @RequestBody OrderForm form) {
+    @PostMapping
+    public R<Map<String, Long>> submitOrder(@Valid @RequestBody OrderForm form) {
         Long orderNo = orderService.submit(form);
         Map<String, Long> resultMap = new HashMap<>();
         resultMap.put("orderNo", orderNo);
         return R.ok("订单提交成功", resultMap);
     }
 
-    @GetMapping("/order/{orderNo}")
+    @GetMapping("/{orderNo}")
     public R<OrderVO> orderDetail(@PathVariable Long orderNo) {
         OrderVO orderInfo = orderService.getOrderVO(orderNo);
         return R.ok(orderInfo);
     }
 
-    @GetMapping("/order/list")
+    @GetMapping("/list")
     public R<PageUtil<OrderVO>> orderList(@RequestParam(required = false) Integer status,
                                           @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
@@ -70,17 +72,17 @@ public class OrderController {
         return R.ok(pageOrderList);
     }
 
-    @PutMapping("/order/receipt/{orderNo}")
-    public R<Map<String, Long>> orderReceipt(@PathVariable Long orderNo) {
-        orderService.sign4Order(orderNo);
+    @PutMapping("/receipt/{orderNo}")
+    public R<Map<String, Long>> receiptOrder(@PathVariable Long orderNo) {
+        orderService.sign(orderNo);
         Map<String, Long> resultMap = new HashMap<>();
         resultMap.put("orderNo", orderNo);
         return R.ok("订单签收成功", resultMap);
     }
 
-    @PutMapping("/order/cancel/{orderNo}")
-    public R<Map<String, Long>> orderCancel(@PathVariable Long orderNo) {
-        orderService.cancelOrder(orderNo);
+    @PutMapping("/cancel/{orderNo}")
+    public R<Map<String, Long>> cancelOrder(@PathVariable Long orderNo) {
+        orderService.cancel(orderNo);
         Map<String, Long> resultMap = new HashMap<>();
         resultMap.put("orderNo", orderNo);
         return R.ok("订单取消成功", resultMap);

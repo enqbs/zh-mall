@@ -143,9 +143,38 @@
 
   <select id="countByUsername" parameterType="java.lang.String" resultType="int">
     select
-    count(*)
+      count(*)
     from sys_user
     where username = #{username,jdbcType=VARCHAR}
-    and delete_status = 0
+      and delete_status = 0
+  </select>
+
+  <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_user
+    <trim prefix="where " suffixOverrides="and">
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
+    <if test="sort != null">
+      order by create_time ${sort}
+    </if>
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize" />
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByParam" parameterType="map" resultType="java.lang.Long">
+    select
+    count(*)
+    from sys_user
+    <trim prefix="where " suffixOverrides="and">
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
   </select>
 </mapper>

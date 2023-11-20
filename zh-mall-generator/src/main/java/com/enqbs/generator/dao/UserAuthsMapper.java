@@ -1,6 +1,7 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.UserAuths;
+import org.apache.ibatis.annotations.Param;
 
 public interface UserAuthsMapper {
 
@@ -16,8 +17,12 @@ public interface UserAuthsMapper {
 
     int updateByPrimaryKey(UserAuths record);
 
-    UserAuths selectByIdentifier(String identifier);
+    UserAuths selectByParam(@Param("userId") Integer userId,
+                            @Param("identifier") String identifier,
+                            @Param("credential") String credential);
 
-    int countByIdentifier(String identifier);
+    int countByParam(@Param("userId") Integer userId,
+                     @Param("identifier") String identifier,
+                     @Param("credential") String credential);
 
 }

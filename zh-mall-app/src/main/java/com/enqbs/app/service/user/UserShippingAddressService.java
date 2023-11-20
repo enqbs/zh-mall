@@ -10,17 +10,17 @@ public interface UserShippingAddressService {
     /*
      * 新增收货地址
      * */
-    int insertUserShippingAddress(UserShippingAddressForm form);
+    int insert(UserShippingAddressForm form);
 
     /*
      * 修改收货地址
      * */
-    int updateUserShippingAddress(Integer shippingAddressId, UserShippingAddressForm form);
+    int update(Integer shippingAddressId, UserShippingAddressForm form);
 
     /*
      * 删除收货地址
      * */
-    int deleteUserShippingAddress(Integer shippingAddressId);
+    int delete(Integer shippingAddressId);
 
     /*
      * 收货地址信息

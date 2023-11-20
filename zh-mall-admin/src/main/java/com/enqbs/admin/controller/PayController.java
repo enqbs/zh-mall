@@ -7,18 +7,20 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
 @RestController
-public class PayInfoController {
+@RequestMapping("/pay")
+public class PayController {
 
     @Resource
     private PayInfoService payInfoService;
 
-    @GetMapping("/pay/list")
+    @GetMapping("/list")
     public R<PageUtil<PayInfoVO>> payInfoList(@RequestParam(required = false) Long orderNo,
                                               @RequestParam(required = false) Integer userId,
                                               @RequestParam(required = false) String payType,
@@ -41,7 +43,7 @@ public class PayInfoController {
         return R.ok(pagePayInfoList);
     }
 
-    @GetMapping("/pay/info/{payInfoId}")
+    @GetMapping("/info/{payInfoId}")
     public R<PayInfoVO> payInfoDetail(@PathVariable Long payInfoId) {
         PayInfoVO payInfo = payInfoService.getPayInfoVO(payInfoId);
         return R.ok(payInfo);

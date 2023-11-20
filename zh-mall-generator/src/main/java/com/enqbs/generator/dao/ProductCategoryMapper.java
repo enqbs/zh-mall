@@ -1,6 +1,7 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.ProductCategory;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,5 +20,15 @@ public interface ProductCategoryMapper {
     int updateByPrimaryKey(ProductCategory record);
 
     List<ProductCategory> selectList();
+
+    List<ProductCategory> selectListByParam(@Param("parentId") Integer parentId,
+                                            @Param("naviStatus") Integer naviStatus,
+                                            @Param("deleteStatus") Integer deleteStatus,
+                                            @Param("pageNum") Integer pageNum,
+                                            @Param("pageSize") Integer pageSize);
+
+    Long countByParam(@Param("parentId") Integer parentId,
+                      @Param("naviStatus") Integer naviStatus,
+                      @Param("deleteStatus") Integer deleteStatus);
 
 }

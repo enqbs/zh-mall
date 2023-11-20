@@ -7,18 +7,20 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
 @RestController
+@RequestMapping("/member")
 public class MemberController {
 
     @Resource
     private MemberService memberService;
 
-    @GetMapping("/member/list")
+    @GetMapping("/list")
     public R<PageUtil<MemberVO>> memberList(@RequestParam(required = false) Integer id,
                                             @RequestParam(required = false) Long uid,
                                             @RequestParam(required = false) String identifier,
@@ -39,7 +41,7 @@ public class MemberController {
         return R.ok(pageMemberList);
     }
 
-    @GetMapping("/member/{id}")
+    @GetMapping("/{id}")
     public R<MemberVO> memberDetail(@PathVariable Integer id) {
         MemberVO memberInfo = memberService.getMemberVO(id);
         return R.ok(memberInfo);

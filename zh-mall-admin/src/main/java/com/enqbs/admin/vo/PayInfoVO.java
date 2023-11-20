@@ -20,6 +20,8 @@ public class PayInfoVO implements Serializable {
 
     private Integer status;
 
+    private Integer deleteStatus;
+
     private Date createTime;
 
     private Date paymentTime;
@@ -84,6 +86,14 @@ public class PayInfoVO implements Serializable {
         this.status = status;
     }
 
+    public Integer getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(Integer deleteStatus) {
+        this.deleteStatus = deleteStatus;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -126,6 +136,7 @@ public class PayInfoVO implements Serializable {
                 ", photo='" + photo + '\'' +
                 ", payAmount=" + payAmount +
                 ", status=" + status +
+                ", deleteStatus=" + deleteStatus +
                 ", createTime=" + createTime +
                 ", paymentTime=" + paymentTime +
                 ", updateTime=" + updateTime +

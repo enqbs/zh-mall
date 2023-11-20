@@ -8,10 +8,8 @@ import com.enqbs.app.pojo.vo.OrderVO;
 import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
-import com.enqbs.generator.pojo.Order;
 import com.enqbs.generator.pojo.OrderItem;
 import com.enqbs.generator.pojo.OrderShippingAddress;
-import com.enqbs.generator.pojo.PayInfo;
 
 import java.util.List;
 
@@ -45,27 +43,27 @@ public interface OrderService {
     /*
      * 保存订单信息
      * */
-    void insertOrder(Long orderNo, List<OrderItem> orderItemList, OrderShippingAddress orderShippingAddress,
-                     List<SkuStockDTO> skuStockDTOList, OrderConfirmVO orderConfirmVO, OrderForm form, UserInfoVO userInfoVO);
+    void insert(Long orderNo, List<OrderItem> orderItemList, OrderShippingAddress orderShippingAddress,
+                List<SkuStockDTO> skuStockDTOList, OrderConfirmVO orderConfirmVO, OrderForm form, UserInfoVO userInfoVO);
 
     /*
      * 签收订单
      * */
-    void sign4Order(Long orderNo);
+    void sign(Long orderNo);
 
     /*
      * 取消订单
      * */
-    void cancelOrder(Long orderNo);
+    void cancel(Long orderNo);
 
     /*
      * 处理过期订单
      * */
-    void handleTimeoutOrder(Order order);
+    void handleTimeoutOrder(Long orderNo);
 
     /*
      * 处理支付成功订单
      * */
-    void handlePaySuccessOrder(PayInfo payInfo);
+    void handlePaySuccessOrder(Long orderNo);
 
 }

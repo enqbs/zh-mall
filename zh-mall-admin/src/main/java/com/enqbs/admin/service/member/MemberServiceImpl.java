@@ -2,20 +2,17 @@ package com.enqbs.admin.service.member;
 
 import com.enqbs.admin.vo.MemberLevelVO;
 import com.enqbs.admin.vo.MemberVO;
-import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
-import com.enqbs.generator.dao.UserLevelMapper;
 import com.enqbs.generator.dao.UserMapper;
 import com.enqbs.generator.pojo.User;
-import com.enqbs.generator.pojo.UserLevel;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +25,7 @@ public class MemberServiceImpl implements MemberService {
     private UserMapper userMapper;
 
     @Resource
-    private UserLevelMapper userLevelMapper;
+    private MemberLevelService memberLevelService;
 
     @Override
     public PageUtil<MemberVO> getMemberVOList(Integer id, Long uid, String identifier,
@@ -38,20 +35,23 @@ public class MemberServiceImpl implements MemberService {
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
-        List<MemberVO> memberVOList = new ArrayList<>();
         List<User> userList = userMapper.selectListByParam(id, uid, identifier, status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
-        if (!CollectionUtils.isEmpty(userList)) {
-            total = userMapper.countByParam(id, uid, identifier, status, deleteStatus);
-            Set<Integer> levelIdSet = userList.stream().map(User::getLevelId).collect(Collectors.toSet());
-            Map<Integer, MemberLevelVO> memberLevelVOMap = userLevelMapper.selectListByIdSet(levelIdSet).stream()
-                    .map(this::userLevel2MemberLevelVO).collect(Collectors.toMap(MemberLevelVO::getId, v -> v));
-            userList.stream().map(this::user2MemberVO).collect(Collectors.toList()).forEach(memberVO -> {
-                memberVO.setLevelInfo(memberLevelVOMap.get(memberVO.getLevelId()));
-                memberVOList.add(memberVO);
-            });
+        if (CollectionUtils.isEmpty(userList)) {
+            pageUtil.setTotal(total);
+            pageUtil.setList(Collections.emptyList());
+            return pageUtil;
         }
 
+        total = userMapper.countByParam(id, uid, identifier, status, deleteStatus);
+        Set<Integer> levelIdSet = userList.stream().map(User::getLevelId).collect(Collectors.toSet());
+        Map<Integer, MemberLevelVO> memberLevelVOMap = memberLevelService
+                .getMemberLevelVOList(levelIdSet).stream().collect(Collectors.toMap(MemberLevelVO::getId, v -> v));
+        List<MemberVO> memberVOList = userList.stream().map(e -> {
+            MemberVO memberVO = user2MemberVO(e);
+            memberVO.setLevelInfo(memberLevelVOMap.get(memberVO.getLevelId()));
+            return memberVO;
+        }).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(memberVOList);
         return pageUtil;
@@ -62,15 +62,15 @@ public class MemberServiceImpl implements MemberService {
         MemberVO memberVO = new MemberVO();
         User user = userMapper.selectByPrimaryKey(id);
 
-        if (ObjectUtils.isEmpty(user) || Constants.IS_DELETE.equals(user.getDeleteStatus())) {
+        if (ObjectUtils.isEmpty(user)) {
             return memberVO;
         }
 
         memberVO = user2MemberVO(user);
-        UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getLevelId());
+        MemberLevelVO memberLevelVO = memberLevelService.getMemberLevelVO(user.getLevelId());
 
-        if (ObjectUtils.isNotEmpty(userLevel)) {
-            memberVO.setLevelInfo(userLevel2MemberLevelVO(userLevel));
+        if (ObjectUtils.isNotEmpty(memberLevelVO)) {
+            memberVO.setLevelInfo(memberLevelVO);
         }
 
         return memberVO;
@@ -80,12 +80,6 @@ public class MemberServiceImpl implements MemberService {
         MemberVO memberVO = new MemberVO();
         BeanUtils.copyProperties(user, memberVO);
         return memberVO;
-    }
-
-    private MemberLevelVO userLevel2MemberLevelVO(UserLevel userLevel) {
-        MemberLevelVO memberLevelVO = new MemberLevelVO();
-        BeanUtils.copyProperties(userLevel, memberLevelVO);
-        return memberLevelVO;
     }
 
 }

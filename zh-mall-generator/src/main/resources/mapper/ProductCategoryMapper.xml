@@ -16,7 +16,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_product_category
     where id = #{id,jdbcType=INTEGER}
@@ -28,12 +28,12 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.ProductCategory">
-    insert into tb_product_category (id, parent_id, name, 
-      icon, sort, navi_status, 
-      delete_status)
-    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
-      #{icon,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{naviStatus,jdbcType=INTEGER}, 
-      #{deleteStatus,jdbcType=INTEGER})
+    insert into tb_product_category (id, parent_id, name,
+                                     icon, sort, navi_status,
+                                     delete_status)
+    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
+            #{icon,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{naviStatus,jdbcType=INTEGER},
+            #{deleteStatus,jdbcType=INTEGER})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.ProductCategory">
@@ -114,11 +114,11 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.ProductCategory">
     update tb_product_category
     set parent_id = #{parentId,jdbcType=INTEGER},
-      name = #{name,jdbcType=VARCHAR},
-      icon = #{icon,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=INTEGER},
-      navi_status = #{naviStatus,jdbcType=INTEGER},
-      delete_status = #{deleteStatus,jdbcType=INTEGER}
+        name = #{name,jdbcType=VARCHAR},
+        icon = #{icon,jdbcType=VARCHAR},
+        sort = #{sort,jdbcType=INTEGER},
+        navi_status = #{naviStatus,jdbcType=INTEGER},
+        delete_status = #{deleteStatus,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -127,5 +127,43 @@
     <include refid="Base_Column_List" />
     from tb_product_category
     where delete_status = 0
+  </select>
+
+  <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product_category
+    <trim prefix="where " suffixOverrides="and">
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and
+      </if>
+      <if test="naviStatus != null">
+        navi_status = #{naviStatus,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize" />
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByParam" parameterType="map" resultType="java.lang.Long">
+    select
+    count(*)
+    from tb_product_category
+    <trim prefix="where " suffixOverrides="and">
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER} and
+      </if>
+      <if test="naviStatus != null">
+        navi_status = #{naviStatus,jdbcType=INTEGER} and
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER} and
+      </if>
+    </trim>
   </select>
 </mapper>

@@ -1,6 +1,9 @@
 package com.enqbs.generator.dao;
 
 import com.enqbs.generator.pojo.SysUser;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface SysUserMapper {
 
@@ -19,5 +22,12 @@ public interface SysUserMapper {
     int updateByPrimaryKey(SysUser record);
 
     int countByUsername(String username);
+
+    List<SysUser> selectListByParam(@Param("deleteStatus") Integer deleteStatus,
+                                    @Param("sort") String sort,
+                                    @Param("pageNum") Integer pageNum,
+                                    @Param("pageSize") Integer pageSize);
+
+    Long countByParam(@Param("deleteStatus") Integer deleteStatus);
 
 }

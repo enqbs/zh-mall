@@ -1,19 +1,20 @@
 package com.enqbs.admin.controller;
 
 import com.enqbs.admin.form.LogisticsInfoForm;
+import com.enqbs.admin.service.order.OrderLogisticsInfoService;
 import com.enqbs.admin.service.order.OrderService;
 import com.enqbs.admin.vo.OrderVO;
 import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,14 +23,17 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
 @RestController
+@RequestMapping("/order")
 public class OrderController {
 
     @Resource
     private OrderService orderService;
 
-    @GetMapping("/order/list")
+    @Resource
+    private OrderLogisticsInfoService orderLogisticsInfoService;
+
+    @GetMapping("/list")
     public R<PageUtil<OrderVO>> orderList(@RequestParam(required = false) Long orderNo,
                                           @RequestParam(required = false) String orderSc,
                                           @RequestParam(required = false) Integer userId,
@@ -51,31 +55,25 @@ public class OrderController {
         return R.ok(pageOrderList);
     }
 
-    @GetMapping("/order/{orderNo}")
+    @GetMapping("/{orderNo}")
     public R<OrderVO> orderDetail(@PathVariable Long orderNo) {
         OrderVO orderInfo = orderService.getOrderVO(orderNo);
         return R.ok(orderInfo);
     }
 
-    @PostMapping("/order/shipment/{orderNo}")
+    @PostMapping("/shipment/{orderNo}")
     @PreAuthorize("hasAuthority('ORDER:UPDATE')")
     public R<Map<String, Long>> orderShipment(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
-        int row = orderService.insertOrderLogisticsInfo(orderNo, form);
-
-        if (row <= 0) {
-            throw new ServiceException("订单号:" + orderNo + ",发货失败");
-        }
-
+        orderService.shipment(orderNo, form);
         Map<String, Long> resultMap = new HashMap<>();
         resultMap.put("orderNo", orderNo);
-        log.info("订单号:'{}',发货成功.", orderNo);
         return R.ok("发货成功", resultMap);
     }
 
-    @PutMapping("/order/logistics-info/{orderNo}")
+    @PutMapping("/logistics-info/{orderNo}")
     @PreAuthorize("hasAuthority('ORDER:UPDATE')")
     public R<Map<String, Long>> updateOrderLogisticsInfo(@PathVariable Long orderNo, @Valid @RequestBody LogisticsInfoForm form) {
-        int row = orderService.updateOrderLogisticsInfo(orderNo, form);
+        int row = orderLogisticsInfoService.update(orderNo, form);
 
         if (row <= 0) {
             throw new ServiceException("订单号:" + orderNo + ",修改订单快递信息失败");
@@ -83,7 +81,6 @@ public class OrderController {
 
         Map<String, Long> resultMap = new HashMap<>();
         resultMap.put("orderNo", orderNo);
-        log.info("订单号:'{}',修改订单快递信息成功.", orderNo);
         return R.ok("修改订单快递信息成功", resultMap);
     }
 

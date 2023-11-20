@@ -23,33 +23,33 @@ public class RabbitMQServiceImpl implements RabbitMQService {
     private RabbitTemplate rabbitTemplate;
 
     @Override
-    public void send(String exchange, String routingKey, Object message) {
+    public void send(String exchange, String routingKey, Object content) {
         long messageId = IDUtil.getId();
-        String content = GsonUtil.obj2Json(message);
+        String message = GsonUtil.obj2Json(content);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        int row = saveMessageQueueLog(messageId, exchange, routingKey, content, null);
+        int row = saveMessageQueueLog(messageId, exchange, routingKey, message, null);
 
         if (row <= 0) {
             throw new ServiceException("MessageID:" + messageId + ",消息持久化失败");
         }
 
-        rabbitTemplate.convertAndSend(exchange, routingKey, content, correlationData);
+        rabbitTemplate.convertAndSend(exchange, routingKey, message, correlationData);
     }
 
     @Override
-    public void send(String exchange, String routingKey, Object message, Integer delay) {
+    public void send(String exchange, String routingKey, Object content, Integer delay) {
         long messageId = IDUtil.getId();
-        String content = GsonUtil.obj2Json(message);
+        String message = GsonUtil.obj2Json(content);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        int row = saveMessageQueueLog(messageId, exchange, routingKey, content, delay);
+        int row = saveMessageQueueLog(messageId, exchange, routingKey, message, delay);
 
         if (row <= 0) {
             throw new ServiceException("MessageID:" + messageId + ",消息持久化失败");
         }
 
-        rabbitTemplate.convertAndSend(exchange, routingKey, content, messagePostProcessor -> {
+        rabbitTemplate.convertAndSend(exchange, routingKey, message, messagePostProcessor -> {
             messagePostProcessor.getMessageProperties().setDelay(delay);
             return messagePostProcessor;
         }, correlationData);

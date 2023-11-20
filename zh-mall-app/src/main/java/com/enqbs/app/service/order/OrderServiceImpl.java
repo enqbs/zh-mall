@@ -4,7 +4,9 @@ import com.enqbs.app.form.OrderConfirmForm;
 import com.enqbs.app.form.OrderForm;
 import com.enqbs.app.pojo.dto.SkuStockDTO;
 import com.enqbs.app.pojo.vo.OrderShippingAddressVO;
+import com.enqbs.app.pojo.vo.SkuVO;
 import com.enqbs.app.pojo.vo.UserCouponVO;
+import com.enqbs.app.service.product.SkuService;
 import com.enqbs.app.service.user.CartService;
 import com.enqbs.app.service.product.ProductService;
 import com.enqbs.app.service.mq.RabbitMQService;
@@ -27,14 +29,10 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.RedisUtil;
-import com.enqbs.generator.dao.OrderItemMapper;
 import com.enqbs.generator.dao.OrderMapper;
-import com.enqbs.generator.dao.OrderShippingAddressMapper;
 import com.enqbs.generator.pojo.Order;
 import com.enqbs.generator.pojo.OrderItem;
 import com.enqbs.generator.pojo.OrderShippingAddress;
-import com.enqbs.generator.pojo.PayInfo;
-import com.enqbs.generator.pojo.Sku;
 import com.enqbs.generator.pojo.SkuStock;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -47,6 +45,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -60,11 +59,11 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private OrderMapper orderMapper;
     @Resource
-    private OrderItemMapper orderItemMapper;
-    @Resource
-    private OrderShippingAddressMapper orderShippingAddressMapper;
-    @Resource
     private RedisUtil redisUtil;
+    @Resource
+    private OrderItemService orderItemService;
+    @Resource
+    private OrderShippingAddressService orderShippingAddressService;
     @Resource
     private UserService userService;
     @Resource
@@ -75,6 +74,8 @@ public class OrderServiceImpl implements OrderService {
     private CartService cartService;
     @Resource
     private ProductService productService;
+    @Resource
+    private SkuService skuService;
     @Resource
     private SkuStockService skuStockService;
     @Resource
@@ -127,11 +128,13 @@ public class OrderServiceImpl implements OrderService {
                 UserCouponVO userCouponVO = userCouponService.getUserCouponVO(form.getCouponsId());
 
                 if (Constants.COUPON_USED.equals(userCouponVO.getStatus())
-                        || Constants.COUPON_INVALID.equals(userCouponVO.getCoupon().getStatus())) {
+                        || Constants.COUPON_INVALID.equals(userCouponVO.getCoupon().getStatus())
+                        || new Date().after(userCouponVO.getCoupon().getEndDate())) {
                     throw new ServiceException("优惠券已失效");
                 }
 
                 if (orderConfirmVO.getAmount().compareTo(userCouponVO.getCoupon().getCondition()) > -1) {
+                    orderConfirmVO.setCouponId(form.getCouponsId());
                     orderConfirmVO.setCouponAmount(userCouponVO.getCoupon().getDenomination());
                     orderConfirmVO.setActualAmount(orderConfirmVO.getAmount().subtract(userCouponVO.getCoupon().getDenomination()));
                 } else {
@@ -174,12 +177,12 @@ public class OrderServiceImpl implements OrderService {
         Set<Integer> productIdSet = orderItemVOList.stream().map(OrderItemVO::getProductId).collect(Collectors.toSet());
         Set<Integer> skuIdSet = orderItemVOList.stream().map(OrderItemVO::getSkuId).collect(Collectors.toSet());
         /* List to Map */
-        Map<Integer, ProductVO> productVOMap = productService.getProductVOList(productIdSet).stream()
-                .collect(Collectors.toMap(ProductVO::getId, v -> v));                       // 购物车选中的商品
-        Map<Integer, Sku> skuMap = productService.getSkuList(skuIdSet).stream()
-                .collect(Collectors.toMap(Sku::getId, v -> v));                             // 商品规格
-        Map<Integer, SkuStock> stockMap = skuStockService.getSkuStockList(skuIdSet).stream()
-                .collect(Collectors.toMap(SkuStock::getSkuId, v -> v));                     // 商品规格库存
+        Map<Integer, ProductVO> productVOMap = productService
+                .getProductVOList(productIdSet).stream().collect(Collectors.toMap(ProductVO::getId, v -> v));               // 预生成订单项中的商品
+        Map<Integer, SkuVO> skuVOMap = skuService
+                .getSkuVOList(skuIdSet, Collections.emptySet()).stream().collect(Collectors.toMap(SkuVO::getId, v -> v));   // 商品规格
+        Map<Integer, SkuStock> stockMap = skuStockService
+                .getSkuStockList(skuIdSet).stream().collect(Collectors.toMap(SkuStock::getSkuId, v -> v));                  // 商品规格库存
         /* 验证库存是否充足 */
         for (OrderItemVO orderItemVO : orderItemVOList) {
             ProductVO productVO = productVOMap.get(orderItemVO.getProductId());
@@ -188,10 +191,10 @@ public class OrderServiceImpl implements OrderService {
                 throw new ServiceException("商品ID:" + orderItemVO.getProductId() + ",商品:" + orderItemVO.getSkuTitle() + ",下架或删除");
             }
 
-            Sku sku = skuMap.get(orderItemVO.getSkuId());
+            SkuVO skuVO = skuVOMap.get(orderItemVO.getSkuId());
             SkuStock stock = stockMap.get(orderItemVO.getSkuId());
 
-            if (ObjectUtils.isEmpty(sku) || ObjectUtils.isEmpty(stock)) {
+            if (ObjectUtils.isEmpty(skuVO) || ObjectUtils.isEmpty(stock)) {
                 throw new ServiceException("商品规格ID:" + orderItemVO.getSkuId() + ",商品:" + orderItemVO.getSkuTitle() + ",下架或删除");
             }
 
@@ -207,7 +210,7 @@ public class OrderServiceImpl implements OrderService {
         UserShippingAddressVO userShippingAddressVO = userShippingAddressService.getUserShippingAddressVO(form.getShippingAddressId());
         OrderShippingAddress orderShippingAddress = userShippingAddressVO2OrderShippingAddress(orderNo, userShippingAddressVO);
         OrderService orderServiceProxy = (OrderService) AopContext.currentProxy();      // 获取接口代理,解决本类方法调用事务失效问题
-        orderServiceProxy.insertOrder(orderNo, orderItemList, orderShippingAddress, skuStockDTOList, orderConfirmVO, form, userInfoVO);
+        orderServiceProxy.insert(orderNo, orderItemList, orderShippingAddress, skuStockDTOList, orderConfirmVO, form, userInfoVO);
         executor.execute(() -> {
             redisUtil.deleteObject(redisKeyOrderConfirm);
             cartService.deleteCartProductVOListBySelected();
@@ -226,15 +229,11 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("订单号:" + orderNo + ",订单不存在");
         }
 
-        List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(orderNo);
-        OrderShippingAddress orderShippingAddress = orderShippingAddressMapper.selectByPrimaryKey(orderNo);
         OrderVO orderVO = new OrderVO();
-        OrderShippingAddressVO orderShippingAddressVO = new OrderShippingAddressVO();
-        BeanUtils.copyProperties(order, orderVO);
-        BeanUtils.copyProperties(orderShippingAddress, orderShippingAddressVO);
-        List<OrderItemVO> orderItemVOList = orderItemList.stream().map(this::orderItem2OrderItemVO).collect(Collectors.toList());
-        orderVO.setOrderItemList(orderItemVOList);
+        OrderShippingAddressVO orderShippingAddressVO = orderShippingAddressService.getOrderShippingAddressVO(orderNo);
+        List<OrderItemVO> orderItemVOList = orderItemService.getOrderItemVOList(orderNo);
         orderVO.setShippingAddress(orderShippingAddressVO);
+        orderVO.setOrderItemList(orderItemVOList);
         return orderVO;
     }
 
@@ -245,26 +244,25 @@ public class OrderServiceImpl implements OrderService {
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
-        List<OrderVO> orderVOList = new ArrayList<>();
         List<Order> orderList = orderMapper.selectListByParam(null, null, userInfoVO.getUserId(), null,
                 status, Constants.IS_NOT_DELETE, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(orderList)) {
             pageUtil.setTotal(total);
-            pageUtil.setList(orderVOList);
+            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
         total = orderMapper.countByParam(null, null, userInfoVO.getUserId(),
                 null, status, Constants.IS_NOT_DELETE);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
-        List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNoSet(orderNoSet);
-        Map<Long, List<OrderItemVO>> orderItemVOMap = orderItemList.stream()
-                .map(this::orderItem2OrderItemVO).collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
-        orderList.stream().map(this::order2OrderVO).collect(Collectors.toList()).forEach(orderVO -> {
+        Map<Long, List<OrderItemVO>> orderItemVOMap = orderItemService
+                .getOrderItemVOList(orderNoSet).stream().collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
+        List<OrderVO> orderVOList = orderList.stream().map(e -> {
+            OrderVO orderVO = order2OrderVO(e);
             orderVO.setOrderItemList(orderItemVOMap.get(orderVO.getOrderNo()));
-            orderVOList.add(orderVO);
-        });
+            return orderVO;
+        }).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(orderVOList);
         return pageUtil;
@@ -272,42 +270,35 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertOrder(Long orderNo, List<OrderItem> orderItemList, OrderShippingAddress orderShippingAddress,
-                            List<SkuStockDTO> skuStockDTOList, OrderConfirmVO orderConfirmVO, OrderForm form, UserInfoVO userInfoVO) {
+    public void insert(Long orderNo, List<OrderItem> orderItemList, OrderShippingAddress orderShippingAddress,
+                       List<SkuStockDTO> skuStockDTOList, OrderConfirmVO orderConfirmVO, OrderForm form, UserInfoVO userInfoVO) {
         skuStockService.lockSkuStock(orderNo, skuStockDTOList);     // 锁定库存(此处 SQL 乐观锁处理)
         Order order;                                                // 生成订单信息
         BigDecimal amount = orderConfirmVO.getAmount();             // 订单金额
         /* 是否使用优惠券、验证优惠券有效性 */
-        if (ObjectUtils.isNotEmpty(form.getCouponsId())) {
-            UserCouponVO userCouponVO = userCouponService.getUserCouponVO(form.getCouponsId());
-
-            if (Constants.COUPON_USED.equals(userCouponVO.getStatus())
-                    || Constants.COUPON_INVALID.equals(userCouponVO.getCoupon().getStatus())) {
-                throw new ServiceException("优惠券已失效");
+        if (ObjectUtils.isNotEmpty(form.getCouponId())) {
+            if (!form.getCouponId().equals(orderConfirmVO.getCouponId())) {
+                throw new ServiceException("当前优惠券与下单选中优惠券不一致");
             }
 
-            if (ObjectUtils.isNotEmpty(userCouponVO) && amount.compareTo(userCouponVO.getCoupon().getCondition()) > -1) {
-                userCouponService.deductUserCoupon(orderNo, userCouponVO.getCouponId());        // 扣除用户优惠券
-                order = buildOrder(orderNo, userInfoVO.getUserId(), userCouponVO.getCouponId(), orderConfirmVO.getPostage(),
-                        amount, userCouponVO.getCoupon().getDenomination(), orderConfirmVO.getDiscountAmount());
-            } else {
-                throw new ServiceException("订单未满足优惠条件");
-            }
+            userCouponService.deduct(orderNo, form.getCouponId());        // 扣除用户优惠券
+            order = buildOrder(orderNo, userInfoVO.getUserId(), form.getCouponId(), orderConfirmVO.getPostage(),
+                    amount, orderConfirmVO.getCouponAmount(), orderConfirmVO.getDiscountAmount());
         } else {
-            order = buildOrder(orderNo, userInfoVO.getUserId(), form.getCouponsId(), orderConfirmVO.getPostage(),
+            order = buildOrder(orderNo, userInfoVO.getUserId(), form.getCouponId(), orderConfirmVO.getPostage(),
                     amount, BigDecimal.ZERO, BigDecimal.ZERO);
         }
         /* 保存订单信息 */
+        orderItemService.batchInsert(orderNo, orderItemList);
+        orderShippingAddressService.insert(orderNo, orderShippingAddress);
         insertOrder(orderNo, order);
-        batchInsertOrderItem(orderNo, orderItemList);
-        insertOrderShippingAddress(orderNo, orderShippingAddress);
         /* 发送延迟消息,15分钟订单未支付自动关闭 */
-        rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), order, ORDER_TIMEOUT);
+        rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), orderNo, ORDER_TIMEOUT);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void sign4Order(Long orderNo) {
+    public void sign(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(),
                 OrderStatusEnum.NOT_RECEIPT.getCode(), Constants.IS_NOT_DELETE);
@@ -329,7 +320,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void cancelOrder(Long orderNo) {
+    public void cancel(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(),
                 OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
@@ -341,7 +332,7 @@ public class OrderServiceImpl implements OrderService {
         skuStockService.unLockSkuStock(orderNo, OrderStatusEnum.NOT_PAY);
 
         if (ObjectUtils.isNotEmpty(order.getCouponId())) {
-            userCouponService.rollbackUserCoupon(orderNo, order.getCouponId());
+            userCouponService.rollback(orderNo, order.getCouponId());
         }
 
         order.setDeleteStatus(Constants.IS_DELETE);
@@ -356,48 +347,48 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void handleTimeoutOrder(Order order) {
-        Order timeoutOrder = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(order.getOrderNo(), null,
+    public void handleTimeoutOrder(Long orderNo) {
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null,
                 OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isNotEmpty(timeoutOrder) && ObjectUtils.isEmpty(timeoutOrder.getConsumeVersion())) {
+        if (ObjectUtils.isNotEmpty(order) && ObjectUtils.isEmpty(order.getConsumeVersion())) {
             skuStockService.unLockSkuStock(order.getOrderNo(), OrderStatusEnum.TIMEOUT);
 
-            if (ObjectUtils.isNotEmpty(timeoutOrder.getCouponId())) {
-                userCouponService.rollbackUserCoupon(order.getOrderNo(), order.getCouponId());
+            if (ObjectUtils.isNotEmpty(order.getCouponId())) {
+                userCouponService.rollback(order.getOrderNo(), order.getCouponId());
             }
 
-            timeoutOrder.setStatus(OrderStatusEnum.TIMEOUT.getCode());
-            timeoutOrder.setDeleteStatus(Constants.IS_DELETE);
-            timeoutOrder.setConsumeVersion(1);
-            int row = orderMapper.updateByPrimaryKeySelective(timeoutOrder);
+            order.setStatus(OrderStatusEnum.TIMEOUT.getCode());
+            order.setDeleteStatus(Constants.IS_DELETE);
+            order.setConsumeVersion(1);
+            int row = orderMapper.updateByPrimaryKeySelective(order);
 
             if (row <= 0) {
-                throw new ServiceException("订单号:" + timeoutOrder.getOrderNo() + ",订单关闭失败");
+                throw new ServiceException("订单号:" + orderNo + ",订单关闭失败");
             }
 
-            log.info("订单号:'{}',订单关闭成功.", timeoutOrder.getOrderNo());
+            log.info("订单号:'{}',订单关闭成功.", orderNo);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void handlePaySuccessOrder(PayInfo payInfo) {
-        Order paySuccessOrder = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(payInfo.getOrderNo(), null,
+    public void handlePaySuccessOrder(Long orderNo) {
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null,
                 OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isNotEmpty(paySuccessOrder) && ObjectUtils.isEmpty(paySuccessOrder.getConsumeVersion())) {
-            skuStockService.unLockSkuStock(payInfo.getOrderNo(), OrderStatusEnum.PAY_SUCCESS);
-            paySuccessOrder.setStatus(OrderStatusEnum.PAY_SUCCESS.getCode());
-            paySuccessOrder.setConsumeVersion(1);
-            paySuccessOrder.setPaymentTime(new Date());
-            int row = orderMapper.updateByPrimaryKeySelective(paySuccessOrder);
+        if (ObjectUtils.isNotEmpty(order) && ObjectUtils.isEmpty(order.getConsumeVersion())) {
+            skuStockService.unLockSkuStock(orderNo, OrderStatusEnum.PAY_SUCCESS);
+            order.setStatus(OrderStatusEnum.PAY_SUCCESS.getCode());
+            order.setConsumeVersion(1);
+            order.setPaymentTime(new Date());
+            int row = orderMapper.updateByPrimaryKeySelective(order);
 
             if (row <= 0) {
-                throw new ServiceException("订单号:" + paySuccessOrder.getOrderNo() + ",订单确认支付失败");
+                throw new ServiceException("订单号:" + orderNo + ",订单确认支付失败");
             }
 
-            log.info("订单号:'{}',订单确认支付成功.", paySuccessOrder.getOrderNo());
+            log.info("订单号:'{}',订单确认支付成功.", orderNo);
         }
     }
 
@@ -444,10 +435,12 @@ public class OrderServiceImpl implements OrderService {
         /* 筛选满足优惠券条件的优惠券 */
         if (!CollectionUtils.isEmpty(userCouponVOList)) {
             List<UserCouponVO> userCouponVOS = userCouponVOList.stream()
-                    .filter(e -> amount.compareTo(e.getCoupon().getCondition()) > -1).collect(Collectors.toList());
+                    .filter(e -> amount.compareTo(e.getCoupon().getCondition()) > -1)
+                    .filter(e -> new Date().before(e.getCoupon().getEndDate()))
+                    .collect(Collectors.toList());
 
             if (!CollectionUtils.isEmpty(userCouponVOS)) {
-                orderConfirmVO.setCouponList(userCouponVOList); // 满足优惠条件的优惠券列表
+                orderConfirmVO.setCouponList(userCouponVOS);    // 满足优惠条件的优惠券列表
             }
         }
 
@@ -480,12 +473,6 @@ public class OrderServiceImpl implements OrderService {
         return orderItemVO;
     }
 
-    private OrderItemVO orderItem2OrderItemVO(OrderItem orderItem) {
-        OrderItemVO orderItemVO = new OrderItemVO();
-        BeanUtils.copyProperties(orderItem, orderItemVO);
-        return orderItemVO;
-    }
-
     private SkuStockDTO getSkuStockDTO(SkuStock stock, OrderItemVO orderItemVO) {
         SkuStockDTO skuStockDTO = new SkuStockDTO();
         skuStockDTO.setSkuId(orderItemVO.getSkuId());
@@ -502,22 +489,6 @@ public class OrderServiceImpl implements OrderService {
 
         if (row <= 0) {
             throw new ServiceException("订单号:" + orderNo + ",订单信息保存失败");
-        }
-    }
-
-    private void batchInsertOrderItem(Long orderNo, List<OrderItem> orderItemList) {
-        int row = orderItemMapper.batchInsertByOrderItemList(orderItemList);
-
-        if (row <= 0) {
-            throw new ServiceException("订单号:" + orderNo + ",订单项保存失败");
-        }
-    }
-
-    private void insertOrderShippingAddress(Long orderNo, OrderShippingAddress orderShippingAddress) {
-        int row = orderShippingAddressMapper.insertSelective(orderShippingAddress);
-
-        if (row <= 0) {
-            throw new ServiceException("订单号:" + orderNo + ",订单收货地址保存失败");
         }
     }
 

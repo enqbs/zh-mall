@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -46,16 +46,15 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     @Override
     public List<UserCouponVO> getUserCouponVOList() {
-        List<UserCouponVO> userCouponVOList = new ArrayList<>();
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), Constants.COUPON_UNUSED,
                 Constants.IS_NOT_DELETE, SortEnum.DESC.getSortType(), null, null);
 
         if (CollectionUtils.isEmpty(userCouponList)) {
-            return userCouponVOList;
+            return Collections.emptyList();
         }
 
-        userCouponVOList = userCouponList.stream().map(this::userCoupon2UserCouponVO).collect(Collectors.toList());
+        List<UserCouponVO> userCouponVOList = userCouponList.stream().map(this::userCoupon2UserCouponVO).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
         return userCouponVOList;
     }
@@ -66,19 +65,18 @@ public class UserCouponServiceImpl implements UserCouponService {
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         long total = 0L;
-        List<UserCouponVO> userCouponVOList = new ArrayList<>();
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE,
                 sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(userCouponList)) {
             pageUtil.setTotal(total);
-            pageUtil.setList(userCouponVOList);
+            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
         total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
-        userCouponVOList = userCouponList.stream().map(this::userCoupon2UserCouponVO).collect(Collectors.toList());
+        List<UserCouponVO> userCouponVOList = userCouponList.stream().map(this::userCoupon2UserCouponVO).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
         pageUtil.setTotal(total);
         pageUtil.setList(userCouponVOList);
@@ -124,7 +122,7 @@ public class UserCouponServiceImpl implements UserCouponService {
 
         try {
             UserCouponService userCouponServiceProxy = (UserCouponService) AopContext.currentProxy();
-            userCouponServiceProxy.insertUserCoupon(couponId, userInfoVO.getUserId(), quantity);
+            userCouponServiceProxy.insert(couponId, userInfoVO.getUserId(), quantity);
         } finally {
             lock.unlock();
         }
@@ -132,7 +130,7 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertUserCoupon(Integer couponId, Integer userId, Integer quantity) {
+    public void insert(Integer couponId, Integer userId, Integer quantity) {
         int count = userCouponMapper.countByCouponIdAndUserId(couponId, userId);
 
         if (count > 0) {
@@ -143,7 +141,7 @@ public class UserCouponServiceImpl implements UserCouponService {
         userCoupon.setCouponId(couponId);
         userCoupon.setUserId(userId);
         userCoupon.setQuantity(quantity);
-        int updateCouponRow = couponService.updateCoupon(couponId, quantity);
+        int updateCouponRow = couponService.update(couponId, quantity);
         int insertUserCouponRow = userCouponMapper.insertSelective(userCoupon);
 
         if (updateCouponRow <= 0 || insertUserCouponRow <= 0) {
@@ -152,7 +150,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    public void deductUserCoupon(Long orderNo, Integer couponId) {
+    public void deduct(Long orderNo, Integer couponId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         int row = userCouponMapper.updateStatusByCouponIdAndUserId(couponId, userInfoVO.getUserId(), Constants.COUPON_USED);
 
@@ -164,7 +162,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    public void rollbackUserCoupon(Long orderNo, Integer couponId) {
+    public void rollback(Long orderNo, Integer couponId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         int row = userCouponMapper.updateStatusByCouponIdAndUserId(couponId, userInfoVO.getUserId(), Constants.COUPON_UNUSED);
 

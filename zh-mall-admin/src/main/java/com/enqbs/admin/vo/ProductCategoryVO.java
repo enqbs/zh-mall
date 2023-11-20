@@ -16,6 +16,8 @@ public class ProductCategoryVO implements Serializable {
 
     private Integer naviStatus;
 
+    private Integer deleteStatus;
+
     public Integer getId() {
         return id;
     }
@@ -64,6 +66,14 @@ public class ProductCategoryVO implements Serializable {
         this.naviStatus = naviStatus;
     }
 
+    public Integer getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(Integer deleteStatus) {
+        this.deleteStatus = deleteStatus;
+    }
+
     @Override
     public String toString() {
         return "ProductCategoryVO{" +
@@ -73,6 +83,7 @@ public class ProductCategoryVO implements Serializable {
                 ", icon='" + icon + '\'' +
                 ", sort=" + sort +
                 ", naviStatus=" + naviStatus +
+                ", deleteStatus=" + deleteStatus +
                 '}';
     }
 

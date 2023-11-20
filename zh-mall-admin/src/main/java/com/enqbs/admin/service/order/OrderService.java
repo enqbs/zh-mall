@@ -22,11 +22,6 @@ public interface OrderService {
     /*
      * 订单发货、保存订单快递信息
      * */
-    int insertOrderLogisticsInfo(Long orderNo, LogisticsInfoForm form);
-
-    /*
-     * 修改订单快递信息
-     * */
-    int updateOrderLogisticsInfo(Long orderNo, LogisticsInfoForm form);
+    void shipment(Long orderNo, LogisticsInfoForm form);
 
 }
