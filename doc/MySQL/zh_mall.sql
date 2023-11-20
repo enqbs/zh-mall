@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 18/11/2023 23:52:59
+ Date: 20/11/2023 21:40:21
 */
 
 SET NAMES utf8mb4;
@@ -32,7 +32,7 @@ CREATE TABLE `sys_menu`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 27 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统菜单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '后台系统菜单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -63,6 +63,9 @@ INSERT INTO `sys_menu` VALUES (23, 6, '修改订单', '/order/**', 'ORDER:UPDATE
 INSERT INTO `sys_menu` VALUES (24, 6, '删除订单', '/order/**', 'ORDER:DELETE', NULL, 0, '2023-11-01 17:39:21', '2023-11-01 17:39:21');
 INSERT INTO `sys_menu` VALUES (25, 7, '修改支付信息', '/pay/**', 'PAY_INFO:UPDATE', NULL, 0, '2023-11-01 17:40:28', '2023-11-01 17:40:28');
 INSERT INTO `sys_menu` VALUES (26, 7, '删除支付信息', '/pay/**', 'PAY_INFO:DELETE', NULL, 0, '2023-11-01 17:40:36', '2023-11-01 17:40:36');
+INSERT INTO `sys_menu` VALUES (27, 8, '新增优惠券', '/coupon/**', 'COUPON:ADD', NULL, 0, '2023-11-20 13:33:34', '2023-11-20 13:34:41');
+INSERT INTO `sys_menu` VALUES (28, 8, '修改优惠券', '/coupon/**', 'COUPON:UPDATE', NULL, 0, '2023-11-20 13:33:57', '2023-11-20 13:34:48');
+INSERT INTO `sys_menu` VALUES (29, 8, '删除优惠券', '/coupon/**', 'COUPON:DELETE', NULL, 0, '2023-11-20 13:34:19', '2023-11-20 13:34:53');
 
 -- ----------------------------
 -- Table structure for sys_role
@@ -117,11 +120,16 @@ INSERT INTO `sys_role_menu` VALUES (1, 23);
 INSERT INTO `sys_role_menu` VALUES (1, 24);
 INSERT INTO `sys_role_menu` VALUES (1, 25);
 INSERT INTO `sys_role_menu` VALUES (1, 26);
+INSERT INTO `sys_role_menu` VALUES (1, 27);
+INSERT INTO `sys_role_menu` VALUES (1, 28);
+INSERT INTO `sys_role_menu` VALUES (1, 29);
 INSERT INTO `sys_role_menu` VALUES (2, 18);
 INSERT INTO `sys_role_menu` VALUES (2, 20);
 INSERT INTO `sys_role_menu` VALUES (2, 21);
 INSERT INTO `sys_role_menu` VALUES (2, 23);
 INSERT INTO `sys_role_menu` VALUES (2, 25);
+INSERT INTO `sys_role_menu` VALUES (2, 27);
+INSERT INTO `sys_role_menu` VALUES (2, 28);
 
 -- ----------------------------
 -- Table structure for sys_user
@@ -297,7 +305,7 @@ CREATE TABLE `tb_order`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unq_order_no_sc_user_id_create_time`(`order_no` ASC, `order_sc` ASC, `user_id` ASC, `create_time` DESC) USING BTREE,
   INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order
@@ -754,9 +762,9 @@ CREATE TABLE `tb_sku_stock`  (
 -- ----------------------------
 -- Records of tb_sku_stock
 -- ----------------------------
-INSERT INTO `tb_sku_stock` VALUES (1, 1, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-17 12:25:36');
-INSERT INTO `tb_sku_stock` VALUES (2, 2, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-17 12:25:36');
-INSERT INTO `tb_sku_stock` VALUES (3, 3, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-17 12:25:36');
+INSERT INTO `tb_sku_stock` VALUES (1, 1, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-19 12:41:48');
+INSERT INTO `tb_sku_stock` VALUES (2, 2, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-19 12:41:48');
+INSERT INTO `tb_sku_stock` VALUES (3, 3, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-19 12:41:48');
 INSERT INTO `tb_sku_stock` VALUES (4, 4, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-11 13:07:11');
 INSERT INTO `tb_sku_stock` VALUES (5, 5, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-11 13:07:14');
 INSERT INTO `tb_sku_stock` VALUES (6, 6, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
@@ -853,7 +861,7 @@ CREATE TABLE `tb_user`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user
@@ -874,10 +882,10 @@ CREATE TABLE `tb_user_auths`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE,
-  INDEX `idx_identifier_create_time`(`identifier` ASC, `create_time` DESC) USING BTREE,
-  INDEX `idx_credential_create_time`(`credential` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录类型表' ROW_FORMAT = DYNAMIC;
+  UNIQUE INDEX `unq_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE,
+  UNIQUE INDEX `unq_identifier_create_time`(`identifier` ASC, `create_time` DESC) USING BTREE,
+  UNIQUE INDEX `unq_credential_create_time`(`credential` ASC, `create_time` DESC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录类型表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_auths
@@ -900,7 +908,7 @@ CREATE TABLE `tb_user_coupon`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unq_coupon_id_user_id_create_time`(`coupon_id` ASC, `user_id` ASC, `create_time` DESC) USING BTREE,
   INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_coupon
@@ -920,7 +928,7 @@ CREATE TABLE `tb_user_level`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员等级表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员等级表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_level
@@ -943,7 +951,7 @@ CREATE TABLE `tb_user_shipping_address`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_user_shipping_address
