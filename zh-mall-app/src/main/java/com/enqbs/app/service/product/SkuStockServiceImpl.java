@@ -35,7 +35,8 @@ public class SkuStockServiceImpl implements SkuStockService {
     @Transactional(rollbackFor = Exception.class)
     public void lockSkuStock(Long orderNo, List<SkuStockDTO> skuStockDTOList) {
         List<SkuStock> skuStockList = skuStockDTOList.stream().map(this::skuStockDTO2SkuStock).collect(Collectors.toList());
-        List<SkuStockLock> skuStockLockList = skuStockDTOList.stream().map(e -> skuStockDTO2SkuStockLock(orderNo, e)).collect(Collectors.toList());
+        List<SkuStockLock> skuStockLockList = skuStockDTOList.stream()
+                .map(e -> skuStockDTO2SkuStockLock(orderNo, e)).collect(Collectors.toList());
         skuStockLockService.batchInsert(orderNo, skuStockLockList);
         batchLockSkuStock(orderNo, skuStockList);
         log.info("订单号:'{}',库存锁定成功.", orderNo);

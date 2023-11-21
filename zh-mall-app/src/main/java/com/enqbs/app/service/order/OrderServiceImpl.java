@@ -39,6 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -216,7 +218,9 @@ public class OrderServiceImpl implements OrderService {
         orderShippingAddress.setOrderNo(orderNo);
         OrderService orderServiceProxy = (OrderService) AopContext.currentProxy();      // 获取接口代理,解决本类方法调用事务失效问题
         orderServiceProxy.insert(orderNo, orderItemList, orderShippingAddress, skuStockDTOList, orderConfirmVO, form, userInfoVO);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         executor.execute(() -> {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             redisUtil.deleteObject(redisKeyOrderConfirm);
             cartService.deleteCartProductVOListBySelected();
         });
@@ -296,7 +300,7 @@ public class OrderServiceImpl implements OrderService {
         /* 保存订单信息 */
         orderItemService.batchInsert(orderNo, orderItemList);
         orderShippingAddressService.insert(orderNo, orderShippingAddress);
-        insertOrder(orderNo, order);
+        insert(orderNo, order);
         /* 发送延迟消息,15分钟订单未支付自动关闭 */
         rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), orderNo, ORDER_TIMEOUT);
     }
@@ -397,6 +401,14 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    private void insert(Long orderNo, Order order) {
+        int row = orderMapper.insertSelective(order);
+
+        if (row <= 0) {
+            throw new ServiceException("订单号:" + orderNo + ",订单信息保存失败");
+        }
+    }
+
     private Order buildOrder(Long orderNo, Integer userId, Integer couponId,
                              BigDecimal postage, BigDecimal amount, BigDecimal couponAmount, BigDecimal discountAmount) {
         Order order = new Order();
@@ -467,14 +479,6 @@ public class OrderServiceImpl implements OrderService {
         skuStockDTO.setStock(orderItemVO.getNum());
         skuStockDTO.setQuantity(orderItemVO.getNum());
         return skuStockDTO;
-    }
-
-    private void insertOrder(Long orderNo, Order order) {
-        int row = orderMapper.insertSelective(order);
-
-        if (row <= 0) {
-            throw new ServiceException("订单号:" + orderNo + ",订单信息保存失败");
-        }
     }
 
 }

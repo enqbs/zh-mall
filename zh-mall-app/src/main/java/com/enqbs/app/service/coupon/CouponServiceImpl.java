@@ -28,7 +28,8 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public List<CouponVO> getCouponVOList(Set<Integer> couponIdSet) {
-        return couponMapper.selectListByCouponIdSet(couponIdSet).stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList());
+        return couponMapper.selectListByCouponIdSet(couponIdSet).stream()
+                .map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList());
     }
 
     @Override
