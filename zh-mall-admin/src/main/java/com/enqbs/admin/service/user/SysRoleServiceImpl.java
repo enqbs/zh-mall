@@ -1,5 +1,6 @@
 package com.enqbs.admin.service.user;
 
+import com.enqbs.admin.convert.SysUserConvert;
 import com.enqbs.admin.form.SysRoleForm;
 import com.enqbs.admin.vo.SysRoleVO;
 import com.enqbs.common.constant.Constants;
@@ -7,7 +8,6 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.SysRoleMapper;
 import com.enqbs.generator.pojo.SysRole;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -21,6 +21,9 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Resource
     private SysRoleMapper sysRoleMapper;
+
+    @Resource
+    private SysUserConvert sysUserConvert;
 
     @Override
     public PageUtil<SysRoleVO> getSysRoleVOList(Integer deleteStatus, Integer pageNum, Integer pageSize) {
@@ -37,7 +40,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
 
         total = sysRoleMapper.countByParam(deleteStatus);
-        List<SysRoleVO> sysRoleVOList = sysRoleList.stream().map(this::sysRole2SysRoleVO).collect(Collectors.toList());
+        List<SysRoleVO> sysRoleVOList = sysRoleList.stream().map(e -> sysUserConvert.sysRole2SysRoleVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(sysRoleVOList);
         return pageUtil;
@@ -45,26 +48,24 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Override
     public SysRoleVO getSysRoleVO(Integer id) {
-        SysRoleVO sysRoleVO = new SysRoleVO();
         SysRole sysRole = sysRoleMapper.selectByPrimaryKey(id);
 
         if (ObjectUtils.isEmpty(sysRole) || Constants.IS_DELETE.equals(sysRole.getDeleteStatus())) {
-            return sysRoleVO;
+            return new SysRoleVO();
         }
 
-        sysRoleVO = sysRole2SysRoleVO(sysRole);
-        return sysRoleVO;
+        return sysUserConvert.sysRole2SysRoleVO(sysRole);
     }
 
     @Override
     public int insetSysRole(SysRoleForm form) {
-        SysRole sysRole = sysRoleForm2SysRole(form);
+        SysRole sysRole = sysUserConvert.sysRoleForm2SysRole(form);
         return sysRoleMapper.insertSelective(sysRole);
     }
 
     @Override
     public int updateSysRole(Integer id, SysRoleForm form) {
-        SysRole sysRole = sysRoleForm2SysRole(form);
+        SysRole sysRole = sysUserConvert.sysRoleForm2SysRole(form);
         sysRole.setId(id);
         return sysRoleMapper.updateByPrimaryKeySelective(sysRole);
     }
@@ -75,18 +76,6 @@ public class SysRoleServiceImpl implements SysRoleService {
         sysRole.setId(id);
         sysRole.setDeleteStatus(Constants.IS_DELETE);
         return sysRoleMapper.updateByPrimaryKeySelective(sysRole);
-    }
-
-    private SysRole sysRoleForm2SysRole(SysRoleForm form) {
-        SysRole sysRole = new SysRole();
-        BeanUtils.copyProperties(form, sysRole);
-        return sysRole;
-    }
-
-    private SysRoleVO sysRole2SysRoleVO(SysRole sysRole) {
-        SysRoleVO sysRoleVO = new SysRoleVO();
-        BeanUtils.copyProperties(sysRole, sysRoleVO);
-        return sysRoleVO;
     }
 
 }

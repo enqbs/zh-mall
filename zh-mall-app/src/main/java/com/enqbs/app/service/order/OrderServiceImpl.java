@@ -1,5 +1,6 @@
 package com.enqbs.app.service.order;
 
+import com.enqbs.app.convert.OrderConvert;
 import com.enqbs.app.form.OrderConfirmForm;
 import com.enqbs.app.form.OrderForm;
 import com.enqbs.app.pojo.dto.SkuStockDTO;
@@ -37,7 +38,6 @@ import com.enqbs.generator.pojo.SkuStock;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,6 +80,8 @@ public class OrderServiceImpl implements OrderService {
     private SkuStockService skuStockService;
     @Resource
     private RabbitMQService rabbitMQService;
+    @Resource
+    private OrderConvert orderConvert;
     @Resource
     private ThreadPoolTaskExecutor executor;
 
@@ -202,13 +204,16 @@ public class OrderServiceImpl implements OrderService {
                 throw new ServiceException("商品规格ID:" + orderItemVO.getSkuId() + ",商品:" + orderItemVO.getSkuTitle() + ",库存不足");
             }
 
-            orderItemList.add(orderItemVO2OrderItem(orderNo, orderItemVO));
+            OrderItem orderItem = orderConvert.orderItemVO2OrderItem(orderItemVO);
+            orderItem.setOrderNo(orderNo);
+            orderItemList.add(orderItem);
             SkuStockDTO skuStockDTO = getSkuStockDTO(stock, orderItemVO);
             skuStockDTOList.add(skuStockDTO);
         }
         /* 订单收货地址信息 */
         UserShippingAddressVO userShippingAddressVO = userShippingAddressService.getUserShippingAddressVO(form.getShippingAddressId());
-        OrderShippingAddress orderShippingAddress = userShippingAddressVO2OrderShippingAddress(orderNo, userShippingAddressVO);
+        OrderShippingAddress orderShippingAddress = orderConvert.userShippingAddressVO2OrderShippingAddress(userShippingAddressVO);
+        orderShippingAddress.setOrderNo(orderNo);
         OrderService orderServiceProxy = (OrderService) AopContext.currentProxy();      // 获取接口代理,解决本类方法调用事务失效问题
         orderServiceProxy.insert(orderNo, orderItemList, orderShippingAddress, skuStockDTOList, orderConfirmVO, form, userInfoVO);
         executor.execute(() -> {
@@ -229,7 +234,7 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("订单号:" + orderNo + ",订单不存在");
         }
 
-        OrderVO orderVO = new OrderVO();
+        OrderVO orderVO = orderConvert.order2OrderVO(order);
         OrderShippingAddressVO orderShippingAddressVO = orderShippingAddressService.getOrderShippingAddressVO(orderNo);
         List<OrderItemVO> orderItemVOList = orderItemService.getOrderItemVOList(orderNo);
         orderVO.setShippingAddress(orderShippingAddressVO);
@@ -259,7 +264,7 @@ public class OrderServiceImpl implements OrderService {
         Map<Long, List<OrderItemVO>> orderItemVOMap = orderItemService
                 .getOrderItemVOList(orderNoSet).stream().collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
         List<OrderVO> orderVOList = orderList.stream().map(e -> {
-            OrderVO orderVO = order2OrderVO(e);
+            OrderVO orderVO = orderConvert.order2OrderVO(e);
             orderVO.setOrderItemList(orderItemVOMap.get(orderVO.getOrderNo()));
             return orderVO;
         }).collect(Collectors.toList());
@@ -410,20 +415,6 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-    private OrderItem orderItemVO2OrderItem(Long orderNo, OrderItemVO orderItemVO) {
-        OrderItem orderItem = new OrderItem();
-        BeanUtils.copyProperties(orderItemVO, orderItem);
-        orderItem.setOrderNo(orderNo);
-        return orderItem;
-    }
-
-    private OrderShippingAddress userShippingAddressVO2OrderShippingAddress(Long orderNo, UserShippingAddressVO userShippingAddressVO) {
-        OrderShippingAddress orderShippingAddress = new OrderShippingAddress();
-        BeanUtils.copyProperties(userShippingAddressVO, orderShippingAddress);
-        orderShippingAddress.setOrderNo(orderNo);
-        return orderShippingAddress;
-    }
-
     private OrderConfirmVO buildOrderConfirmVO(String orderToken, List<UserShippingAddressVO> userShippingAddressVOList,
                                                List<UserCouponVO> userCouponVOList, List<OrderItemVO> orderItemVOList) {
         OrderConfirmVO orderConfirmVO = new OrderConfirmVO();
@@ -452,12 +443,6 @@ public class OrderServiceImpl implements OrderService {
         orderConfirmVO.setActualAmount(amount);                 // 订单实付金额
         orderConfirmVO.setOrderToken(orderToken);               // 订单唯一凭证（接口幂等性）
         return orderConfirmVO;
-    }
-
-    private OrderVO order2OrderVO(Order order) {
-        OrderVO orderVO = new OrderVO();
-        BeanUtils.copyProperties(order, orderVO);
-        return orderVO;
     }
 
     private OrderItemVO cartProductVO2OrderItemVO(CartProductVO cartProductVO) {

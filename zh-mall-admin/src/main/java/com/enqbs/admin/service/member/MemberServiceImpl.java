@@ -1,5 +1,6 @@
 package com.enqbs.admin.service.member;
 
+import com.enqbs.admin.convert.MemberConvert;
 import com.enqbs.admin.vo.MemberLevelVO;
 import com.enqbs.admin.vo.MemberVO;
 import com.enqbs.common.enums.SortEnum;
@@ -7,7 +8,6 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.UserMapper;
 import com.enqbs.generator.pojo.User;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,6 +26,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Resource
     private MemberLevelService memberLevelService;
+
+    @Resource
+    private MemberConvert memberConvert;
 
     @Override
     public PageUtil<MemberVO> getMemberVOList(Integer id, Long uid, String identifier,
@@ -48,7 +51,7 @@ public class MemberServiceImpl implements MemberService {
         Map<Integer, MemberLevelVO> memberLevelVOMap = memberLevelService
                 .getMemberLevelVOList(levelIdSet).stream().collect(Collectors.toMap(MemberLevelVO::getId, v -> v));
         List<MemberVO> memberVOList = userList.stream().map(e -> {
-            MemberVO memberVO = user2MemberVO(e);
+            MemberVO memberVO = memberConvert.user2MemberVO(e);
             memberVO.setLevelInfo(memberLevelVOMap.get(memberVO.getLevelId()));
             return memberVO;
         }).collect(Collectors.toList());
@@ -59,26 +62,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberVO getMemberVO(Integer id) {
-        MemberVO memberVO = new MemberVO();
         User user = userMapper.selectByPrimaryKey(id);
 
         if (ObjectUtils.isEmpty(user)) {
-            return memberVO;
+            return new MemberVO();
         }
 
-        memberVO = user2MemberVO(user);
+        MemberVO memberVO = memberConvert.user2MemberVO(user);
         MemberLevelVO memberLevelVO = memberLevelService.getMemberLevelVO(user.getLevelId());
 
         if (ObjectUtils.isNotEmpty(memberLevelVO)) {
             memberVO.setLevelInfo(memberLevelVO);
         }
 
-        return memberVO;
-    }
-
-    private MemberVO user2MemberVO(User user) {
-        MemberVO memberVO = new MemberVO();
-        BeanUtils.copyProperties(user, memberVO);
         return memberVO;
     }
 

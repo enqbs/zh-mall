@@ -1,9 +1,9 @@
 package com.enqbs.admin.service.product;
 
+import com.enqbs.admin.convert.ProductConvert;
 import com.enqbs.admin.vo.SkuStockVO;
 import com.enqbs.generator.dao.SkuStockMapper;
 import com.enqbs.generator.pojo.SkuStock;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -17,10 +17,13 @@ public class SkuStockServiceImpl implements SkuStockService {
     @Resource
     private SkuStockMapper skuStockMapper;
 
+    @Resource
+    private ProductConvert productConvert;
+
     @Override
     public List<SkuStockVO> getSkuStockVOList(Set<Integer> skuIdSet) {
         List<SkuStock> skuStockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
-        return skuStockList.stream().map(this::skuStock2SkuStockVO).collect(Collectors.toList());
+        return skuStockList.stream().map(e -> productConvert.skuStock2SkuStockVO(e)).collect(Collectors.toList());
     }
 
     @Override
@@ -38,12 +41,6 @@ public class SkuStockServiceImpl implements SkuStockService {
         skuStock.setActualStock(count);
         skuStock.setStock(count);
         return skuStockMapper.updateByPrimaryKeySelective(skuStock);
-    }
-
-    private SkuStockVO skuStock2SkuStockVO(SkuStock skuStock) {
-        SkuStockVO skuStockVO = new SkuStockVO();
-        BeanUtils.copyProperties(skuStock, skuStockVO);
-        return skuStockVO;
     }
 
 }

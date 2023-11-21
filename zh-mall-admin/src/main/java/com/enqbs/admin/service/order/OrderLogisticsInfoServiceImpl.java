@@ -1,10 +1,10 @@
 package com.enqbs.admin.service.order;
 
+import com.enqbs.admin.convert.OrderConvert;
 import com.enqbs.admin.form.LogisticsInfoForm;
 import com.enqbs.admin.vo.OrderLogisticsInfoVO;
 import com.enqbs.generator.dao.OrderLogisticsInfoMapper;
 import com.enqbs.generator.pojo.OrderLogisticsInfo;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -18,16 +18,19 @@ public class OrderLogisticsInfoServiceImpl implements OrderLogisticsInfoService 
     @Resource
     private OrderLogisticsInfoMapper orderLogisticsInfoMapper;
 
+    @Resource
+    private OrderConvert orderConvert;
+
     @Override
     public List<OrderLogisticsInfoVO> getOrderLogisticsInfoVOList(Set<Long> orderNoSet) {
         List<OrderLogisticsInfo> orderLogisticsInfoList = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
-        return orderLogisticsInfoList.stream().map(this::orderLogisticsInfo2OrderLogisticsInfoVO).collect(Collectors.toList());
+        return orderLogisticsInfoList.stream().map(e -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(e)).collect(Collectors.toList());
     }
 
     @Override
     public OrderLogisticsInfoVO getOrderLogisticsInfoVO(Long orderNo) {
         OrderLogisticsInfo orderLogisticsInfo = orderLogisticsInfoMapper.selectByOrderNo(orderNo);
-        return orderLogisticsInfo2OrderLogisticsInfoVO(orderLogisticsInfo);
+        return orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(orderLogisticsInfo);
     }
 
     @Override
@@ -45,12 +48,6 @@ public class OrderLogisticsInfoServiceImpl implements OrderLogisticsInfoService 
         orderLogisticsInfo.setLogisticsNo(form.getLogisticsNo());
         orderLogisticsInfo.setLogisticsTitle(form.getLogisticsTitle());
         return orderLogisticsInfoMapper.updateByPrimaryKeySelective(orderLogisticsInfo);
-    }
-
-    private OrderLogisticsInfoVO orderLogisticsInfo2OrderLogisticsInfoVO(OrderLogisticsInfo orderLogisticsInfo) {
-        OrderLogisticsInfoVO orderLogisticsInfoVO = new OrderLogisticsInfoVO();
-        BeanUtils.copyProperties(orderLogisticsInfo, orderLogisticsInfoVO);
-        return orderLogisticsInfoVO;
     }
 
 }

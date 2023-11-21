@@ -1,5 +1,6 @@
 package com.enqbs.admin.service.pay;
 
+import com.enqbs.admin.convert.PayConvert;
 import com.enqbs.admin.vo.PayInfoVO;
 import com.enqbs.admin.vo.PayPlatformVO;
 import com.enqbs.common.enums.SortEnum;
@@ -7,7 +8,6 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.PayInfoMapper;
 import com.enqbs.generator.pojo.PayInfo;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,6 +26,9 @@ public class PayInfoServiceImpl implements PayInfoService {
 
     @Resource
     private PayPlatformService payPlatformService;
+
+    @Resource
+    private PayConvert payConvert;
 
     @Override
     public PageUtil<PayInfoVO> getPayInfoVOList(Long orderNo, Integer userId, String payType,
@@ -48,7 +51,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         Map<Long, PayPlatformVO> platformVOMap = payPlatformService
                 .getPayPlatformVOList(payInfoIdSet).stream().collect(Collectors.toMap(PayPlatformVO::getPayInfoId, v -> v));
         List<PayInfoVO> payInfoVOList = payInfoList.stream().map(e -> {
-            PayInfoVO payInfoVO = payInfo2PayInfoVO(e);
+            PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(e);
             payInfoVO.setPayPlatform(platformVOMap.get(payInfoVO.getId()));
             return payInfoVO;
         }).collect(Collectors.toList());
@@ -59,26 +62,19 @@ public class PayInfoServiceImpl implements PayInfoService {
 
     @Override
     public PayInfoVO getPayInfoVO(Long id) {
-        PayInfoVO payInfoVO = new PayInfoVO();
         PayInfo payInfo = payInfoMapper.selectByPrimaryKey(id);
 
         if (ObjectUtils.isEmpty(payInfo)) {
-            return payInfoVO;
+            return new PayInfoVO();
         }
 
-        payInfoVO = payInfo2PayInfoVO(payInfo);
+        PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(payInfo);
         PayPlatformVO payPlatformVO = payPlatformService.getPayPlatformVO(id);
 
         if (ObjectUtils.isNotEmpty(payPlatformVO)) {
             payInfoVO.setPayPlatform(payPlatformVO);
         }
 
-        return payInfoVO;
-    }
-
-    private PayInfoVO payInfo2PayInfoVO(PayInfo payInfo) {
-        PayInfoVO payInfoVO = new PayInfoVO();
-        BeanUtils.copyProperties(payInfo, payInfoVO);
         return payInfoVO;
     }
 

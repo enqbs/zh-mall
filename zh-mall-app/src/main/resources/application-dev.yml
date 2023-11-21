@@ -8,7 +8,7 @@ spring:
   #      minimum-idle: 12
   #      maximum-pool-size: 24
   #      connection-timeout: 60000
-  #   ShardingSphere-JDBC 配置主从同步
+  #  ShardingSphere-JDBC 配置主从同步
   shardingsphere:
     datasource:
       names: master, slave-01

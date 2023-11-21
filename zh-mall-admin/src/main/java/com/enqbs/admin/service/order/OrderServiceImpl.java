@@ -1,5 +1,6 @@
 package com.enqbs.admin.service.order;
 
+import com.enqbs.admin.convert.OrderConvert;
 import com.enqbs.admin.form.LogisticsInfoForm;
 import com.enqbs.admin.vo.OrderItemVO;
 import com.enqbs.admin.vo.OrderLogisticsInfoVO;
@@ -14,7 +15,6 @@ import com.enqbs.generator.dao.OrderMapper;
 import com.enqbs.generator.pojo.Order;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -38,6 +38,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderShippingAddressService orderShippingAddressService;
     @Resource
     private OrderLogisticsInfoService orderLogisticsInfoService;
+    @Resource
+    private OrderConvert orderConvert;
 
     @Override
     public PageUtil<OrderVO> getOrderVOList(Long orderNo, String orderSc, Integer userId,
@@ -66,7 +68,7 @@ public class OrderServiceImpl implements OrderService {
                 .getOrderLogisticsInfoVOList(orderNoSet).stream().collect(Collectors.toMap(OrderLogisticsInfoVO::getOrderNo, v -> v));
 
         List<OrderVO> orderVOList = orderList.stream().map(e -> {
-            OrderVO orderVO = order2OrderVO(e);
+            OrderVO orderVO = orderConvert.order2OrderVO(e);
             orderVO.setShippingAddress(orderShippingAddressVOMap.get(orderVO.getOrderNo()));
             orderVO.setLogisticsInfo(orderLogisticsInfoVOMap.get(orderVO.getOrderNo()));
             orderVO.setOrderItemList(orderItemVOListMap.get(orderVO.getOrderNo()));
@@ -79,18 +81,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderVO getOrderVO(Long orderNo) {
-        OrderVO orderVO = new OrderVO();
         Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null, null, Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(order)) {
-            return orderVO;
+            return new OrderVO();
         }
 
         List<OrderItemVO> orderItemVOList = orderItemService.getOrderItemVOList(orderNo);
         OrderShippingAddressVO orderShippingAddressVO = orderShippingAddressService.getOrderShippingAddressVO(orderNo);
         OrderLogisticsInfoVO orderLogisticsInfoVO = orderLogisticsInfoService.getOrderLogisticsInfoVO(orderNo);
 
-        orderVO = order2OrderVO(order);
+        OrderVO orderVO = orderConvert.order2OrderVO(order);
         orderVO.setOrderItemList(orderItemVOList);
         orderVO.setShippingAddress(orderShippingAddressVO);
         orderVO.setLogisticsInfo(orderLogisticsInfoVO);
@@ -121,12 +122,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
         log.info("订单号:'{}',发货成功.", orderNo);
-    }
-
-    private OrderVO order2OrderVO(Order order) {
-        OrderVO orderVO = new OrderVO();
-        BeanUtils.copyProperties(order, orderVO);
-        return orderVO;
     }
 
 }

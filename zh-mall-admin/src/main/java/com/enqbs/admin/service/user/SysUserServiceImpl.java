@@ -1,5 +1,6 @@
 package com.enqbs.admin.service.user;
 
+import com.enqbs.admin.convert.SysUserConvert;
 import com.enqbs.admin.form.ChangeNicknameForm;
 import com.enqbs.admin.form.ChangePasswordForm;
 import com.enqbs.admin.form.LoginForm;
@@ -17,7 +18,6 @@ import com.enqbs.generator.pojo.SysUser;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,6 +49,9 @@ public class SysUserServiceImpl implements SysUserService {
     private TokenService tokenService;
 
     @Resource
+    private SysUserConvert sysUserConvert;
+
+    @Resource
     private ThreadPoolTaskExecutor executor;
 
     @Override
@@ -66,7 +69,8 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
         total = sysUserMapper.countByParam(deleteStatus);
-        List<SysUserInfoVO> sysUserInfoVOList = sysUserList.stream().map(this::sysUserInfo2SysUserInfoVO).collect(Collectors.toList());
+        List<SysUserInfoVO> sysUserInfoVOList = sysUserList.stream()
+                .map(e -> sysUserConvert.sysUserInfo2SysUserInfoVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(sysUserInfoVOList);
         return pageUtil;
@@ -114,9 +118,7 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public SysUserInfoVO getSysUserInfoVO() {
         LoginUser loginUser = tokenService.getLoginUser();
-        SysUserInfoVO sysUserInfoVO = new SysUserInfoVO();
-        BeanUtils.copyProperties(loginUser, sysUserInfoVO);
-        return sysUserInfoVO;
+        return sysUserConvert.loginUser2SysUserInfoVO(loginUser);
     }
 
     @Override
@@ -191,12 +193,6 @@ public class SysUserServiceImpl implements SysUserService {
     private void removeCacheLoginUser(LoginUser loginUser) {
         String redisKey = String.format(Constants.SYS_USER_REDIS_KEY, loginUser.getUserToken());
         redisUtil.deleteObject(redisKey);
-    }
-
-    private SysUserInfoVO sysUserInfo2SysUserInfoVO(SysUser sysUser) {
-        SysUserInfoVO sysUserInfoVO = new SysUserInfoVO();
-        BeanUtils.copyProperties(sysUser, sysUserInfoVO);
-        return sysUserInfoVO;
     }
 
 }

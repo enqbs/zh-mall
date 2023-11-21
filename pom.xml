@@ -38,6 +38,7 @@
         <redisson.version>3.19.1</redisson.version>
         <alipay.sdk.version>4.38.105.ALL</alipay.sdk.version>
         <shardingsphere.jdbc.version>5.1.2</shardingsphere.jdbc.version>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
     </properties>
 
     <dependencies>
@@ -110,6 +111,12 @@
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
                 <version>${shardingsphere.jdbc.version}</version>
+            </dependency>
+            <!-- mapstruct -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
             </dependency>
             <!-- enqbs -->
             <dependency>

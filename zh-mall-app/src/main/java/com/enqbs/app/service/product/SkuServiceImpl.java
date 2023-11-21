@@ -1,9 +1,9 @@
 package com.enqbs.app.service.product;
 
+import com.enqbs.app.convert.ProductConvert;
 import com.enqbs.app.pojo.vo.SkuVO;
 import com.enqbs.generator.dao.SkuMapper;
 import com.enqbs.generator.pojo.Sku;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -18,10 +18,13 @@ public class SkuServiceImpl implements SkuService {
     @Resource
     private SkuMapper skuMapper;
 
+    @Resource
+    private ProductConvert productConvert;
+
     @Override
     public List<SkuVO> getSkuVOList(Integer productId) {
         List<Sku> skuList = skuMapper.selectListByProductId(productId);
-        return skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
+        return skuList.stream().map(e -> productConvert.sku2SkuVO(e)).collect(Collectors.toList());
     }
 
     @Override
@@ -34,13 +37,7 @@ public class SkuServiceImpl implements SkuService {
             skuList = skuMapper.selectListByIdSet(skuIdSet);
         }
 
-        return skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
-    }
-
-    private SkuVO sku2SkuVO(Sku sku) {
-        SkuVO skuVO = new SkuVO();
-        BeanUtils.copyProperties(sku, skuVO);
-        return skuVO;
+        return skuList.stream().map(e -> productConvert.sku2SkuVO(e)).collect(Collectors.toList());
     }
 
 }

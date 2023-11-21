@@ -1,5 +1,6 @@
 package com.enqbs.app.service.user;
 
+import com.enqbs.app.convert.UserConvert;
 import com.enqbs.app.form.UserShippingAddressForm;
 import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.app.pojo.vo.UserShippingAddressVO;
@@ -8,7 +9,6 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.dao.UserShippingAddressMapper;
 import com.enqbs.generator.pojo.UserShippingAddress;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -23,6 +23,9 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private UserConvert userConvert;
 
     @Override
     public int insert(UserShippingAddressForm form) {
@@ -77,20 +80,14 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
             throw new ServiceException("收货地址不存在");
         }
 
-        return userShippingAddress2UserShippingAddressVO(shippingAddress);
+        return userConvert.userShippingAddress2UserShippingAddressVO(shippingAddress);
     }
 
     @Override
     public List<UserShippingAddressVO> getUserShippingAddressVOList() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         List<UserShippingAddress> userShippingAddressList = userShippingAddressMapper.selectListByUserId(userInfoVO.getUserId());
-        return userShippingAddressList.stream().map(this::userShippingAddress2UserShippingAddressVO).collect(Collectors.toList());
-    }
-
-    private UserShippingAddressVO userShippingAddress2UserShippingAddressVO(UserShippingAddress shippingAddress) {
-        UserShippingAddressVO shippingAddressVO = new UserShippingAddressVO();
-        BeanUtils.copyProperties(shippingAddress, shippingAddressVO);
-        return shippingAddressVO;
+        return userShippingAddressList.stream().map(e -> userConvert.userShippingAddress2UserShippingAddressVO(e)).collect(Collectors.toList());
     }
 
 }

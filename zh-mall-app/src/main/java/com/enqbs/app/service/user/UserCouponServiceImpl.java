@@ -1,5 +1,6 @@
 package com.enqbs.app.service.user;
 
+import com.enqbs.app.convert.UserConvert;
 import com.enqbs.app.pojo.vo.CouponVO;
 import com.enqbs.app.pojo.vo.UserCouponVO;
 import com.enqbs.app.pojo.vo.UserInfoVO;
@@ -15,7 +16,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -44,6 +44,9 @@ public class UserCouponServiceImpl implements UserCouponService {
     @Resource
     private CouponService couponService;
 
+    @Resource
+    private UserConvert userConvert;
+
     @Override
     public List<UserCouponVO> getUserCouponVOList() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
@@ -54,7 +57,8 @@ public class UserCouponServiceImpl implements UserCouponService {
             return Collections.emptyList();
         }
 
-        List<UserCouponVO> userCouponVOList = userCouponList.stream().map(this::userCoupon2UserCouponVO).collect(Collectors.toList());
+        List<UserCouponVO> userCouponVOList = userCouponList.stream()
+                .map(e -> userConvert.userCoupon2UserCouponVO(e)).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
         return userCouponVOList;
     }
@@ -76,7 +80,8 @@ public class UserCouponServiceImpl implements UserCouponService {
         }
 
         total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
-        List<UserCouponVO> userCouponVOList = userCouponList.stream().map(this::userCoupon2UserCouponVO).collect(Collectors.toList());
+        List<UserCouponVO> userCouponVOList = userCouponList.stream()
+                .map(e -> userConvert.userCoupon2UserCouponVO(e)).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
         pageUtil.setTotal(total);
         pageUtil.setList(userCouponVOList);
@@ -93,7 +98,7 @@ public class UserCouponServiceImpl implements UserCouponService {
         }
 
         CouponVO couponVO = couponService.getCouponVO(userCoupon.getCouponId());
-        UserCouponVO userCouponVO = userCoupon2UserCouponVO(userCoupon);
+        UserCouponVO userCouponVO = userConvert.userCoupon2UserCouponVO(userCoupon);
 
         if (ObjectUtils.isNotEmpty(couponVO)) {
             userCouponVO.setCoupon(couponVO);
@@ -184,12 +189,6 @@ public class UserCouponServiceImpl implements UserCouponService {
 
         userCoupon.setDeleteStatus(Constants.IS_DELETE);
         return userCouponMapper.updateByPrimaryKeySelective(userCoupon);
-    }
-
-    private UserCouponVO userCoupon2UserCouponVO(UserCoupon userCoupon) {
-        UserCouponVO userCouponVO = new UserCouponVO();
-        BeanUtils.copyProperties(userCoupon, userCouponVO);
-        return userCouponVO;
     }
 
     private void handleUserCouponVO(List<UserCouponVO> userCouponVOList) {

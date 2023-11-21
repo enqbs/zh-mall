@@ -1,5 +1,6 @@
 package com.enqbs.app.service.coupon;
 
+import com.enqbs.app.convert.CouponConvert;
 import com.enqbs.app.pojo.vo.CouponVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.SortEnum;
@@ -7,7 +8,6 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.CouponMapper;
 import com.enqbs.generator.pojo.Coupon;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -23,9 +23,12 @@ public class CouponServiceImpl implements CouponService {
     @Resource
     private CouponMapper couponMapper;
 
+    @Resource
+    private CouponConvert couponConvert;
+
     @Override
     public List<CouponVO> getCouponVOList(Set<Integer> couponIdSet) {
-        return couponMapper.selectListByCouponIdSet(couponIdSet).stream().map(this::coupon2CouponVO).collect(Collectors.toList());
+        return couponMapper.selectListByCouponIdSet(couponIdSet).stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList());
     }
 
     @Override
@@ -44,7 +47,7 @@ public class CouponServiceImpl implements CouponService {
         }
 
         total = couponMapper.countByParam(null, null, null, null, Constants.IS_NOT_DELETE);
-        List<CouponVO> couponVOList = couponList.stream().map(this::coupon2CouponVO).collect(Collectors.toList());
+        List<CouponVO> couponVOList = couponList.stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(couponVOList);
         return pageUtil;
@@ -58,18 +61,12 @@ public class CouponServiceImpl implements CouponService {
             return new CouponVO();
         }
 
-        return coupon2CouponVO(coupon);
+        return couponConvert.coupon2CouponVO(coupon);
     }
 
     @Override
     public int update(Integer couponId, Integer quantity) {
         return couponMapper.updateByDeductQuantity(couponId, quantity);
-    }
-
-    private CouponVO coupon2CouponVO(Coupon coupon) {
-        CouponVO couponVO = new CouponVO();
-        BeanUtils.copyProperties(coupon, couponVO);
-        return couponVO;
     }
 
 }

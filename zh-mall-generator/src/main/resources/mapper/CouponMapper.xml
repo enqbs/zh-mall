@@ -200,7 +200,7 @@
       <if test="endDate != null">
         end_date = #{endDate,jdbcType=DATE} and
       </if>
-      <if test="sstatus != null">
+      <if test="status != null">
         status = #{status,jdbcType=INTEGER} and
       </if>
       <if test="deleteStatus != null">

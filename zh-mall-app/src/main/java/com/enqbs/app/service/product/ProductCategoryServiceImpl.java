@@ -1,5 +1,6 @@
 package com.enqbs.app.service.product;
 
+import com.enqbs.app.convert.ProductConvert;
 import com.enqbs.app.pojo.vo.ProductCategoryVO;
 import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.common.constant.Constants;
@@ -11,7 +12,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -35,16 +35,18 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Resource
     private ProductService productService;
 
+    @Resource
+    private ProductConvert productConvert;
+
     @Override
     public ProductCategoryVO getProductCategoryVO(Integer categoryId) {
-        ProductCategoryVO categoryVO = new ProductCategoryVO();
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
 
         if (ObjectUtils.isEmpty(category) || Constants.IS_DELETE.equals(category.getDeleteStatus())) {
-            return categoryVO;
+            return new ProductCategoryVO();
         }
 
-        categoryVO = productCategory2ProductCategoryVO(category);
+        ProductCategoryVO categoryVO = productConvert.productCategory2ProductCategoryVO(category);
         List<ProductVO> productVOList = productService.getProductVOList(categoryVO.getId());
         categoryVO.setProductList(productVOList);
         return categoryVO;
@@ -63,7 +65,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 List<ProductCategory> categoryList = productCategoryMapper.selectList();
                 categoryVOList = categoryList.stream()
                         .filter(category -> category.getParentId().equals(0))
-                        .map(this::productCategory2ProductCategoryVO).collect(Collectors.toList());
+                        .map(e -> productConvert.productCategory2ProductCategoryVO(e)).collect(Collectors.toList());
                 findSubProductCategoryVOList(categoryList, categoryVOList);
 
                 for (ProductCategoryVO categoryVO : categoryVOList) {
@@ -99,16 +101,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         categoryVOList.forEach(categoryVO -> {
             List<ProductCategoryVO> subCategoryVOList = categoryList.stream()
                     .filter(category -> categoryVO.getId().equals(category.getParentId()))
-                    .map(this::productCategory2ProductCategoryVO).collect(Collectors.toList());
+                    .map(e -> productConvert.productCategory2ProductCategoryVO(e)).collect(Collectors.toList());
             categoryVO.setCategoryList(subCategoryVOList);
             findSubProductCategoryVOList(categoryList, subCategoryVOList);
         });
-    }
-
-    private ProductCategoryVO productCategory2ProductCategoryVO(ProductCategory category) {
-        ProductCategoryVO categoryVO = new ProductCategoryVO();
-        BeanUtils.copyProperties(category, categoryVO);
-        return categoryVO;
     }
 
 }

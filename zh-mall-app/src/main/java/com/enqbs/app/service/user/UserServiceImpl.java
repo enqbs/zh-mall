@@ -1,5 +1,6 @@
 package com.enqbs.app.service.user;
 
+import com.enqbs.app.convert.UserConvert;
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
 import com.enqbs.app.pojo.vo.UserInfoVO;
@@ -14,7 +15,6 @@ import com.enqbs.generator.pojo.UserLevel;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,6 +43,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private TokenService tokenService;
+
+    @Resource
+    private UserConvert userConvert;
 
     @Resource
     private ThreadPoolTaskExecutor executor;
@@ -97,9 +100,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoVO getUserInfoVO() {
         LoginUser loginUser = tokenService.getLoginUser();
-        UserInfoVO userInfoVO = new UserInfoVO();
-        BeanUtils.copyProperties(loginUser, userInfoVO);
-        return userInfoVO;
+        return userConvert.loginUser2UserInfoVO(loginUser);
     }
 
     @Override

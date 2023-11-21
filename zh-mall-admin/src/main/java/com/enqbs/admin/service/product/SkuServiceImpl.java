@@ -1,12 +1,12 @@
 package com.enqbs.admin.service.product;
 
+import com.enqbs.admin.convert.ProductConvert;
 import com.enqbs.admin.form.SkuForm;
 import com.enqbs.admin.vo.SkuVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.dao.SkuMapper;
 import com.enqbs.generator.pojo.Sku;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,22 +24,25 @@ public class SkuServiceImpl implements SkuService {
     @Resource
     private SkuStockService skuStockService;
 
+    @Resource
+    private ProductConvert productConvert;
+
     @Override
     public List<SkuVO> getSkuVOList(Set<Integer> productIdSet) {
         List<Sku> skuList = skuMapper.selectListByProductIdSet(productIdSet);
-        return skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
+        return skuList.stream().map(e -> productConvert.sku2SkuVO(e)).collect(Collectors.toList());
     }
 
     @Override
     public List<SkuVO> getSkuVOList(Integer productId) {
         List<Sku> skuList = skuMapper.selectListByProductId(productId);
-        return skuList.stream().map(this::sku2SkuVO).collect(Collectors.toList());
+        return skuList.stream().map(e -> productConvert.sku2SkuVO(e)).collect(Collectors.toList());
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(SkuForm form) {
-        Sku sku = skuForm2Sku(form);
+        Sku sku = productConvert.skuForm2Sku(form);
         int row = skuMapper.insertSelective(sku);
 
         if (row <= 0) {
@@ -55,7 +58,7 @@ public class SkuServiceImpl implements SkuService {
 
     @Override
     public void update(Integer skuId, SkuForm form) {
-        Sku sku = skuForm2Sku(form);
+        Sku sku = productConvert.skuForm2Sku(form);
         sku.setId(skuId);
         int row = skuMapper.updateByPrimaryKeySelective(sku);
 
@@ -75,18 +78,6 @@ public class SkuServiceImpl implements SkuService {
         Sku sku = skuMapper.selectByPrimaryKey(skuId);
         sku.setDeleteStatus(Constants.IS_DELETE);
         return skuMapper.updateByPrimaryKeySelective(sku);
-    }
-
-    private Sku skuForm2Sku(SkuForm form) {
-        Sku sku = new Sku();
-        BeanUtils.copyProperties(form, sku);
-        return sku;
-    }
-
-    private SkuVO sku2SkuVO(Sku sku) {
-        SkuVO skuVO = new SkuVO();
-        BeanUtils.copyProperties(sku, skuVO);
-        return skuVO;
     }
 
 }
