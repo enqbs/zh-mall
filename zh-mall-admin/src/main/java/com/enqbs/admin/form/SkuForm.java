@@ -1,7 +1,7 @@
 package com.enqbs.admin.form;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 public class SkuForm {
 
@@ -14,8 +14,10 @@ public class SkuForm {
 
     private String param;
 
-    private BigDecimal price;
+    @NotBlank(message = "价格不能为空")
+    private String price;
 
+    @NotNull(message = "库存数量不能为空")
     private Integer stock;
 
     public Integer getProductId() {
@@ -50,11 +52,11 @@ public class SkuForm {
         this.param = param;
     }
 
-    public BigDecimal getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

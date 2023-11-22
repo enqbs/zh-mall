@@ -1,7 +1,5 @@
 package com.enqbs.admin.form;
 
-import java.math.BigDecimal;
-
 public class ProductForm {
 
     private Integer productCategoryId;
@@ -14,9 +12,9 @@ public class ProductForm {
 
     private String slider;
 
-    private BigDecimal lowestPrice;
+    private String lowestPrice;
 
-    private BigDecimal virtualPrice;
+    private String virtualPrice;
 
     private Integer sale;
 
@@ -66,19 +64,19 @@ public class ProductForm {
         this.slider = slider;
     }
 
-    public BigDecimal getLowestPrice() {
+    public String getLowestPrice() {
         return lowestPrice;
     }
 
-    public void setLowestPrice(BigDecimal lowestPrice) {
+    public void setLowestPrice(String lowestPrice) {
         this.lowestPrice = lowestPrice;
     }
 
-    public BigDecimal getVirtualPrice() {
+    public String getVirtualPrice() {
         return virtualPrice;
     }
 
-    public void setVirtualPrice(BigDecimal virtualPrice) {
+    public void setVirtualPrice(String virtualPrice) {
         this.virtualPrice = virtualPrice;
     }
 

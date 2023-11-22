@@ -48,8 +48,15 @@ public class UserController {
     private UserCouponService userCouponService;
 
     @GetMapping("/info")
-    public R<Map<String, Object>> userInfo(@RequestHeader String token) throws Exception {
-        String newToken = tokenService.refreshToken(token).get();
+    public R<Map<String, Object>> userInfo(@RequestHeader String token) {
+        String newToken;
+
+        try {
+            newToken = tokenService.refreshToken(token).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         UserInfoVO userInfo = userService.getUserInfoVO();
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("userInfo", userInfo);
@@ -104,44 +111,44 @@ public class UserController {
 
     @GetMapping("/cart")
     public R<CartVO> cart() {
-        CartVO cartVO = cartService.getCartVO();
-        return R.ok(cartVO);
+        CartVO cartInfo = cartService.getCartVO();
+        return R.ok(cartInfo);
     }
 
     @PostMapping("/cart")
     public R<CartVO> addCart(@Valid @RequestBody CartForm form) {
-        CartVO cartVO = cartService.add(form);
-        return R.ok(cartVO);
+        CartVO cartInfo = cartService.add(form);
+        return R.ok(cartInfo);
     }
 
     @PutMapping("/cart")
     public R<CartVO> updateCart(@Valid @RequestBody CartForm form) {
-        CartVO cartVO = cartService.update(form);
-        return R.ok(cartVO);
+        CartVO cartInfo = cartService.update(form);
+        return R.ok(cartInfo);
     }
 
     @DeleteMapping("/cart/{skuId}")
     public R<CartVO> deleteCart(@PathVariable Integer skuId) {
-        CartVO cartVO = cartService.delete(skuId);
-        return R.ok(cartVO);
+        CartVO cartInfo = cartService.delete(skuId);
+        return R.ok(cartInfo);
     }
 
     @PutMapping("/cart/selected")
     public R<CartVO> updateCartSelectedAll() {
-        CartVO cartVO = cartService.updateSelectedAll();
-        return R.ok(cartVO);
+        CartVO cartInfo = cartService.updateSelectedAll();
+        return R.ok(cartInfo);
     }
 
     @PutMapping("/cart/not-selected")
     public R<CartVO> updateCartNotSelectedAll() {
-        CartVO cartVO = cartService.updateNotSelectedAll();
-        return R.ok(cartVO);
+        CartVO cartInfo = cartService.updateNotSelectedAll();
+        return R.ok(cartInfo);
     }
 
     @DeleteMapping("/cart")
     public R<CartVO> clearCart() {
-        CartVO cartVO = cartService.clear();
-        return R.ok(cartVO);
+        CartVO cartInfo = cartService.clear();
+        return R.ok(cartInfo);
     }
 
     @GetMapping("/coupon/list")

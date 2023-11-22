@@ -1,23 +1,26 @@
 package com.enqbs.admin.form;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
-import java.util.Date;
 
 public class CouponForm {
 
     private Integer productId;
 
-    private BigDecimal denomination;
+    @NotBlank(message = "优惠金额不能为空")
+    private String denomination;
 
-    private BigDecimal condition;
+    @NotBlank(message = "优惠条件金额不能为空")
+    private String condition;
 
     @NotNull(message = "数量不能为空")
     private Integer quantity;
 
-    private Date startDate;
+    @NotBlank(message = "优惠券起始时间不能为空")
+    private String startDate;
 
-    private Date endDate;
+    @NotBlank(message = "优惠券结束时间不能为空")
+    private String endDate;
 
     private Integer status;
 
@@ -29,19 +32,19 @@ public class CouponForm {
         this.productId = productId;
     }
 
-    public BigDecimal getDenomination() {
+    public String getDenomination() {
         return denomination;
     }
 
-    public void setDenomination(BigDecimal denomination) {
+    public void setDenomination(String denomination) {
         this.denomination = denomination;
     }
 
-    public BigDecimal getCondition() {
+    public String getCondition() {
         return condition;
     }
 
-    public void setCondition(BigDecimal condition) {
+    public void setCondition(String condition) {
         this.condition = condition;
     }
 
@@ -53,19 +56,19 @@ public class CouponForm {
         this.quantity = quantity;
     }
 
-    public Date getStartDate() {
+    public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
 

@@ -39,11 +39,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -218,11 +219,11 @@ public class OrderServiceImpl implements OrderService {
         orderShippingAddress.setOrderNo(orderNo);
         OrderService orderServiceProxy = (OrderService) AopContext.currentProxy();      // 获取接口代理,解决本类方法调用事务失效问题
         orderServiceProxy.insert(orderNo, orderItemList, orderShippingAddress, skuStockDTOList, orderConfirmVO, form, userInfoVO);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();     // 解决多线程丢失请求头问题
         executor.execute(() -> {
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            redisUtil.deleteObject(redisKeyOrderConfirm);
+            RequestContextHolder.setRequestAttributes(attributes);
             cartService.deleteCartProductVOListBySelected();
+            redisUtil.deleteObject(redisKeyOrderConfirm);
         });
         log.info("订单号:'{}',订单提交成功.", orderNo);
         return orderNo;

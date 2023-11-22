@@ -33,7 +33,7 @@ public class AliPayServiceImpl implements PayService {
     private AliPayConfig aliPayConfig;
 
     @Override
-    public String pay(PayTypeEnum payTypeEnum, Long orderNo, BigDecimal amount) throws AlipayApiException {
+    public String pay(PayTypeEnum payTypeEnum, Long orderNo, BigDecimal amount) {
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", orderNo);
         bizContent.put("total_amount", amount);
@@ -80,17 +80,12 @@ public class AliPayServiceImpl implements PayService {
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", orderNo);
         bizContent.put("trade_no", payPlatformNo);
+        AlipayTradeCloseResponse response = alipayClosePay(bizContent);
 
-        try {
-            AlipayTradeCloseResponse response = alipayClosePay(bizContent);
-
-            if (response.isSuccess()) {
-                log.info("订单号:'{}',支付平台流水号:'{}',关闭支付成功.", orderNo, payPlatformNo);
-            } else {
-                throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + payPlatformNo + ",关闭支付失败");
-            }
-        } catch (AlipayApiException e) {
-            e.printStackTrace();
+        if (response.isSuccess()) {
+            log.info("订单号:'{}',支付平台流水号:'{}',关闭支付成功.", orderNo, payPlatformNo);
+        } else {
+            throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + payPlatformNo + ",关闭支付失败");
         }
     }
 
@@ -104,51 +99,71 @@ public class AliPayServiceImpl implements PayService {
             JSONObject bizContent = new JSONObject();
             bizContent.put("out_trade_no", outTradeNo);
             bizContent.put("trade_no", tradeNo);
-
-            try {
-                AlipayTradeQueryResponse tradeQueryResponse = alipayQuery(bizContent);
-                result = tradeQueryResponse.isSuccess();
-            } catch (AlipayApiException e) {
-                e.printStackTrace();
-            }
+            AlipayTradeQueryResponse tradeQueryResponse = alipayQuery(bizContent);
+            result = tradeQueryResponse.isSuccess();
         }
 
         return result;
     }
 
-    private AlipayTradePagePayResponse alipayPagePay(JSONObject bizContent) throws AlipayApiException {
+    private AlipayTradePagePayResponse alipayPagePay(JSONObject bizContent) {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setNotifyUrl(aliPayConfig.getNotifyUrl());
         request.setReturnUrl(aliPayConfig.getReturnUrl());
         request.setBizContent(bizContent.toString());
-        return aliPayConfig.initAlipayClient().pageExecute(request);
+
+        try {
+            return aliPayConfig.initAlipayClient().pageExecute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private AlipayTradeWapPayResponse alipayWapPay(JSONObject bizContent) throws AlipayApiException {
+    private AlipayTradeWapPayResponse alipayWapPay(JSONObject bizContent) {
         AlipayTradeWapPayRequest request = new AlipayTradeWapPayRequest();
         request.setNotifyUrl(aliPayConfig.getNotifyUrl());
         request.setReturnUrl(aliPayConfig.getReturnUrl());
         request.setBizContent(bizContent.toString());
-        return aliPayConfig.initAlipayClient().pageExecute(request);
+
+        try {
+            return aliPayConfig.initAlipayClient().pageExecute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private AlipayTradeAppPayResponse alipayAppPay(JSONObject bizContent) throws AlipayApiException {
+    private AlipayTradeAppPayResponse alipayAppPay(JSONObject bizContent) {
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         request.setNotifyUrl(aliPayConfig.getNotifyUrl());
         request.setBizContent(bizContent.toString());
-        return aliPayConfig.initAlipayClient().sdkExecute(request);
+
+        try {
+            return aliPayConfig.initAlipayClient().sdkExecute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private AlipayTradeQueryResponse alipayQuery(JSONObject bizContent) throws AlipayApiException {
+    private AlipayTradeQueryResponse alipayQuery(JSONObject bizContent) {
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
         request.setBizContent(bizContent.toString());
-        return aliPayConfig.initAlipayClient().execute(request);
+
+        try {
+            return aliPayConfig.initAlipayClient().execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private AlipayTradeCloseResponse alipayClosePay(JSONObject bizContent) throws AlipayApiException {
+    private AlipayTradeCloseResponse alipayClosePay(JSONObject bizContent) {
         AlipayTradeCloseRequest request = new AlipayTradeCloseRequest();
         request.setBizContent(bizContent.toString());
-        return aliPayConfig.initAlipayClient().execute(request);
+
+        try {
+            return aliPayConfig.initAlipayClient().execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

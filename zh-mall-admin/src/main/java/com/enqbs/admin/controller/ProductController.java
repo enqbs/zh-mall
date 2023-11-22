@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/product")
@@ -164,8 +165,8 @@ public class ProductController {
 
     @PostMapping("/sku")
     @PreAuthorize("hasAuthority('PRODUCT:ADD')")
-    public R<Void> addSku(@Valid @RequestBody SkuForm form) {
-        skuService.insert(form);
+    public R<Void> addSku(@Valid @RequestBody List<SkuForm> formList) {
+        formList.forEach(form -> skuService.insert(form));
         return R.ok("商品规格保存成功");
     }
 

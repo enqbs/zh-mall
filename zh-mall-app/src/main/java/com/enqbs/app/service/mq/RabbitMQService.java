@@ -1,7 +1,5 @@
 package com.enqbs.app.service.mq;
 
-import com.enqbs.generator.pojo.MessageQueueLog;
-
 public interface RabbitMQService {
 
     /*
@@ -15,13 +13,13 @@ public interface RabbitMQService {
     void send(String exchange, String routingKey, Object content, Integer delay);
 
     /*
-     * 从 MessageQueueLog 中发送消息
+     * 使用 messageId 发送消息
      * */
-    void send(MessageQueueLog messageQueueLog);
+    void send(Long messageId);
 
     /*
      * 更新 MessageQueueLog 状态
      * */
-    void updateMessageQueueLog(Long messageId, Integer status);
+    void update(Long messageId, Integer status);
 
 }

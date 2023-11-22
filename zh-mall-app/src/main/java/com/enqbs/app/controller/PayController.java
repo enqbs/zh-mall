@@ -1,6 +1,5 @@
 package com.enqbs.app.controller;
 
-import com.alipay.api.AlipayApiException;
 import com.enqbs.app.service.pay.PayInfoService;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.pay.enums.PayStatusEnum;
@@ -31,7 +30,7 @@ public class PayController {
     private PayInfoService payInfoService;
 
     @GetMapping("/{orderNo}")
-    public ModelAndView alipayPagePay(@PathVariable Long orderNo) throws AlipayApiException {
+    public ModelAndView alipayPagePay(@PathVariable Long orderNo) {
         PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PAGE);
         String pay = payService.pay(PayTypeEnum.ALIPAY_PAGE, orderNo, payInfoService.getPayAmount(orderNo));
         Map<String, Object> map = new HashMap<>();

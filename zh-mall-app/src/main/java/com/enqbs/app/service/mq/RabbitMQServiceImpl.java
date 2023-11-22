@@ -28,7 +28,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         String message = GsonUtil.obj2Json(content);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        int row = saveMessageQueueLog(messageId, exchange, routingKey, message, null);
+        int row = insert(messageId, exchange, routingKey, message, null);
 
         if (row <= 0) {
             throw new ServiceException("MessageID:" + messageId + ",消息持久化失败");
@@ -43,7 +43,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         String message = GsonUtil.obj2Json(content);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        int row = saveMessageQueueLog(messageId, exchange, routingKey, message, delay);
+        int row = insert(messageId, exchange, routingKey, message, delay);
 
         if (row <= 0) {
             throw new ServiceException("MessageID:" + messageId + ",消息持久化失败");
@@ -56,7 +56,13 @@ public class RabbitMQServiceImpl implements RabbitMQService {
     }
 
     @Override
-    public void send(MessageQueueLog messageQueueLog) {
+    public void send(Long messageId) {
+        MessageQueueLog messageQueueLog = messageQueueLogMapper.selectByPrimaryKey(messageId);
+
+        if (ObjectUtils.isEmpty(messageQueueLog)) {
+            throw new ServiceException("MessageID:" + messageId + ",消息不存在");
+        }
+
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageQueueLog.getMessageId()));
         rabbitTemplate.convertAndSend(messageQueueLog.getExchange(), messageQueueLog.getRoutingKey(),
@@ -68,16 +74,14 @@ public class RabbitMQServiceImpl implements RabbitMQService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateMessageQueueLog(Long messageId, Integer status) {
+    public void update(Long messageId, Integer status) {
         MessageQueueLog messageQueueLog = messageQueueLogMapper.selectByPrimaryKey(messageId);
 
-        if (ObjectUtils.isNotEmpty(messageQueueLog)) {
-            messageQueueLog.setStatus(status);
-        } else {
+        if (ObjectUtils.isEmpty(messageQueueLog)) {
             messageQueueLog = messageQueueLogMapper.selectByPrimaryKey(messageId);
-            messageQueueLog.setStatus(status);
         }
 
+        messageQueueLog.setStatus(status);
         int row = messageQueueLogMapper.updateByPrimaryKeySelective(messageQueueLog);
 
         if (row <= 0) {
@@ -85,7 +89,7 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         }
     }
 
-    private int saveMessageQueueLog(Long messageId, String exchange, String routingKey, String content, Integer delay) {
+    private int insert(Long messageId, String exchange, String routingKey, String content, Integer delay) {
         MessageQueueLog messageQueueLog = new MessageQueueLog();
         messageQueueLog.setMessageId(messageId);
         messageQueueLog.setExchange(exchange);
