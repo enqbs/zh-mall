@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,19 +36,17 @@ public class MemberServiceImpl implements MemberService {
         PageUtil<MemberVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
-        List<User> userList = userMapper.selectListByParam(id, uid, identifier, status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+        List<User> userList = userMapper.selectListByParam(id, uid, identifier, status,
+                deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(userList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = userMapper.countByParam(id, uid, identifier, status, deleteStatus);
+        Long total = userMapper.countByParam(id, uid, identifier, status, deleteStatus);
         Set<Integer> levelIdSet = userList.stream().map(User::getLevelId).collect(Collectors.toSet());
-        Map<Integer, MemberLevelVO> memberLevelVOMap = memberLevelService
-                .getMemberLevelVOList(levelIdSet).stream().collect(Collectors.toMap(MemberLevelVO::getId, v -> v));
+        Map<Integer, MemberLevelVO> memberLevelVOMap = memberLevelService.getMemberLevelVOList(levelIdSet).stream()
+                .collect(Collectors.toMap(MemberLevelVO::getId, v -> v));
         List<MemberVO> memberVOList = userList.stream().map(e -> {
             MemberVO memberVO = memberConvert.user2MemberVO(e);
             memberVO.setLevelInfo(memberLevelVOMap.get(memberVO.getLevelId()));

@@ -33,6 +33,11 @@ public interface TokenService {
     LoginUser getLoginUser(String token);
 
     /*
+     * 移除 LoginUser
+     * */
+    void removeLoginUser();
+
+    /*
      * 验证 token 有效性
      * */
     void verifierToken(String token);

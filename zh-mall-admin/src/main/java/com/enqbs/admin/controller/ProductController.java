@@ -54,7 +54,8 @@ public class ProductController {
             pageSize = 10;
         }
 
-        PageUtil<ProductCategoryVO> pageCategoryList = productCategoryService.getProductCategoryVOList(parentId, naviStatus, deleteStatus, pageNum, pageSize);
+        PageUtil<ProductCategoryVO> pageCategoryList = productCategoryService.getProductCategoryVOList(parentId, naviStatus,
+                deleteStatus, pageNum, pageSize);
         return R.ok(pageCategoryList);
     }
 
@@ -117,7 +118,8 @@ public class ProductController {
             pageSize = 10;
         }
 
-        PageUtil<ProductVO> pageProductList = productService.getProductVOList(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sort, pageNum, pageSize);
+        PageUtil<ProductVO> pageProductList = productService.getProductVOList(categoryId, saleableStatus, newStatus,
+                recommendStatus, deleteStatus, sort, pageNum, pageSize);
         return R.ok(pageProductList);
     }
 

@@ -39,7 +39,8 @@ public class PayController {
             pageSize = 10;
         }
 
-        PageUtil<PayInfoVO> pagePayInfoList = payInfoService.getPayInfoVOList(orderNo, userId, payType, platform, platformNumber, status, deleteStatus, sort, pageNum, pageSize);
+        PageUtil<PayInfoVO> pagePayInfoList = payInfoService.getPayInfoVOList(orderNo, userId, payType, platform,
+                platformNumber, status, deleteStatus, sort, pageNum, pageSize);
         return R.ok(pagePayInfoList);
     }
 

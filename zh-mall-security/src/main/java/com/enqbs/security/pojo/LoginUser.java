@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 
 public class LoginUser implements UserDetails {
 
-    @Expose(serialize = false, deserialize = false)
     private String userToken;
 
     @Expose(serialize = false, deserialize = false)

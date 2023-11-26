@@ -38,17 +38,14 @@ public class RabbitMQMessageListener {
                 orderService.handleTimeoutOrder(orderNo);
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
+                if (16 == i) {
+                    handleBasicAckFail(content, message, channel);
+                    break;
+                }
+
                 flag = true;
+                i += 1;
             }
-
-            if (10 == i) {
-                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                log.error("消息队列:'{}',确认失败,content:'{}',message:'{}'.",
-                        message.getMessageProperties().getConsumerQueue(), content, message);
-                break;
-            }
-
-            i += 1;
         } while (flag);
     }
 
@@ -66,17 +63,14 @@ public class RabbitMQMessageListener {
                 orderService.handlePaySuccessOrder(orderNo);
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
+                if (16 == i) {
+                    handleBasicAckFail(content, message, channel);
+                    break;
+                }
+
                 flag = true;
+                i += 1;
             }
-
-            if (10 == i) {
-                channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                log.error("消息队列:'{}',确认失败,content:'{}',message:'{}'.",
-                        message.getMessageProperties().getConsumerQueue(), content, message);
-                break;
-            }
-
-            i += 1;
         } while (flag);
     }
 
@@ -102,6 +96,12 @@ public class RabbitMQMessageListener {
         redisUtil.deleteObject(Constants.PRODUCT_CATEGORY_LIST);
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         log.info("redis key:'{}',缓存同步成功.", Constants.PRODUCT_CATEGORY_LIST);
+    }
+
+    private void handleBasicAckFail(String content, Message message, Channel channel) throws IOException {
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+        log.error("消息队列:'{}',确认失败,content:'{}',message:'{}'.",
+                message.getMessageProperties().getConsumerQueue(), content, message);
     }
 
 }

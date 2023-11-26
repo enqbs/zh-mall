@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,22 +42,23 @@ public class ProductServiceImpl implements ProductService {
         PageUtil<ProductVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
-        List<ProductVO> productVOList = Collections.emptyList();
-        List<Product> productList = productMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+        List<Product> productList = productMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus,
+                deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
-        if (!CollectionUtils.isEmpty(productList)) {
-            total = productMapper.countByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus);
-            Set<Integer> productIdSet = productList.stream().map(Product::getId).collect(Collectors.toSet());
-            List<SkuVO> skuVOList = skuService.getSkuVOList(productIdSet);
-            handleSkuVOListAndSkuStockVO(skuVOList);
-            Map<Integer, List<SkuVO>> skuVOListMap = skuVOList.stream().collect(Collectors.groupingBy(SkuVO::getProductId));
-            productVOList = productList.stream().map(e -> {
-                ProductVO productVO = productConvert.product2ProductVO(e);
-                productVO.setSkuList(skuVOListMap.get(productVO.getId()));
-                return productVO;
-            }).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(productList)) {
+            return pageUtil;
         }
+
+        Long total = productMapper.countByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus);
+        Set<Integer> productIdSet = productList.stream().map(Product::getId).collect(Collectors.toSet());
+        List<SkuVO> skuVOList = skuService.getSkuVOList(productIdSet);
+        handleSkuVOListAndSkuStockVO(skuVOList);
+        Map<Integer, List<SkuVO>> skuVOListMap = skuVOList.stream().collect(Collectors.groupingBy(SkuVO::getProductId));
+        List<ProductVO> productVOList = productList.stream().map(e -> {
+            ProductVO productVO = productConvert.product2ProductVO(e);
+            productVO.setSkuList(skuVOListMap.get(productVO.getId()));
+            return productVO;
+        }).collect(Collectors.toList());
 
         pageUtil.setTotal(total);
         pageUtil.setList(productVOList);

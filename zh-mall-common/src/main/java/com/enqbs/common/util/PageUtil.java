@@ -1,5 +1,6 @@
 package com.enqbs.common.util;
 
+import java.util.Collections;
 import java.util.List;
 
 public class PageUtil<T> {
@@ -8,9 +9,9 @@ public class PageUtil<T> {
 
     private Integer size;
 
-    private Long total;
+    private Long total = 0L;
 
-    private List<T> list;
+    private List<T> list = Collections.emptyList();
 
     public Integer getNum() {
         return num;

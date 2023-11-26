@@ -16,7 +16,6 @@ import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,7 +106,7 @@ public class UserServiceImpl implements UserService {
     public void logout() {
         LoginUser loginUser = tokenService.getLoginUser();
         executor.execute(() -> removeCacheLoginUser(loginUser));
-        SecurityContextHolder.clearContext();
+        tokenService.removeLoginUser();
     }
 
     private LoginUser getLoginUser(User user, UserAuths userAuths, UserLevel userLevel) {

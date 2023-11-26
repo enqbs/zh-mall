@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -48,16 +47,14 @@ public class OrderServiceImpl implements OrderService {
         PageUtil<OrderVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
-        List<Order> orderList = orderMapper.selectListByParam(orderNo, orderSc, userId, paymentType, status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectListByParam(orderNo, orderSc, userId, paymentType,
+                status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(orderList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = orderMapper.countByParam(orderNo, orderSc, userId, paymentType, status, deleteStatus);
+        Long total = orderMapper.countByParam(orderNo, orderSc, userId, paymentType, status, deleteStatus);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
         /* List to Map */
         Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemService

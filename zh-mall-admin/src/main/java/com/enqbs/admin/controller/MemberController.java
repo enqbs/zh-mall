@@ -37,7 +37,8 @@ public class MemberController {
             pageSize = 10;
         }
 
-        PageUtil<MemberVO> pageMemberList = memberService.getMemberVOList(id, uid, identifier, status, deleteStatus, sort, pageNum, pageSize);
+        PageUtil<MemberVO> pageMemberList = memberService.getMemberVOList(id, uid, identifier, status,
+                deleteStatus, sort, pageNum, pageSize);
         return R.ok(pageMemberList);
     }
 

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,19 +36,17 @@ public class PayInfoServiceImpl implements PayInfoService {
         PageUtil<PayInfoVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
-        List<PayInfo> payInfoList = payInfoMapper.selectListParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+        List<PayInfo> payInfoList = payInfoMapper.selectListParam(orderNo, userId, payType, platform, platformNumber,
+                status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(payInfoList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = payInfoMapper.countByParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus);
+        Long total = payInfoMapper.countByParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus);
         Set<Long> payInfoIdSet = payInfoList.stream().map(PayInfo::getId).collect(Collectors.toSet());
-        Map<Long, PayPlatformVO> platformVOMap = payPlatformService
-                .getPayPlatformVOList(payInfoIdSet).stream().collect(Collectors.toMap(PayPlatformVO::getPayInfoId, v -> v));
+        Map<Long, PayPlatformVO> platformVOMap = payPlatformService.getPayPlatformVOList(payInfoIdSet).stream()
+                .collect(Collectors.toMap(PayPlatformVO::getPayInfoId, v -> v));
         List<PayInfoVO> payInfoVOList = payInfoList.stream().map(e -> {
             PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(e);
             payInfoVO.setPayPlatform(platformVOMap.get(payInfoVO.getId()));

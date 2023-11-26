@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,16 +29,13 @@ public class SysRoleServiceImpl implements SysRoleService {
         PageUtil<SysRoleVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
         List<SysRole> sysRoleList = sysRoleMapper.selectListByParam(deleteStatus, pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(sysRoleList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = sysRoleMapper.countByParam(deleteStatus);
+        Long total = sysRoleMapper.countByParam(deleteStatus);
         List<SysRoleVO> sysRoleVOList = sysRoleList.stream().map(e -> sysUserConvert.sysRole2SysRoleVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(sysRoleVOList);

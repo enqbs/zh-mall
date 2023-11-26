@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,17 +36,14 @@ public class CouponServiceImpl implements CouponService {
         PageUtil<CouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
         List<Coupon> couponList = couponMapper.selectListByParam(null, null, null, null,
                 Constants.IS_NOT_DELETE, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(couponList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = couponMapper.countByParam(null, null, null, null, Constants.IS_NOT_DELETE);
+        Long total = couponMapper.countByParam(null, null, null, null, Constants.IS_NOT_DELETE);
         List<CouponVO> couponVOList = couponList.stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(couponVOList);

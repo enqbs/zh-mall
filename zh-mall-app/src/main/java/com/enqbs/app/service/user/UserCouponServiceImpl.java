@@ -68,18 +68,15 @@ public class UserCouponServiceImpl implements UserCouponService {
         PageUtil<UserCouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE,
                 sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(userCouponList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
+        Long total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
         List<UserCouponVO> userCouponVOList = userCouponList.stream()
                 .map(e -> userConvert.userCoupon2UserCouponVO(e)).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
@@ -193,7 +190,8 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     private void handleUserCouponVO(List<UserCouponVO> userCouponVOList) {
         Set<Integer> couponIdSet = userCouponVOList.stream().map(UserCouponVO::getCouponId).collect(Collectors.toSet());
-        Map<Integer, CouponVO> couponVOMap = couponService.getCouponVOList(couponIdSet).stream().collect(Collectors.toMap(CouponVO::getId, v -> v));
+        Map<Integer, CouponVO> couponVOMap = couponService.getCouponVOList(couponIdSet).stream()
+                .collect(Collectors.toMap(CouponVO::getId, v -> v));
         userCouponVOList.forEach(userCouponVO -> userCouponVO.setCoupon(couponVOMap.get(userCouponVO.getCouponId())));
     }
 

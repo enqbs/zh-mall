@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,17 +32,14 @@ public class CouponServiceImpl implements CouponService {
         PageUtil<CouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
         List<Coupon> couponList = couponMapper.selectListByParam(productId, startDate, endDate, status,
                 deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(couponList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = couponMapper.countByParam(productId, startDate, endDate, status, deleteStatus);
+        Long total = couponMapper.countByParam(productId, startDate, endDate, status, deleteStatus);
         List<CouponVO> couponVOList = couponList.stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(couponVOList);

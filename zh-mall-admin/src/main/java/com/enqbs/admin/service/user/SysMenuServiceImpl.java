@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
@@ -45,16 +44,13 @@ public class SysMenuServiceImpl implements SysMenuService {
         PageUtil<SysMenuVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
         List<SysMenu> sysMenuList = sysMenuMapper.selectListByParam(parentId, roleId, deleteStatus, pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(sysMenuList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = sysMenuMapper.countByParam(parentId, roleId, deleteStatus);
+        Long total = sysMenuMapper.countByParam(parentId, roleId, deleteStatus);
         List<SysMenuVO> sysMenuVOList = sysMenuList.stream().map(e -> sysUserConvert.sysMenu2SysMenuVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(sysMenuVOList);

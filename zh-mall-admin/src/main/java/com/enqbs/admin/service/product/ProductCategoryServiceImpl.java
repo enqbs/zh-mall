@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,16 +30,14 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         PageUtil<ProductCategoryVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
-        List<ProductCategory> productCategoryList = productCategoryMapper.selectListByParam(parentId, naviStatus, deleteStatus, pageNum, pageSize);
+        List<ProductCategory> productCategoryList = productCategoryMapper.selectListByParam(parentId, naviStatus,
+                deleteStatus, pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(productCategoryList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = productCategoryMapper.countByParam(parentId, naviStatus, deleteStatus);
+        Long total = productCategoryMapper.countByParam(parentId, naviStatus, deleteStatus);
         List<ProductCategoryVO> productCategoryVOList = productCategoryList.stream()
                 .map(e -> productConvert.productCategory2ProductCategoryVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);

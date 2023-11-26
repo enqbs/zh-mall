@@ -72,21 +72,22 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public LoginUser getLoginUser(String token) {
-        LoginUser loginUser;
         String redisKey;
-        String userToken;
-        userToken = getUserToken(token);
+        String userToken = getUserToken(token);
 
         if (StringUtils.isNotEmpty(userToken)) {
             redisKey = String.format(Constants.USER_REDIS_KEY, userToken);
-            loginUser = (LoginUser) redisUtil.getObject(redisKey);
         } else {
             userToken = getSysUserToken(token);
             redisKey = String.format(Constants.SYS_USER_REDIS_KEY, userToken);
-            loginUser = (LoginUser) redisUtil.getObject(redisKey);
         }
 
-        return loginUser;
+        return (LoginUser) redisUtil.getObject(redisKey);
+    }
+
+    @Override
+    public void removeLoginUser() {
+        SecurityContextHolder.clearContext();
     }
 
     @Override
@@ -96,8 +97,7 @@ public class TokenServiceImpl implements TokenService {
         } catch (Exception e) {
             if (e instanceof TokenExpiredException) {
                 String redisKey;
-                String userToken;
-                userToken = getUserToken(token);
+                String userToken = getUserToken(token);
 
                 if (StringUtils.isNotEmpty(userToken)) {
                     redisKey = String.format(Constants.USER_REDIS_KEY, userToken);
@@ -118,8 +118,7 @@ public class TokenServiceImpl implements TokenService {
 
     private String getNewToken(String token) {
         String newToken;
-        String userToken;
-        userToken = getUserToken(token);
+        String userToken = getUserToken(token);
 
         if (StringUtils.isNotEmpty(userToken)) {
             newToken = JwtUtil.createToken(Constants.USER_TOKEN, userToken,

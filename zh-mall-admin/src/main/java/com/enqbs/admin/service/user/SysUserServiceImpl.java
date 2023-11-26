@@ -19,13 +19,11 @@ import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -59,16 +57,13 @@ public class SysUserServiceImpl implements SysUserService {
         PageUtil<SysUserInfoVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
         List<SysUser> sysUserList = sysUserMapper.selectListByParam(deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(sysUserList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = sysUserMapper.countByParam(deleteStatus);
+        Long total = sysUserMapper.countByParam(deleteStatus);
         List<SysUserInfoVO> sysUserInfoVOList = sysUserList.stream()
                 .map(e -> sysUserConvert.sysUserInfo2SysUserInfoVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
@@ -168,7 +163,7 @@ public class SysUserServiceImpl implements SysUserService {
     public void logout() {
         LoginUser loginUser = tokenService.getLoginUser();
         executor.execute(() -> removeCacheLoginUser(loginUser));
-        SecurityContextHolder.clearContext();
+        tokenService.removeLoginUser();
     }
 
     private LoginUser getLoginUser(SysUser sysUser, List<String> permissionList) {
@@ -186,7 +181,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     private void cacheLoginUser(LoginUser loginUser) {
         String redisKey = String.format(Constants.SYS_USER_REDIS_KEY, loginUser.getUserToken());
-        long cacheTimeout = 3600 * 7 * 1000L;     // 用户信息 redis 缓存7天(免登录)
+        Long cacheTimeout = 3600 * 7 * 1000L;     // 用户信息 redis 缓存7天(免登录)
         redisUtil.setObject(redisKey, loginUser, cacheTimeout);
     }
 

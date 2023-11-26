@@ -253,17 +253,14 @@ public class OrderServiceImpl implements OrderService {
         PageUtil<OrderVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        long total = 0L;
         List<Order> orderList = orderMapper.selectListByParam(null, null, userInfoVO.getUserId(), null,
                 status, Constants.IS_NOT_DELETE, sortEnum.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(orderList)) {
-            pageUtil.setTotal(total);
-            pageUtil.setList(Collections.emptyList());
             return pageUtil;
         }
 
-        total = orderMapper.countByParam(null, null, userInfoVO.getUserId(),
+        Long total = orderMapper.countByParam(null, null, userInfoVO.getUserId(),
                 null, status, Constants.IS_NOT_DELETE);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
         Map<Long, List<OrderItemVO>> orderItemVOMap = orderItemService
