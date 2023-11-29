@@ -17,7 +17,7 @@ public interface CouponService {
     /*
     * 优惠券列表
     * */
-    PageUtil<CouponVO> getCouponVOList(SortEnum sortEnum, Integer pageNum, Integer pageSize);
+    PageUtil<CouponVO> getCouponVOList(SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 优惠券详情

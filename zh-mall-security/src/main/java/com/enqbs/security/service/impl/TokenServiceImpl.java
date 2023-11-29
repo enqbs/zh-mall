@@ -3,6 +3,7 @@ package com.enqbs.security.service.impl;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
+import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.JwtUtil;
 import com.enqbs.common.util.RedisUtil;
 import com.enqbs.security.config.JwtPramConfig;
@@ -82,7 +83,7 @@ public class TokenServiceImpl implements TokenService {
             redisKey = String.format(Constants.SYS_USER_REDIS_KEY, userToken);
         }
 
-        return (LoginUser) redisUtil.getObject(redisKey);
+        return GsonUtil.json2Obj(redisUtil.getString(redisKey), LoginUser.class);
     }
 
     @Override

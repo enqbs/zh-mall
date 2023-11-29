@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     @Resource
@@ -40,19 +42,19 @@ public class AuthController {
         return R.ok("注册成功", resultMap);
     }
 
-    @PutMapping("/change-password")
+    @PutMapping("/change/password")
     public R<Void> changePassword(@Valid @RequestBody ChangePasswordForm form) {
         sysUserService.changePassword(form);
         return R.ok("修改密码成功");
     }
 
-    @PutMapping("/change-nickname")
+    @PutMapping("/change/nickname")
     public R<Void> changeNickname(@Valid @RequestBody ChangeNicknameForm form) {
         sysUserService.changeNickname(form);
         return R.ok("修改昵称成功");
     }
 
-    @PostMapping("/sign-out")
+    @PostMapping("/logout")
     public R<Void> logout() {
         sysUserService.logout();
         return R.ok("退出成功");

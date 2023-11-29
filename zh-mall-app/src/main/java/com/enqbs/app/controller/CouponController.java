@@ -24,15 +24,8 @@ public class CouponController {
     public R<PageUtil<CouponVO>> couponList(@RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                             @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                             @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        if (pageNum <= 0) {
-            pageNum = 1;
-        }
-
-        if (pageSize <= 0) {
-            pageSize = 5;
-        }
-
-        PageUtil<CouponVO> pageCouponList = couponService.getCouponVOList(sort, pageNum, pageSize);
+        PageUtil<CouponVO> pageCouponList = couponService.getCouponVOList(sort,
+                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 5 : pageSize);
         return R.ok(pageCouponList);
     }
 

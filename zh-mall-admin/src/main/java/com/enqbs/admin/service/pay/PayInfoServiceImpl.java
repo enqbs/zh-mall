@@ -32,12 +32,12 @@ public class PayInfoServiceImpl implements PayInfoService {
     @Override
     public PageUtil<PayInfoVO> getPayInfoVOList(Long orderNo, Integer userId, String payType,
                                                 String platform, String platformNumber, Integer status,
-                                                Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
+                                                Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<PayInfoVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         List<PayInfo> payInfoList = payInfoMapper.selectListParam(orderNo, userId, payType, platform, platformNumber,
-                status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+                status, deleteStatus, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(payInfoList)) {
             return pageUtil;

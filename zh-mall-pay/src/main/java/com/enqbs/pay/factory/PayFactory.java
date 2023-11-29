@@ -19,8 +19,8 @@ public class PayFactory {
     @Resource
     private final Map<String, PayService> payServiceMap = new ConcurrentHashMap<>();
 
-    public PayService getPayService(PayTypeEnum payTypeEnum) {
-        PayService payService = payServiceMap.get(payTypeEnum.getPayPlatform());
+    public PayService getPayService(PayTypeEnum payType) {
+        PayService payService = payServiceMap.get(payType.getPayPlatform());
 
         if (ObjectUtils.isEmpty(payService)) {
             throw new ServiceException("暂不支持的支付平台");

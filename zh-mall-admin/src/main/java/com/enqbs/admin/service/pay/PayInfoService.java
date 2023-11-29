@@ -11,7 +11,7 @@ public interface PayInfoService {
      * */
     PageUtil<PayInfoVO> getPayInfoVOList(Long orderNo, Integer userId, String payType,
                                          String platform, String platformNumber, Integer status,
-                                         Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize);
+                                         Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 支付信息

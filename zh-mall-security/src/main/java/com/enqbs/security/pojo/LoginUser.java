@@ -1,6 +1,5 @@
 package com.enqbs.security.pojo;
 
-import com.google.gson.annotations.Expose;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,8 +14,7 @@ public class LoginUser implements UserDetails {
 
     private String userToken;
 
-    @Expose(serialize = false, deserialize = false)
-    private String userType;
+    private transient String userType;
 
     private Integer userId;
 
@@ -44,8 +42,7 @@ public class LoginUser implements UserDetails {
 
     private List<String> permissionList;
 
-    @Expose(serialize = false, deserialize = false)
-    private List<SimpleGrantedAuthority> simpleGrantedAuthorityList;
+    private transient List<SimpleGrantedAuthority> simpleGrantedAuthorityList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

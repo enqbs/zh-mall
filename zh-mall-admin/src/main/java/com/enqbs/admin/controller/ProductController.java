@@ -46,16 +46,8 @@ public class ProductController {
                                                        @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                                        @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                        @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        if (pageNum <= 0) {
-            pageNum = 1;
-        }
-
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-
         PageUtil<ProductCategoryVO> pageCategoryList = productCategoryService.getProductCategoryVOList(parentId, naviStatus,
-                deleteStatus, pageNum, pageSize);
+                deleteStatus, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
         return R.ok(pageCategoryList);
     }
 
@@ -110,16 +102,8 @@ public class ProductController {
                                               @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        if (pageNum <= 0) {
-            pageNum = 1;
-        }
-
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-
         PageUtil<ProductVO> pageProductList = productService.getProductVOList(categoryId, saleableStatus, newStatus,
-                recommendStatus, deleteStatus, sort, pageNum, pageSize);
+                recommendStatus, deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
         return R.ok(pageProductList);
     }
 

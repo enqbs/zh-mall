@@ -15,6 +15,6 @@ public interface PayInfoService {
     /*
      * 更新支付信息
      * */
-    void update(PayTypeEnum payTypeEnum, PayStatusEnum payStatusEnum, String orderNo, String platformNo);
+    void update(PayTypeEnum payType, PayStatusEnum payStatus, String orderNo, String platformNo);
 
 }

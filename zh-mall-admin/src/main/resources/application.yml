@@ -21,6 +21,6 @@ jwt:
 secure:
   ignored:
     anonymous:
-      - "/login"
+      - "/auth/login"
     permit:
       - "/favicon.ico"

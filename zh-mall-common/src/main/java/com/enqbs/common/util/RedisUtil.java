@@ -1,6 +1,7 @@
 package com.enqbs.common.util;
 
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.stereotype.Component;
 
@@ -13,54 +14,56 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil {
 
     @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
-    public void setObject(String key, Object value) {
-        redisTemplate.opsForValue().set(key, value);
+    public void setString(String key, String value) {
+        stringRedisTemplate.opsForValue().set(key, value);
     }
 
-    public void setObject(String key, Object value, Long timeout) {
-        redisTemplate.opsForValue().set(key, value, timeout, TimeUnit.MILLISECONDS);
+    public void setString(String key, String value, Long timeout) {
+        stringRedisTemplate.opsForValue().set(key, value, timeout, TimeUnit.MILLISECONDS);
     }
 
-    public void setHash(String key, Object hashKey, Object value) {
+    public void setHash(String key, String hashKey, String value) {
         setHash(key, hashKey, value, null);
     }
 
-    public void setHash(String key, Object hashKey, Object value, Long timeout) {
-        redisTemplate.opsForHash().put(key, hashKey, value);
+    public void setHash(String key, String hashKey, String value, Long timeout) {
+        stringRedisTemplate.opsForHash().put(key, hashKey, value);
 
         if (timeout != null) {
-            redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
+            stringRedisTemplate.expire(key, timeout, TimeUnit.SECONDS);
         }
     }
 
-    public Object getObject(Object key) {
-        return redisTemplate.opsForValue().get(key);
+    public String getString(String key) {
+        return stringRedisTemplate.opsForValue().get(key);
     }
 
-    public Map<Object, Object> getRedisMap(String key) {
-        return redisTemplate.opsForHash().entries(key);
+    public Map<String, String> getRedisMap(String key) {
+        HashOperations<String, String, String> hash = stringRedisTemplate.opsForHash();
+        return hash.entries(key);
     }
 
-    public Object getRedisMapValue(String key, Object hashKey) {
-        return redisTemplate.opsForHash().get(key, hashKey);
+    public String getRedisMapValue(String key, String hashKey) {
+        HashOperations<String, String, String> hash = stringRedisTemplate.opsForHash();
+        return hash.get(key, hashKey);
     }
 
-    public void deleteObject(String key) {
-        redisTemplate.delete(key);
+    public void deleteKey(String key) {
+        stringRedisTemplate.delete(key);
     }
 
-    public void deleteEntry(String key, Object hashKey) {
-        redisTemplate.opsForHash().delete(key, hashKey);
+    public void deleteRedisMapEntry(String key, String hashKey) {
+        stringRedisTemplate.opsForHash().delete(key, hashKey);
     }
 
     public Boolean isExist(String key) {
-        return redisTemplate.hasKey(key);
+        return stringRedisTemplate.hasKey(key);
     }
 
-    public Long executeScript(String script, String key, Object value) {
-        return redisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Collections.singletonList(key), value);
+    public Long executeScript(String script, String key, String value) {
+        return stringRedisTemplate.execute(new DefaultRedisScript<>(script, Long.class), Collections.singletonList(key), value);
     }
 
 }

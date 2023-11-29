@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 
 public interface PayService {
 
-    String pay(PayTypeEnum payTypeEnum, Long orderNo, BigDecimal amount);
+    String pay(PayTypeEnum payType, Long orderNo, BigDecimal amount);
 
     void closePay(String orderNo, String payPlatformNo);
 

@@ -31,13 +31,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public PageUtil<MemberVO> getMemberVOList(Integer id, Long uid, String identifier,
-                                              Integer status, Integer deleteStatus, SortEnum sortEnum,
+                                              Integer status, Integer deleteStatus, SortEnum sort,
                                               Integer pageNum, Integer pageSize) {
         PageUtil<MemberVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         List<User> userList = userMapper.selectListByParam(id, uid, identifier, status,
-                deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+                deleteStatus, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(userList)) {
             return pageUtil;

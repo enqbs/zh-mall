@@ -9,6 +9,7 @@ import com.enqbs.admin.vo.SysUserInfoVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
+import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.RedisUtil;
@@ -33,31 +34,25 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Resource
     private SysUserMapper sysUserMapper;
-
     @Resource
     private RedisUtil redisUtil;
-
     @Resource
     private PasswordEncoder passwordEncoder;
-
     @Resource
     private SysMenuService sysMenuService;
-
     @Resource
     private TokenService tokenService;
-
     @Resource
     private SysUserConvert sysUserConvert;
-
     @Resource
     private ThreadPoolTaskExecutor executor;
 
     @Override
-    public PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<SysUserInfoVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<SysUser> sysUserList = sysUserMapper.selectListByParam(deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+        List<SysUser> sysUserList = sysUserMapper.selectListByParam(deleteStatus, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(sysUserList)) {
             return pageUtil;
@@ -182,12 +177,12 @@ public class SysUserServiceImpl implements SysUserService {
     private void cacheLoginUser(LoginUser loginUser) {
         String redisKey = String.format(Constants.SYS_USER_REDIS_KEY, loginUser.getUserToken());
         Long cacheTimeout = 3600 * 7 * 1000L;     // 用户信息 redis 缓存7天(免登录)
-        redisUtil.setObject(redisKey, loginUser, cacheTimeout);
+        redisUtil.setString(redisKey, GsonUtil.obj2Json(loginUser), cacheTimeout);
     }
 
     private void removeCacheLoginUser(LoginUser loginUser) {
         String redisKey = String.format(Constants.SYS_USER_REDIS_KEY, loginUser.getUserToken());
-        redisUtil.deleteObject(redisKey);
+        redisUtil.deleteKey(redisKey);
     }
 
 }

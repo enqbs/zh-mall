@@ -10,4 +10,6 @@ public interface UserAuthsService {
 
     int insert(UserAuths userAuths);
 
+    int update(UserAuths userAuths);
+
 }

@@ -50,6 +50,10 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
 
 redisson:
   address: redis://192.168.43.2:6379
@@ -60,13 +64,20 @@ thread-pool:
   work-queue-size: 1000
   keep-alive-seconds: 300
 
-alipay:
-  gateway: alipayGateway
-  notify-url: notifyUrl
-  return-url: returnUrl
-  app-id: you appId
-  app-private-key: you privateKey
-  alipay-public-key: you alipayPublicKey
+ali:
+  pay:
+    gateway: alipay-gateway
+    notify-url: notify-url
+    return-url: return-url
+    app-id: your-appId
+    app-private-key: your-private-key
+    alipay-public-key: your-alipay-public-key
+  oss:
+    endpoint: https://oss-cn-shenzhen.aliyuncs.com
+    bucket-domain: https://your-bucket.oss-cn-shenzhen.aliyuncs.com
+    access-key-id: your-access-key-id
+    access-key-secret: your-access-key-secret
+    bucket: your-bucket
 
 logstash:
   host: 192.168.43.2

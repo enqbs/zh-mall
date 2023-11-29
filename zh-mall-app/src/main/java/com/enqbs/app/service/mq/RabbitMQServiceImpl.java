@@ -1,5 +1,6 @@
 package com.enqbs.app.service.mq;
 
+import com.enqbs.common.enums.QueueEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;
@@ -23,33 +24,23 @@ public class RabbitMQServiceImpl implements RabbitMQService {
     private RabbitTemplate rabbitTemplate;
 
     @Override
-    public void send(String exchange, String routingKey, Object content) {
+    public void send(QueueEnum queue, Object content) {
         long messageId = IDUtil.getId();
         String message = GsonUtil.obj2Json(content);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        int row = insert(messageId, exchange, routingKey, message, null);
-
-        if (row <= 0) {
-            throw new ServiceException("MessageID:" + messageId + ",消息持久化失败");
-        }
-
-        rabbitTemplate.convertAndSend(exchange, routingKey, message, correlationData);
+        insert(messageId, queue.getExchange(), queue.getRoutingKey(), message, null);
+        rabbitTemplate.convertAndSend(queue.getExchange(), queue.getRoutingKey(), message, correlationData);
     }
 
     @Override
-    public void send(String exchange, String routingKey, Object content, Integer delay) {
+    public void send(QueueEnum queue, Object content, Integer delay) {
         long messageId = IDUtil.getId();
         String message = GsonUtil.obj2Json(content);
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
-        int row = insert(messageId, exchange, routingKey, message, delay);
-
-        if (row <= 0) {
-            throw new ServiceException("MessageID:" + messageId + ",消息持久化失败");
-        }
-
-        rabbitTemplate.convertAndSend(exchange, routingKey, message, messagePostProcessor -> {
+        insert(messageId, queue.getExchange(), queue.getRoutingKey(), message, delay);
+        rabbitTemplate.convertAndSend(queue.getExchange(), queue.getRoutingKey(), message, messagePostProcessor -> {
             messagePostProcessor.getMessageProperties().setDelay(delay);
             return messagePostProcessor;
         }, correlationData);
@@ -89,14 +80,14 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         }
     }
 
-    private int insert(Long messageId, String exchange, String routingKey, String content, Integer delay) {
+    private void insert(Long messageId, String exchange, String routingKey, String content, Integer delay) {
         MessageQueueLog messageQueueLog = new MessageQueueLog();
         messageQueueLog.setMessageId(messageId);
         messageQueueLog.setExchange(exchange);
         messageQueueLog.setRoutingKey(routingKey);
         messageQueueLog.setContent(content);
         messageQueueLog.setDelay(delay);
-        return messageQueueLogMapper.insertSelective(messageQueueLog);
+        messageQueueLogMapper.insertSelective(messageQueueLog);
     }
 
 }

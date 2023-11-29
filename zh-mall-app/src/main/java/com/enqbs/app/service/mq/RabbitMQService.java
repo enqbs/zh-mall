@@ -1,16 +1,18 @@
 package com.enqbs.app.service.mq;
 
+import com.enqbs.common.enums.QueueEnum;
+
 public interface RabbitMQService {
 
     /*
      * 发送普通消息
      * */
-    void send(String exchange, String routingKey, Object content);
+    void send(QueueEnum queue, Object content);
 
     /*
      * 发送 delay 消息
      * */
-    void send(String exchange, String routingKey, Object content, Integer delay);
+    void send(QueueEnum queue, Object content, Integer delay);
 
     /*
      * 使用 messageId 发送消息

@@ -27,16 +27,12 @@ public class PayInfoServiceImpl implements PayInfoService {
 
     @Resource
     private PayInfoMapper payInfoMapper;
-
     @Resource
     private PayPlatformService payPlatformService;
-
     @Resource
     private OrderService orderService;
-
     @Resource
     private UserService userService;
-
     @Resource
     private RabbitMQService rabbitMQService;
 
@@ -49,7 +45,6 @@ public class PayInfoServiceImpl implements PayInfoService {
             throw new ServiceException("订单号:" + orderNo + ",订单不存在");
         }
 
-        UserInfoVO userInfoVO = userService.getUserInfoVO();
         PayInfo payInfo = payInfoMapper.selectByOrderNoOrStatusOrDeleteStatus(orderNo, PayStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isNotEmpty(payInfo) && !PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())
@@ -58,7 +53,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         if (ObjectUtils.isEmpty(payInfo)) {
-            insert(orderNo, orderVO.getActualAmount(), userInfoVO);
+            insert(orderVO);
         }
 
         return orderVO.getActualAmount();
@@ -66,7 +61,7 @@ public class PayInfoServiceImpl implements PayInfoService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(PayTypeEnum payTypeEnum, PayStatusEnum payStatusEnum, String orderNo, String platformNo) {
+    public void update(PayTypeEnum payType, PayStatusEnum payStatus, String orderNo, String platformNo) {
         PayInfo payInfo = payInfoMapper.selectByOrderNoOrStatusOrDeleteStatus(Long.valueOf(orderNo), null, Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(payInfo)) {
@@ -77,27 +72,28 @@ public class PayInfoServiceImpl implements PayInfoService {
             throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + platformNo + ",订单已关闭支付");
         }
 
-        payInfo.setStatus(payStatusEnum.getCode());
+        UserInfoVO userInfoVO = userService.getUserInfoVO();
+        payInfo.setStatus(payStatus.getCode());
+        payInfo.setNickName(userInfoVO.getNickName());
+        payInfo.setPhoto(userInfoVO.getPhoto());
         update(orderNo, platformNo, payInfo);
-        payPlatformService.insert(payInfo.getId(), payTypeEnum, orderNo, platformNo);
-        rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE.getExchange(), QueueEnum.PAY_SUCCESS_QUEUE.getRoutingKey(), orderNo);
+        payPlatformService.insert(payInfo.getId(), payType, orderNo, platformNo);
+        rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE, orderNo);
     }
 
-    private void insert(Long orderNo, BigDecimal amount, UserInfoVO userInfo) {
+    private void insert(OrderVO order) {
         PayInfo payInfo = new PayInfo();
-        payInfo.setOrderNo(orderNo);
-        payInfo.setUserId(userInfo.getUserId());
-        payInfo.setNickName(userInfo.getNickName());
-        payInfo.setPhoto(userInfo.getPhoto());
-        payInfo.setPayAmount(amount);
+        payInfo.setOrderNo(order.getOrderNo());
+        payInfo.setUserId(order.getUserId());
+        payInfo.setPayAmount(order.getActualAmount());
         payInfo.setStatus(PayStatusEnum.NOT_PAY.getCode());
         int row = payInfoMapper.insertSelective(payInfo);
 
         if (row <= 0) {
-            throw new ServiceException("订单号:" + orderNo + ",支付信息保存失败");
+            throw new ServiceException("订单号:" + order.getOrderNo() + ",支付信息保存失败");
         }
 
-        log.info("订单号:'{}',支付信息保存成功.", orderNo);
+        log.info("订单号:'{}',支付信息保存成功.", order.getOrderNo());
     }
 
     private void update(String orderNo, String platformNo, PayInfo payInfo) {

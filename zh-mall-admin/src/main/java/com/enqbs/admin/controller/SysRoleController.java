@@ -45,15 +45,8 @@ public class SysRoleController {
     public R<PageUtil<SysRoleVO>> roleList(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                            @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        if (pageNum <= 0) {
-            pageNum = 1;
-        }
-
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-
-        PageUtil<SysRoleVO> pageSysRoleList = sysRoleService.getSysRoleVOList(deleteStatus, pageNum, pageSize);
+        PageUtil<SysRoleVO> pageSysRoleList = sysRoleService.getSysRoleVOList(deleteStatus,
+                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
         return R.ok(pageSysRoleList);
     }
 

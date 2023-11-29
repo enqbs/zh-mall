@@ -6,6 +6,8 @@ import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.RedisUtil;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.scheduling.annotation.Async;
@@ -20,6 +22,9 @@ public class RabbitMQMessageListener {
 
     @Resource
     private RedisUtil redisUtil;
+
+    @Resource
+    private RedissonClient redissonClient;
 
     @Resource
     private OrderService orderService;
@@ -38,12 +43,13 @@ public class RabbitMQMessageListener {
                 orderService.handleTimeoutOrder(orderNo);
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
+                flag = true;
+
                 if (16 == i) {
                     handleBasicAckFail(content, message, channel);
                     break;
                 }
 
-                flag = true;
                 i += 1;
             }
         } while (flag);
@@ -63,12 +69,13 @@ public class RabbitMQMessageListener {
                 orderService.handlePaySuccessOrder(orderNo);
                 channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             } catch (Exception e) {
+                flag = true;
+
                 if (16 == i) {
                     handleBasicAckFail(content, message, channel);
                     break;
                 }
 
-                flag = true;
                 i += 1;
             }
         } while (flag);
@@ -93,9 +100,16 @@ public class RabbitMQMessageListener {
          *         "ts":1697784400883,
          *         "type":"UPDATE"}
          * */
-        redisUtil.deleteObject(Constants.PRODUCT_CATEGORY_LIST);
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-        log.info("redis key:'{}',缓存同步成功.", Constants.PRODUCT_CATEGORY_LIST);
+        RLock lock = redissonClient.getLock(Constants.PRODUCT_CATEGORY_LIST_LOCK);
+        lock.lock();
+
+        try {
+            redisUtil.deleteKey(Constants.PRODUCT_CATEGORY_LIST);
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+            log.info("redis key:'{}',缓存同步成功.", Constants.PRODUCT_CATEGORY_LIST);
+        } finally {
+            lock.unlock();
+        }
     }
 
     private void handleBasicAckFail(String content, Message message, Channel channel) throws IOException {

@@ -1,11 +1,16 @@
 package com.enqbs.app.controller;
 
+import com.enqbs.app.form.ChangeNicknameForm;
+import com.enqbs.app.form.ChangePasswordForm;
+import com.enqbs.app.form.ChangePhotoForm;
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
 import com.enqbs.app.service.user.UserService;
 import com.enqbs.common.util.R;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -14,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 
     @Resource
@@ -35,7 +41,25 @@ public class AuthController {
         return R.ok("注册成功", resultMap);
     }
 
-    @PostMapping("/sign-out")
+    @PutMapping("/change/password")
+    public R<Void> changePassword(@Valid @RequestBody ChangePasswordForm form) {
+        userService.changePassword(form);
+        return R.ok("修改密码成功");
+    }
+
+    @PutMapping("/change/nickname")
+    public R<Void> changeNickname(@Valid @RequestBody ChangeNicknameForm form) {
+        userService.changeNickname(form);
+        return R.ok("修改昵称成功");
+    }
+
+    @PutMapping("/change/photo")
+    public R<Void> changePhoto(@Valid @RequestBody ChangePhotoForm form) {
+        userService.changePhoto(form);
+        return R.ok("修改头像成功");
+    }
+
+    @PostMapping("/logout")
     public R<Void> logout() {
         userService.logout();
         return R.ok("退出成功");

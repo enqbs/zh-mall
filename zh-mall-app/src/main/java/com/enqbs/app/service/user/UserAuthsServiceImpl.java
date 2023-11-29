@@ -27,4 +27,9 @@ public class UserAuthsServiceImpl implements UserAuthsService {
         return userAuthsMapper.insertSelective(userAuths);
     }
 
+    @Override
+    public int update(UserAuths userAuths) {
+        return userAuthsMapper.updateByPrimaryKeySelective(userAuths);
+    }
+
 }

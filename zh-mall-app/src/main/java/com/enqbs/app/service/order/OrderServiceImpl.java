@@ -27,6 +27,7 @@ import com.enqbs.common.enums.OrderStatusEnum;
 import com.enqbs.common.enums.QueueEnum;
 import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
+import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.RedisUtil;
@@ -39,11 +40,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -108,8 +109,8 @@ public class OrderServiceImpl implements OrderService {
         executor.execute(() -> {
             String redisKeyOrderToken = String.format(Constants.ORDER_TOKEN_REDIS_KEY, userInfoVO.getUserId());
             String redisKeyOrderConfirm = String.format(Constants.ORDER_CONFIRM_REDIS_KEY, userInfoVO.getUserId());
-            redisUtil.setObject(redisKeyOrderToken, orderToken, Long.valueOf(ORDER_TIMEOUT));
-            redisUtil.setObject(redisKeyOrderConfirm, orderConfirmVO, Long.valueOf(ORDER_TIMEOUT));
+            redisUtil.setString(redisKeyOrderToken, orderToken, Long.valueOf(ORDER_TIMEOUT));
+            redisUtil.setString(redisKeyOrderConfirm, GsonUtil.obj2Json(orderConfirmVO), Long.valueOf(ORDER_TIMEOUT));
         });
         return orderConfirmVO;
     }
@@ -126,7 +127,7 @@ public class OrderServiceImpl implements OrderService {
 
         String redisKeyOrderToken = String.format(Constants.ORDER_TOKEN_REDIS_KEY, userInfoVO.getUserId());
         String redisKeyOrderConfirm = String.format(Constants.ORDER_CONFIRM_REDIS_KEY, userInfoVO.getUserId());
-        OrderConfirmVO orderConfirmVO = (OrderConfirmVO) redisUtil.getObject(redisKeyOrderConfirm);
+        OrderConfirmVO orderConfirmVO = GsonUtil.json2Obj(redisUtil.getString(redisKeyOrderConfirm), OrderConfirmVO.class);
 
         if (ObjectUtils.isNotEmpty(form.getCouponsId())) {
             try {
@@ -146,8 +147,8 @@ public class OrderServiceImpl implements OrderService {
                     throw new ServiceException("订单未满足优惠条件");
                 }
             } catch (Exception e) {
-                redisUtil.setObject(redisKeyOrderToken, form.getOrderToken(), Long.valueOf(ORDER_TIMEOUT));
-                redisUtil.setObject(redisKeyOrderConfirm, orderConfirmVO, Long.valueOf(ORDER_TIMEOUT));
+                redisUtil.setString(redisKeyOrderToken, form.getOrderToken(), Long.valueOf(ORDER_TIMEOUT));
+                redisUtil.setString(redisKeyOrderConfirm, GsonUtil.obj2Json(orderConfirmVO), Long.valueOf(ORDER_TIMEOUT));
                 throw e;
             }
         } else {
@@ -156,8 +157,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
         executor.execute(() -> {
-            redisUtil.setObject(redisKeyOrderToken, form.getOrderToken(), Long.valueOf(ORDER_TIMEOUT));
-            redisUtil.setObject(redisKeyOrderConfirm, orderConfirmVO, Long.valueOf(ORDER_TIMEOUT));
+            redisUtil.setString(redisKeyOrderToken, form.getOrderToken(), Long.valueOf(ORDER_TIMEOUT));
+            redisUtil.setString(redisKeyOrderConfirm, GsonUtil.obj2Json(orderConfirmVO), Long.valueOf(ORDER_TIMEOUT));
         });
         return orderConfirmVO;
     }
@@ -177,7 +178,7 @@ public class OrderServiceImpl implements OrderService {
         List<SkuStockDTO> skuStockDTOList = new ArrayList<>();                      // 锁定商品库存列表
         /* 缓存获取预生成的订单信息 */
         String redisKeyOrderConfirm = String.format(Constants.ORDER_CONFIRM_REDIS_KEY, userInfoVO.getUserId());
-        OrderConfirmVO orderConfirmVO = (OrderConfirmVO) redisUtil.getObject(redisKeyOrderConfirm);
+        OrderConfirmVO orderConfirmVO = GsonUtil.json2Obj(redisUtil.getString(redisKeyOrderConfirm), OrderConfirmVO.class);
         List<OrderItemVO> orderItemVOList = orderConfirmVO.getOrderItemList();      // 获取预生成的订单项信息
         Set<Integer> productIdSet = orderItemVOList.stream().map(OrderItemVO::getProductId).collect(Collectors.toSet());
         Set<Integer> skuIdSet = orderItemVOList.stream().map(OrderItemVO::getSkuId).collect(Collectors.toSet());
@@ -219,11 +220,11 @@ public class OrderServiceImpl implements OrderService {
         orderShippingAddress.setOrderNo(orderNo);
         OrderService orderServiceProxy = (OrderService) AopContext.currentProxy();      // 获取接口代理,解决本类方法调用事务失效问题
         orderServiceProxy.insert(orderNo, orderItemList, orderShippingAddress, skuStockDTOList, orderConfirmVO, form, userInfoVO);
-        RequestAttributes attributes = RequestContextHolder.getRequestAttributes();     // 解决多线程丢失请求头问题
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();     // 解决多线程丢失请求头问题
         executor.execute(() -> {
-            RequestContextHolder.setRequestAttributes(attributes);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             cartService.deleteCartProductVOListBySelected();
-            redisUtil.deleteObject(redisKeyOrderConfirm);
+            redisUtil.deleteKey(redisKeyOrderConfirm);
         });
         log.info("订单号:'{}',订单提交成功.", orderNo);
         return orderNo;
@@ -248,13 +249,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public PageUtil<OrderVO> getOrderVOList(Integer status, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
+    public PageUtil<OrderVO> getOrderVOList(Integer status, SortEnum sort, Integer pageNum, Integer pageSize) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         PageUtil<OrderVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         List<Order> orderList = orderMapper.selectListByParam(null, null, userInfoVO.getUserId(), null,
-                status, Constants.IS_NOT_DELETE, sortEnum.getSortType(), pageNum, pageSize);
+                status, Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(orderList)) {
             return pageUtil;
@@ -300,7 +301,7 @@ public class OrderServiceImpl implements OrderService {
         orderShippingAddressService.insert(orderNo, orderShippingAddress);
         insert(orderNo, order);
         /* 发送延迟消息,15分钟订单未支付自动关闭 */
-        rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE.getExchange(), QueueEnum.ORDER_CLOSE_QUEUE.getRoutingKey(), orderNo, ORDER_TIMEOUT);
+        rabbitMQService.send(QueueEnum.ORDER_CLOSE_QUEUE, orderNo, ORDER_TIMEOUT);
     }
 
     @Override

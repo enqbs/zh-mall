@@ -36,19 +36,11 @@ public class CouponController {
                                             @RequestParam(required = false) Date endDate,
                                             @RequestParam(required = false) Integer status,
                                             @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                            @RequestParam(required = false, defaultValue = "DESC") SortEnum sortEnum,
+                                            @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                             @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                             @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        if (pageNum <= 0) {
-            pageNum = 1;
-        }
-
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-
         PageUtil<CouponVO> pageCouponList = couponService.getCouponVOList(productId, startDate, endDate, status,
-                deleteStatus, sortEnum, pageNum, pageSize);
+                deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
         return R.ok(pageCouponList);
     }
 

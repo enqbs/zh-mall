@@ -37,13 +37,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageUtil<ProductVO> getProductVOList(Integer categoryId, Integer saleableStatus, Integer newStatus,
-                                                Integer recommendStatus, Integer deleteStatus, SortEnum sortEnum,
+                                                Integer recommendStatus, Integer deleteStatus, SortEnum sort,
                                                 Integer pageNum, Integer pageSize) {
         PageUtil<ProductVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         List<Product> productList = productMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus,
-                deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+                deleteStatus, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(productList)) {
             return pageUtil;

@@ -1,11 +1,15 @@
 package com.enqbs.app.service.user;
 
 import com.enqbs.app.convert.UserConvert;
+import com.enqbs.app.form.ChangeNicknameForm;
+import com.enqbs.app.form.ChangePasswordForm;
+import com.enqbs.app.form.ChangePhotoForm;
 import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
 import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
+import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.common.util.RedisUtil;
 import com.enqbs.generator.dao.UserMapper;
@@ -27,25 +31,18 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
-
     @Resource
     private RedisUtil redisUtil;
-
     @Resource
     private PasswordEncoder passwordEncoder;
-
     @Resource
     private UserAuthsService userAuthsService;
-
     @Resource
     private UserLevelService userLevelService;
-
     @Resource
     private TokenService tokenService;
-
     @Resource
     private UserConvert userConvert;
-
     @Resource
     private ThreadPoolTaskExecutor executor;
 
@@ -103,6 +100,67 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void changePassword(ChangePasswordForm form) {
+        LoginUser loginUser = tokenService.getLoginUser();
+
+        if (!passwordEncoder.matches(form.getOldPassword(), loginUser.getPassword())) {
+            throw new ServiceException("密码错误");
+        }
+
+        if (!form.getNewPassword().equals(form.getNewPasswordAgain())) {
+            throw new ServiceException("两次输入的密码不一样");
+        }
+
+        UserAuths userAuths = userAuthsService.getUserAuths(loginUser.getUserId(), null, null);
+        userAuths.setCredential(passwordEncoder.encode(form.getNewPassword()));
+        int row = userAuthsService.update(userAuths);
+
+        if (row <= 0) {
+            throw new ServiceException("修改密码失败");
+        }
+
+        logout();
+    }
+
+    @Override
+    public void changeNickname(ChangeNicknameForm form) {
+        LoginUser loginUser = tokenService.getLoginUser();
+        User user = new User();
+        user.setId(loginUser.getUserId());
+        user.setNickName(form.getNickName());
+        int row = userMapper.updateByPrimaryKeySelective(user);
+
+        if (row <= 0) {
+            throw new ServiceException("修改昵称失败");
+        }
+
+        executor.execute(() -> {
+            loginUser.setNickName(form.getNickName());
+            removeCacheLoginUser(loginUser);
+            cacheLoginUser(loginUser);
+        });
+    }
+
+    @Override
+    public void changePhoto(ChangePhotoForm form) {
+        LoginUser loginUser = tokenService.getLoginUser();
+        User user = new User();
+        user.setId(loginUser.getUserId());
+        user.setPhoto(form.getPhotoURL());
+        int row = userMapper.updateByPrimaryKeySelective(user);
+
+        if (row <= 0) {
+            throw new ServiceException("修改昵称失败");
+        }
+
+        executor.execute(() -> {
+            loginUser.setPhoto(form.getPhotoURL());
+            removeCacheLoginUser(loginUser);
+            cacheLoginUser(loginUser);
+        });
+    }
+
+    @Override
     public void logout() {
         LoginUser loginUser = tokenService.getLoginUser();
         executor.execute(() -> removeCacheLoginUser(loginUser));
@@ -135,12 +193,12 @@ public class UserServiceImpl implements UserService {
     private void cacheLoginUser(LoginUser loginUser) {
         String redisKey = String.format(Constants.USER_REDIS_KEY, loginUser.getUserToken());
         long cacheTimeout = 3600 * 24 * 10 * 1000L;     // 用户信息 redis 缓存10天(免登录)
-        redisUtil.setObject(redisKey, loginUser, cacheTimeout);
+        redisUtil.setString(redisKey, GsonUtil.obj2Json(loginUser), cacheTimeout);
     }
 
     private void removeCacheLoginUser(LoginUser loginUser) {
         String redisKey = String.format(Constants.USER_REDIS_KEY, loginUser.getUserToken());
-        redisUtil.deleteObject(redisKey);
+        redisUtil.deleteKey(redisKey);
     }
 
     private User buildUser() {

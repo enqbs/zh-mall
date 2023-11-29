@@ -13,7 +13,7 @@ public interface SysUserService {
     /*
     * 系统用户列表
     * */
-    PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sortEnum, Integer pageNum, Integer pageSize);
+    PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 登录

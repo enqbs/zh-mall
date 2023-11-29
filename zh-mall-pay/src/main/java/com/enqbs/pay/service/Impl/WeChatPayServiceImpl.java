@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class WeChatPayServiceImpl implements PayService {
 
     @Override
-    public String pay(PayTypeEnum payTypeEnum, Long orderNo, BigDecimal amount) {
+    public String pay(PayTypeEnum payType, Long orderNo, BigDecimal amount) {
         System.out.println("WeChatPay");
         return "WeChatPay";
     }
@@ -24,9 +24,8 @@ public class WeChatPayServiceImpl implements PayService {
 
     @Override
     public boolean asyncNotify(HttpServletRequest request, HttpServletResponse response) {
-        boolean result = false;
         System.out.println("WeChatPay异步通知");
-        return result;
+        return false;
     }
 
 }

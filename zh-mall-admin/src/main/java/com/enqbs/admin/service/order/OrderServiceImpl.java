@@ -43,12 +43,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public PageUtil<OrderVO> getOrderVOList(Long orderNo, String orderSc, Integer userId,
                                             Integer paymentType, Integer status, Integer deleteStatus,
-                                            SortEnum sortEnum, Integer pageNum, Integer pageSize) {
+                                            SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<OrderVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         List<Order> orderList = orderMapper.selectListByParam(orderNo, orderSc, userId, paymentType,
-                status, deleteStatus, sortEnum.getSortType(), pageNum, pageSize);
+                status, deleteStatus, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(orderList)) {
             return pageUtil;

@@ -33,15 +33,15 @@ public class AliPayServiceImpl implements PayService {
     private AliPayConfig aliPayConfig;
 
     @Override
-    public String pay(PayTypeEnum payTypeEnum, Long orderNo, BigDecimal amount) {
+    public String pay(PayTypeEnum payType, Long orderNo, BigDecimal amount) {
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", orderNo);
         bizContent.put("total_amount", amount);
         bizContent.put("subject", "商品消费");
-        bizContent.put("product_code", payTypeEnum.getPayType());
+        bizContent.put("product_code", payType.getPayType());
         String body;
 
-        if (PayTypeEnum.ALIPAY_PAGE.getPayType().equals(payTypeEnum.getPayType())) {
+        if (PayTypeEnum.ALIPAY_PC_PAGE.getPayType().equals(payType.getPayType())) {
             /* 电脑网站支付 */
             AlipayTradePagePayResponse response = alipayPagePay(bizContent);
 
@@ -50,7 +50,7 @@ public class AliPayServiceImpl implements PayService {
             } else {
                 throw new ServiceException("调用电脑网站支付失败");
             }
-        } else if (PayTypeEnum.ALIPAY_WAP.getPayType().equals(payTypeEnum.getPayType())) {
+        } else if (PayTypeEnum.ALIPAY_WAP.getPayType().equals(payType.getPayType())) {
             /* 手机网站支付 */
             AlipayTradeWapPayResponse response = alipayWapPay(bizContent);
 
@@ -59,7 +59,7 @@ public class AliPayServiceImpl implements PayService {
             } else {
                 throw new ServiceException("调用手机网站支付失败");
             }
-        } else if (PayTypeEnum.ALIPAY_APP.getPayType().equals(payTypeEnum.getPayType())) {
+        } else if (PayTypeEnum.ALIPAY_APP.getPayType().equals(payType.getPayType())) {
             /* APP 支付 */
             AlipayTradeAppPayResponse response = alipayAppPay(bizContent);
 

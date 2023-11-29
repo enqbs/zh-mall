@@ -43,16 +43,8 @@ public class OrderController {
                                           @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                           @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        if (pageNum <= 0) {
-            pageNum = 1;
-        }
-
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-
-        PageUtil<OrderVO> pageOrderList = orderService.getOrderVOList(orderNo, orderSc, userId, paymentType,
-                status, deleteStatus, sort, pageNum, pageSize);
+        PageUtil<OrderVO> pageOrderList = orderService.getOrderVOList(orderNo, orderSc, userId, paymentType, status,
+                deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
         return R.ok(pageOrderList);
     }
 

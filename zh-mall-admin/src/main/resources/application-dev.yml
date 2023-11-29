@@ -15,9 +15,24 @@ spring:
   redis:
     host: 192.168.43.2
     port: 6379
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
 
 thread-pool:
   core-pool-size: 12
   max-pool-size: 24
   work-queue-size: 1000
   keep-alive-seconds: 300
+
+ali:
+  oss:
+    endpoint: https://oss-cn-shenzhen.aliyuncs.com
+    bucket-domain: https://your-bucket.oss-cn-shenzhen.aliyuncs.com
+    access-key-id: your-access-key-id
+    access-key-secret: your-access-key-secret
+    bucket: your-bucket
+
+logstash:
+  host: 192.168.43.2

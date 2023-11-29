@@ -10,8 +10,10 @@ import com.enqbs.app.pojo.vo.SkuVO;
 import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
+import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.RedisUtil;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -46,12 +48,12 @@ public class CartServiceImpl implements CartService {
 
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
-        Map<Object, Object> redisMap = redisUtil.getRedisMap(redisKey);
+        Map<String, String> redisMap = redisUtil.getRedisMap(redisKey);
         /* 获取购物车中的 productId 集合 */
         Set<Integer> productIdSet = new HashSet<>();
 
-        for (Map.Entry<Object, Object> entry : redisMap.entrySet()) {
-            Cart cart = (Cart) entry.getValue();
+        for (Map.Entry<String, String> entry : redisMap.entrySet()) {
+            Cart cart = GsonUtil.json2Obj(entry.getValue(), Cart.class);
             productIdSet.add(cart.getProductId());
         }
 
@@ -66,8 +68,8 @@ public class CartServiceImpl implements CartService {
         Map<Integer, ProductVO> productVOMap = productService.getProductVOList(productIdSet).stream()
                 .collect(Collectors.toMap(ProductVO::getId, v -> v));
 
-        for (Map.Entry<Object, Object> entry : redisMap.entrySet()) {
-            Cart cart = (Cart) entry.getValue();
+        for (Map.Entry<String, String> entry : redisMap.entrySet()) {
+            Cart cart = GsonUtil.json2Obj(entry.getValue(), Cart.class);
             ProductVO productVO = productVOMap.get(cart.getProductId());
             SkuVO skuVO = productVO.getSkuList().stream().collect(Collectors.toMap(SkuVO::getId, v -> v)).get(cart.getSkuId());
             CartProductVO cartProductVO = buildCartProductVO(cart, productVO, skuVO);
@@ -105,15 +107,17 @@ public class CartServiceImpl implements CartService {
 
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
-        Cart cart = (Cart) redisUtil.getRedisMapValue(redisKey, form.getSkuId());
+        String redisMapValue = redisUtil.getRedisMapValue(redisKey, String.valueOf(form.getSkuId()));
+        Cart cart;
 
-        if (ObjectUtils.isEmpty(cart)) {
+        if (StringUtils.isEmpty(redisMapValue)) {
             cart = new Cart(form.getProductId(), form.getSkuId(), form.getQuantity(), form.getSelected());
         } else {
+            cart = GsonUtil.json2Obj(redisMapValue, Cart.class);
             cart.setQuantity(cart.getQuantity() + form.getQuantity());
         }
 
-        redisUtil.setHash(redisKey, form.getSkuId(), cart);
+        redisUtil.setHash(redisKey, String.valueOf(form.getSkuId()), GsonUtil.obj2Json(cart));
         return getCartVO();
     }
 
@@ -121,21 +125,23 @@ public class CartServiceImpl implements CartService {
     public CartVO update(CartForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
-        Cart cart = (Cart) redisUtil.getRedisMapValue(redisKey, form.getSkuId());
+        String redisMapValue = redisUtil.getRedisMapValue(redisKey, String.valueOf(form.getSkuId()));
 
-        if (ObjectUtils.isEmpty(cart)) {
+        if (StringUtils.isEmpty(redisMapValue)) {
             throw new ServiceException("购物车中不存在该商品");
         }
+
+        Cart cart = GsonUtil.json2Obj(redisMapValue, Cart.class);
 
         if (ObjectUtils.isNotEmpty(form.getSelected())) {
             cart.setSelected(form.getSelected());
         }
 
-        if (ObjectUtils.isNotEmpty(form.getQuantity()) && form.getQuantity() >= 0) {
+        if (ObjectUtils.isNotEmpty(form.getQuantity()) && form.getQuantity() > 0) {
             cart.setQuantity(form.getQuantity());
         }
 
-        redisUtil.setHash(redisKey, form.getSkuId(), cart);
+        redisUtil.setHash(redisKey, String.valueOf(form.getSkuId()), GsonUtil.obj2Json(cart));
         return getCartVO();
     }
 
@@ -143,13 +149,13 @@ public class CartServiceImpl implements CartService {
     public CartVO delete(Integer skuId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
-        Cart cart = (Cart) redisUtil.getRedisMapValue(redisKey, skuId);
+        String redisMapValue = redisUtil.getRedisMapValue(redisKey, String.valueOf(skuId));
 
-        if (ObjectUtils.isEmpty(cart)) {
+        if (StringUtils.isEmpty(redisMapValue)) {
             throw new ServiceException("购物车中不存在该商品");
         }
 
-        redisUtil.deleteEntry(redisKey, skuId);
+        redisUtil.deleteRedisMapEntry(redisKey, String.valueOf(skuId));
         return getCartVO();
     }
 
@@ -162,7 +168,7 @@ public class CartServiceImpl implements CartService {
         if (!CollectionUtils.isEmpty(cartList)) {
             for (Cart cart : cartList) {
                 cart.setSelected(true);
-                redisUtil.setHash(redisKey, cart.getSkuId(), cart);
+                redisUtil.setHash(redisKey, String.valueOf(cart.getSkuId()), GsonUtil.obj2Json(cart));
             }
         }
 
@@ -178,7 +184,7 @@ public class CartServiceImpl implements CartService {
         if (!CollectionUtils.isEmpty(cartList)) {
             for (Cart cart : cartList) {
                 cart.setSelected(false);
-                redisUtil.setHash(redisKey, cart.getSkuId(), cart);
+                redisUtil.setHash(redisKey, String.valueOf(cart.getSkuId()), GsonUtil.obj2Json(cart));
             }
         }
 
@@ -189,7 +195,7 @@ public class CartServiceImpl implements CartService {
     public CartVO clear() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
-        redisUtil.deleteObject(redisKey);
+        redisUtil.deleteKey(redisKey);
         return getCartVO();
     }
 
@@ -211,11 +217,11 @@ public class CartServiceImpl implements CartService {
     private List<Cart> getCartList() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
-        Map<Object, Object> redisMap = redisUtil.getRedisMap(redisKey);
+        Map<String, String> redisMap = redisUtil.getRedisMap(redisKey);
         List<Cart> cartList = new ArrayList<>();
 
-        for (Map.Entry<Object, Object> entry : redisMap.entrySet()) {
-            cartList.add((Cart) entry.getValue());
+        for (Map.Entry<String, String> entry : redisMap.entrySet()) {
+            cartList.add(GsonUtil.json2Obj(entry.getValue(), Cart.class));
         }
 
         return cartList;

@@ -31,16 +31,8 @@ public class PayController {
                                               @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        if (pageNum <= 0) {
-            pageNum = 1;
-        }
-
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-
         PageUtil<PayInfoVO> pagePayInfoList = payInfoService.getPayInfoVOList(orderNo, userId, payType, platform,
-                platformNumber, status, deleteStatus, sort, pageNum, pageSize);
+                platformNumber, status, deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
         return R.ok(pagePayInfoList);
     }
 

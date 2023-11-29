@@ -32,12 +32,12 @@ public class CouponServiceImpl implements CouponService {
     }
 
     @Override
-    public PageUtil<CouponVO> getCouponVOList(SortEnum sortEnum, Integer pageNum, Integer pageSize) {
+    public PageUtil<CouponVO> getCouponVOList(SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<CouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         List<Coupon> couponList = couponMapper.selectListByParam(null, null, null, null,
-                Constants.IS_NOT_DELETE, sortEnum.getSortType(), pageNum, pageSize);
+                Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(couponList)) {
             return pageUtil;

@@ -20,7 +20,7 @@ public class GsonUtil {
 
     public static <T> List<T> json2ArrayList(String jsonStr, Class<T[]> clazzArray) {
         T[] arrayOfT = GSON.fromJson(jsonStr, clazzArray);
-        return new ArrayList<T>(Arrays.asList(arrayOfT));
+        return new ArrayList<>(Arrays.asList(arrayOfT));
     }
 
 }

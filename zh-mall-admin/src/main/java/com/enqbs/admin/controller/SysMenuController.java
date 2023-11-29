@@ -40,15 +40,8 @@ public class SysMenuController {
                                            @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                            @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        if (pageNum <= 0) {
-            pageNum = 1;
-        }
-
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-
-        PageUtil<SysMenuVO> pageSysMenuList = sysMenuService.getSysMenuVOList(parentId, roleId, deleteStatus, pageNum, pageSize);
+        PageUtil<SysMenuVO> pageSysMenuList = sysMenuService.getSysMenuVOList(parentId, roleId, deleteStatus,
+                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
         return R.ok(pageSysMenuList);
     }
 

@@ -12,11 +12,12 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,18 +26,16 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Resource
     private ProductCategoryMapper productCategoryMapper;
-
     @Resource
     private RedisUtil redisUtil;
-
     @Resource
     private RedissonClient redissonClient;
-
     @Resource
     private ProductService productService;
-
     @Resource
     private ProductConvert productConvert;
+    @Resource
+    private ThreadPoolTaskExecutor executor;
 
     @Override
     public ProductCategoryVO getProductCategoryVO(Integer categoryId) {
@@ -47,13 +46,16 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
 
         ProductCategoryVO categoryVO = productConvert.productCategory2ProductCategoryVO(category);
-        List<ProductVO> productVOList = productService.getProductVOList(categoryVO.getId());
+        List<ProductVO> productVOList = productService.getProductVOList(categoryId);
         categoryVO.setProductList(productVOList);
         return categoryVO;
     }
 
     @Override
     public List<ProductCategoryVO> getProductCategoryVOList() {
+        /*
+        * old
+        *
         List<ProductCategoryVO> categoryVOList;
         RLock lock = redissonClient.getLock(Constants.PRODUCT_CATEGORY_LIST_LOCK);
         lock.lock();
@@ -85,7 +87,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 }
             } else {
                 if (Constants.PRESENT.equals(redisStr)) {
-                    categoryVOList = new ArrayList<>();
+                    categoryVOList = Collections.emptyList();
                 } else {
                     categoryVOList = GsonUtil.json2ArrayList(redisStr, ProductCategoryVO[].class);
                 }
@@ -95,13 +97,59 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
 
         return categoryVOList;
+        * */
+        String redisStr = redisUtil.getString(Constants.PRODUCT_CATEGORY_LIST);
+
+        if (StringUtils.isEmpty(redisStr)) {
+            executor.execute(() -> {
+                RLock lock = redissonClient.getLock(Constants.PRODUCT_CATEGORY_LIST_LOCK);
+                lock.lock();
+
+                try {
+                    String redisStr2 = redisUtil.getString(Constants.PRODUCT_CATEGORY_LIST);
+                    /* double check,缓存确实为空再查询数据库 */
+                    if (StringUtils.isEmpty(redisStr2)) {
+                        List<ProductCategory> categoryList = productCategoryMapper.selectList();
+                        List<ProductCategoryVO> categoryVOList = categoryList.stream()
+                                .filter(category -> category.getParentId().equals(0))
+                                .map(category -> productConvert.productCategory2ProductCategoryVO(category)).collect(Collectors.toList());
+                        findSubProductCategoryVOList(categoryList, categoryVOList);
+                        categoryVOList.stream()
+                                .filter(categoryVO -> !categoryVO.getParentId().equals(0)).collect(Collectors.toList())
+                                .forEach(categoryVO -> {
+                                    List<ProductVO> productVOList = productService.getProductVOList(categoryVO.getId());
+                                    categoryVO.setProductList(productVOList);
+                                });
+                        long cacheTimeout;
+                        /* 避免缓存穿透 redis 存放特殊占位符 */
+                        if (CollectionUtils.isEmpty(categoryVOList)) {
+                            cacheTimeout = 30 * 60 * 1000L;
+                            redisUtil.setString(Constants.PRODUCT_CATEGORY_LIST, Constants.PRESENT, cacheTimeout);
+                        } else {
+                            cacheTimeout = 3600 * 24 * 15 * 1000L;
+                            redisUtil.setString(Constants.PRODUCT_CATEGORY_LIST, GsonUtil.obj2Json(categoryVOList), cacheTimeout);
+                        }
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            });
+
+            return Collections.emptyList();
+        }
+
+        if (Constants.PRESENT.equals(redisStr)) {
+            return Collections.emptyList();
+        } else {
+            return GsonUtil.json2ArrayList(redisStr, ProductCategoryVO[].class);
+        }
     }
 
     private void findSubProductCategoryVOList(List<ProductCategory> categoryList, List<ProductCategoryVO> categoryVOList) {
         categoryVOList.forEach(categoryVO -> {
             List<ProductCategoryVO> subCategoryVOList = categoryList.stream()
                     .filter(category -> categoryVO.getId().equals(category.getParentId()))
-                    .map(e -> productConvert.productCategory2ProductCategoryVO(e)).collect(Collectors.toList());
+                    .map(category -> productConvert.productCategory2ProductCategoryVO(category)).collect(Collectors.toList());
             categoryVO.setCategoryList(subCategoryVOList);
             findSubProductCategoryVOList(categoryList, subCategoryVOList);
         });

@@ -34,16 +34,12 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     @Resource
     private UserCouponMapper userCouponMapper;
-
     @Resource
     private RedissonClient redissonClient;
-
     @Resource
     private UserService userService;
-
     @Resource
     private CouponService couponService;
-
     @Resource
     private UserConvert userConvert;
 
@@ -64,13 +60,13 @@ public class UserCouponServiceImpl implements UserCouponService {
     }
 
     @Override
-    public PageUtil<UserCouponVO> getUserCouponVOList(Integer status, SortEnum sortEnum, Integer pageNum, Integer pageSize) {
+    public PageUtil<UserCouponVO> getUserCouponVOList(Integer status, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<UserCouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE,
-                sortEnum.getSortType(), pageNum, pageSize);
+                sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(userCouponList)) {
             return pageUtil;
