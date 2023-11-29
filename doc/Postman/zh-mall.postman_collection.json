@@ -64,7 +64,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:6000/admin/register",
+											"raw": "http://localhost:6000/admin/auth/register",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -72,6 +72,7 @@
 											"port": "6000",
 											"path": [
 												"admin",
+												"auth",
 												"register"
 											]
 										}
@@ -93,7 +94,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:6000/admin/login",
+											"raw": "http://localhost:6000/admin/auth/login",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -101,6 +102,7 @@
 											"port": "6000",
 											"path": [
 												"admin",
+												"auth",
 												"login"
 											]
 										}
@@ -119,7 +121,7 @@
 											}
 										],
 										"url": {
-											"raw": "http://localhost:6000/admin/sign-out",
+											"raw": "http://localhost:6000/admin/auth/logout",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -127,7 +129,8 @@
 											"port": "6000",
 											"path": [
 												"admin",
-												"sign-out"
+												"auth",
+												"logout"
 											]
 										}
 									},
@@ -154,7 +157,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:6000/admin/change-password",
+											"raw": "http://localhost:6000/admin/auth/change/password",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -162,7 +165,9 @@
 											"port": "6000",
 											"path": [
 												"admin",
-												"change-password"
+												"auth",
+												"change",
+												"password"
 											]
 										}
 									},
@@ -189,7 +194,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:6000/admin/change-nickname",
+											"raw": "http://localhost:6000/admin/auth/change/nickname",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -197,7 +202,9 @@
 											"port": "6000",
 											"path": [
 												"admin",
-												"change-nickname"
+												"auth",
+												"change",
+												"nickname"
 											]
 										}
 									},
@@ -826,6 +833,211 @@
 				{
 					"name": "product",
 					"item": [
+						{
+							"name": "file",
+							"item": [
+								{
+									"name": "upload spu-img",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": []
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/upload/spu-img",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"upload",
+												"spu-img"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "upload spu-slider",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "files",
+													"type": "file",
+													"src": []
+												},
+												{
+													"key": "files",
+													"type": "file",
+													"src": []
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/upload/spu-slider",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"upload",
+												"spu-slider"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "upload spu-spec",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "files",
+													"type": "file",
+													"src": []
+												},
+												{
+													"key": "files",
+													"type": "file",
+													"src": []
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/upload/spu-spec",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"upload",
+												"spu-spec"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "upload spu-overview",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "files",
+													"type": "file",
+													"src": []
+												},
+												{
+													"key": "files",
+													"type": "file",
+													"src": []
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/upload/spu-overview",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"upload",
+												"spu-overview"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "upload sku-img",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzeXNfdXNlcl90b2tlbiI6IjdmZjU4NWRlNDM1YjQ2ODI4N2EzMmVlYzU3N2E2ZDMzIiwiZXhwIjoxNjk4OTM0Mjg0fQ.G0MpdCk_Mgmhuz3y2sDOG2kLOAvuxgMzDcMJ5V2BMVk",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": []
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:6000/admin/upload/sku-img",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "6000",
+											"path": [
+												"admin",
+												"upload",
+												"sku-img"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
 						{
 							"name": "product list",
 							"request": {
@@ -1636,7 +1848,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA0NTkzNTl9.vFgR74Zi-b2LlSbANvlObodL6gcuDB1AvjxXHyOFlYI",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZTM1NjU5YjNkZjc1NDFiNzljNTMyYjM2YjIzMzU5YjkiLCJleHAiOjE3MDEzMzk1OTF9.nxvNwzvV-Ceuz6Kp_D4mWUBRaPid4fBpznjiAeEho8Q",
 												"type": "text"
 											}
 										],
@@ -1670,13 +1882,14 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:5000/login",
+											"raw": "http://localhost:5000/auth/login",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
 											"port": "5000",
 											"path": [
+												"auth",
 												"login"
 											]
 										}
@@ -1698,13 +1911,14 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:5000/register/username",
+											"raw": "http://localhost:5000/auth/register/username",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
 											"port": "5000",
 											"path": [
+												"auth",
 												"register",
 												"username"
 											]
@@ -1719,19 +1933,164 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiOWUxNzc0MjczNGRjNDRkZmJlYzI4ZWMwZjVkMTlmODUiLCJleHAiOjE3MDAzNzQwOTJ9.V_kfTSZqDRXGid7nA2ABgHUGcx14u5py2dm2OPaqXLs",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiNzA1NGQwYTMwNTU3NDMwZDhkMjA3YWVhNWExMDU1ZTciLCJleHAiOjE3MDEzMzk2Nzh9.K29gs3CyoHsvKoERx2S_NlcpMhsodQwEdxzGzYGtV7c",
 												"type": "text"
 											}
 										],
 										"url": {
-											"raw": "http://localhost:5000/sign-out",
+											"raw": "http://localhost:5000/auth/logout",
 											"protocol": "http",
 											"host": [
 												"localhost"
 											],
 											"port": "5000",
 											"path": [
-												"sign-out"
+												"auth",
+												"logout"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "change password",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZTM1NjU5YjNkZjc1NDFiNzljNTMyYjM2YjIzMzU5YjkiLCJleHAiOjE3MDEzMzk1OTF9.nxvNwzvV-Ceuz6Kp_D4mWUBRaPid4fBpznjiAeEho8Q",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"oldPassword\": \"\",\r\n    \"newPassword\": \"\",\r\n    \"newPasswordAgain\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:5000/auth/change/password",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "5000",
+											"path": [
+												"auth",
+												"change",
+												"password"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "change nickname",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZTM1NjU5YjNkZjc1NDFiNzljNTMyYjM2YjIzMzU5YjkiLCJleHAiOjE3MDEzMzk1OTF9.nxvNwzvV-Ceuz6Kp_D4mWUBRaPid4fBpznjiAeEho8Q",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"nickName\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:5000/auth/change/nickname",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "5000",
+											"path": [
+												"auth",
+												"change",
+												"nickname"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "change photo",
+									"request": {
+										"method": "PUT",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZTM1NjU5YjNkZjc1NDFiNzljNTMyYjM2YjIzMzU5YjkiLCJleHAiOjE3MDEzMzk1OTF9.nxvNwzvV-Ceuz6Kp_D4mWUBRaPid4fBpznjiAeEho8Q",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"photoURL\": \"\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:5000/auth/change/photo",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "5000",
+											"path": [
+												"auth",
+												"change",
+												"photo"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "upload user photo",
+									"request": {
+										"method": "POST",
+										"header": [
+											{
+												"key": "token",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZTM1NjU5YjNkZjc1NDFiNzljNTMyYjM2YjIzMzU5YjkiLCJleHAiOjE3MDEzMzk1OTF9.nxvNwzvV-Ceuz6Kp_D4mWUBRaPid4fBpznjiAeEho8Q",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": []
+												}
+											]
+										},
+										"url": {
+											"raw": "http://localhost:5000/upload/user-photo",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "5000",
+											"path": [
+												"upload",
+												"user-photo"
 											]
 										}
 									},
@@ -1749,7 +2108,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA0NTkzNTl9.vFgR74Zi-b2LlSbANvlObodL6gcuDB1AvjxXHyOFlYI",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiNjAyOGYxYjE5ZTcyNDdmMzlhZTc4MWE4Y2E2YTdkZWUiLCJleHAiOjE3MDA1ODIzNDJ9.6lMCzenlVmhMYE3GsclmxrnB6D6t6VM8Vh7evIgwNTU",
 												"type": "text"
 											}
 										],
@@ -1847,7 +2206,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiYjBmN2U5NjM5NDkyNGE4MjhjZjViMzI4ZmQwYmVjNzEiLCJleHAiOjE2OTc0NDg3NjJ9.9CFit6rczKb7GCiV-tAyskvDSJcmxJtoRrSqN_QKa4g",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
 												"type": "text"
 											}
 										],
@@ -1874,7 +2233,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA0NTkzNTl9.vFgR74Zi-b2LlSbANvlObodL6gcuDB1AvjxXHyOFlYI",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
 												"type": "text"
 											}
 										],
@@ -1906,7 +2265,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA0NTkzNTl9.vFgR74Zi-b2LlSbANvlObodL6gcuDB1AvjxXHyOFlYI",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
 												"type": "text"
 											}
 										],
@@ -1932,7 +2291,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiYWZjOTZiYjEwNWU0NDI5M2FjNjQ0ZTJjYjU2OGIyNDMiLCJleHAiOjE3MDAxMzk5ODB9.oTxB49pKcXxM-ESnJH6tFBicAl6uzjbX6_BqSrBksQ4",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
 												"type": "text"
 											}
 										],
@@ -2114,7 +2473,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiOWUxNzc0MjczNGRjNDRkZmJlYzI4ZWMwZjVkMTlmODUiLCJleHAiOjE3MDAzNzQwOTJ9.V_kfTSZqDRXGid7nA2ABgHUGcx14u5py2dm2OPaqXLs",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
 												"type": "text"
 											}
 										],
@@ -2297,7 +2656,7 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA0NTkzNTl9.vFgR74Zi-b2LlSbANvlObodL6gcuDB1AvjxXHyOFlYI",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
 										"type": "text"
 									}
 								],
@@ -2361,13 +2720,13 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA0NTkzNTl9.vFgR74Zi-b2LlSbANvlObodL6gcuDB1AvjxXHyOFlYI",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"orderToken\": \"87ce7523b6474d20b7b75858f50cced0\",\r\n    \"shippingAddressId\": 1,\r\n    \"couponsId\": null\r\n}",
+									"raw": "{\r\n    \"orderToken\": \"09f818f0f5e14f97a217861077b1c807\",\r\n    \"shippingAddressId\": 1,\r\n    \"couponsId\": null\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2449,12 +2808,12 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiYjBmN2U5NjM5NDkyNGE4MjhjZjViMzI4ZmQwYmVjNzEiLCJleHAiOjE2OTc0NDg3NjJ9.9CFit6rczKb7GCiV-tAyskvDSJcmxJtoRrSqN_QKa4g",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
 										"type": "text"
 									}
 								],
 								"url": {
-									"raw": "http://localhost:5000/order/1713882598990155776",
+									"raw": "http://localhost:5000/order/1726940070508359680",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -2462,7 +2821,7 @@
 									"port": "5000",
 									"path": [
 										"order",
-										"1713882598990155776"
+										"1726940070508359680"
 									]
 								}
 							},
@@ -2475,7 +2834,7 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiMjE2NGY0NzA5NmIwNGVlYjhiN2VlMTkzOTY3YzRhZWMiLCJleHAiOjE2OTk2OTIwNTB9.dXMSvtSuQ6K_BNPoXJc1w7Q5INTjjvEiqcglTlORssI",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDEwNzIwNTh9.MF_DfaZJtaLl2M_3xfyXZzPeQYtHPeUIo9rgScpdaBw",
 										"type": "text"
 									}
 								],
