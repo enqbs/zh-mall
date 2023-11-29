@@ -12,7 +12,7 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 - 消息持久化、可靠性投递、延迟队列
 - RBAC 权限模型
 
-项目业务包括（完成度：90%）
+项目业务包括（完成度：95%）
 - 用户管理
 - 商品管理
 - 优惠券管理
@@ -42,6 +42,7 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 | Canal                 | 数据库增量日志解析工具   | deployer-1.1.7      |
 | ShardingSphere-JDBC   | 读写分离、数据分片     | 5.1.2             |
 | AliPay-SDK            | 支付宝开源开发工具     | 4.38.105.ALL      |
+| AliYun-OSS            | 阿里云对象存储          | 3.17.2           |
 | JWT                   | Json Web Token      | -                 |
 | ElasticSearch         | 全文检索              | 7.17.13           |
 | Logstash              | 日志收集工具           | 7.17.13          |
@@ -55,6 +56,7 @@ zh-mall
 ├─zh-mall-admin       --  后台管理系统
 ├─zh-mall-app         --  前台商城系统
 ├─zh-mall-common      --  封装的常用工具类、常量、异常处理
+├─zh-mall-file        --  阿里云 OSS 配置
 ├─zh-mall-generator   --  MyBatis-Generator 插件生成的代码
 ├─zh-mall-pay         --  支付功能实现
 └─zh-mall-security    --  Spring Security 相关配置、处理
