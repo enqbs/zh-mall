@@ -37,11 +37,11 @@
         <auth0.jwt.version>4.4.0</auth0.jwt.version>
         <logstash.logback.version>7.4</logstash.logback.version>
         <redisson.version>3.19.1</redisson.version>
-        <alipay.sdk.version>4.38.105.ALL</alipay.sdk.version>
+        <ali.pay.version>4.38.105.ALL</ali.pay.version>
+        <ali.oss.version>3.17.2</ali.oss.version>
         <shardingsphere.jdbc.version>5.1.2</shardingsphere.jdbc.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
-        <aliyun.oss.version>3.17.2</aliyun.oss.version>
     </properties>
 
     <dependencies>
@@ -107,7 +107,13 @@
             <dependency>
                 <groupId>com.alipay.sdk</groupId>
                 <artifactId>alipay-sdk-java</artifactId>
-                <version>${alipay.sdk.version}</version>
+                <version>${ali.pay.version}</version>
+            </dependency>
+            <!-- alioss -->
+            <dependency>
+                <groupId>com.aliyun.oss</groupId>
+                <artifactId>aliyun-sdk-oss</artifactId>
+                <version>${ali.oss.version}</version>
             </dependency>
             <!-- ShardingSphere-jdbc -->
             <dependency>
@@ -120,12 +126,6 @@
                 <groupId>org.mapstruct</groupId>
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
-            </dependency>
-            <!-- aliyun-sdk-oss -->
-            <dependency>
-                <groupId>com.aliyun.oss</groupId>
-                <artifactId>aliyun-sdk-oss</artifactId>
-                <version>${aliyun.oss.version}</version>
             </dependency>
             <!-- enqbs -->
             <dependency>

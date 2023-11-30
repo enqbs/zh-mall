@@ -1,6 +1,6 @@
 package com.enqbs.app.service.mq;
 
-import com.enqbs.common.enums.QueueEnum;
+import com.enqbs.app.enums.QueueEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;
@@ -66,12 +66,8 @@ public class RabbitMQServiceImpl implements RabbitMQService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(Long messageId, Integer status) {
-        MessageQueueLog messageQueueLog = messageQueueLogMapper.selectByPrimaryKey(messageId);
-
-        if (ObjectUtils.isEmpty(messageQueueLog)) {
-            messageQueueLog = messageQueueLogMapper.selectByPrimaryKey(messageId);
-        }
-
+        MessageQueueLog messageQueueLog = new MessageQueueLog();
+        messageQueueLog.setMessageId(messageId);
         messageQueueLog.setStatus(status);
         int row = messageQueueLogMapper.updateByPrimaryKeySelective(messageQueueLog);
 

@@ -5,9 +5,9 @@ import com.enqbs.generator.pojo.SysRoleMenu;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SysRoleMenuServiceImpl implements SysRoleMenuService {
@@ -16,21 +16,21 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
     private SysRoleMenuMapper sysRoleMenuMapper;
 
     @Override
-    public int batchInsertRoleMenu(Integer roleId, Set<Integer> menuIdSet) {
+    public int batchInsert(Integer roleId, Set<Integer> menuIdSet) {
         List<SysRoleMenu> sysRoleMenuList = buildSysRoleMenuList(roleId, menuIdSet);
-        return sysRoleMenuMapper.batchInsert(sysRoleMenuList);
+        return sysRoleMenuMapper.batchInsertBySysRoleMenuList(sysRoleMenuList);
     }
 
     @Override
-    public int updateRoleMenu(Integer roleId, Set<Integer> menuIdSet) {
+    public int batchUpdate(Integer roleId, Set<Integer> menuIdSet) {
         sysRoleMenuMapper.deleteByRoleId(roleId);
-        return batchInsertRoleMenu(roleId, menuIdSet);
+        return batchInsert(roleId, menuIdSet);
     }
 
     @Override
-    public int deleteRoleMenu(Integer roleId, Set<Integer> menuIdSet) {
+    public int batchDelete(Integer roleId, Set<Integer> menuIdSet) {
         List<SysRoleMenu> sysRoleMenuList = buildSysRoleMenuList(roleId, menuIdSet);
-        return sysRoleMenuMapper.batchDelete(sysRoleMenuList);
+        return sysRoleMenuMapper.batchDeleteBysSysRoleMenuList(sysRoleMenuList);
     }
 
     private SysRoleMenu buildSysRoleMenu(Integer roleId, Integer menuId) {
@@ -41,14 +41,7 @@ public class SysRoleMenuServiceImpl implements SysRoleMenuService {
     }
 
     private List<SysRoleMenu> buildSysRoleMenuList(Integer roleId, Set<Integer> menuIdSet) {
-        List<SysRoleMenu> sysRoleMenuList = new ArrayList<>();
-
-        for (Integer menuId : menuIdSet) {
-            SysRoleMenu sysRoleMenu = buildSysRoleMenu(roleId, menuId);
-            sysRoleMenuList.add(sysRoleMenu);
-        }
-
-        return sysRoleMenuList;
+        return menuIdSet.stream().map(e -> buildSysRoleMenu(roleId, e)).collect(Collectors.toList());
     }
 
 }

@@ -54,7 +54,7 @@ public class SysMenuController {
     @PostMapping
     @PreAuthorize("hasAuthority('SYS_MENU:ADD')")
     public R<Void> addMenu(@Valid @RequestBody SysMenuForm form) {
-        int row = sysMenuService.insertSysMenu(form);
+        int row = sysMenuService.insert(form);
 
         if (row <= 0) {
             throw new ServiceException("菜单新增失败");
@@ -66,7 +66,7 @@ public class SysMenuController {
     @PutMapping("/{menuId}")
     @PreAuthorize("hasAuthority('SYS_MENU:UPDATE')")
     public R<Void> updateMenu(@PathVariable Integer menuId, @Valid @RequestBody SysMenuForm form) {
-        int row = sysMenuService.updateSysMenu(menuId, form);
+        int row = sysMenuService.update(menuId, form);
 
         if (row <= 0) {
             throw new ServiceException("菜单修改失败");
@@ -78,7 +78,7 @@ public class SysMenuController {
     @DeleteMapping("/{menuId}")
     @PreAuthorize("hasAuthority('SYS_MENU:DELETE')")
     public R<Void> deleteMenu(@PathVariable Integer menuId) {
-        int row = sysMenuService.deleteSysMenu(menuId);
+        int row = sysMenuService.delete(menuId);
 
         if (row <= 0) {
             throw new ServiceException("菜单删除失败");

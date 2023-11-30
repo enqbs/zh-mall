@@ -42,7 +42,7 @@
     </trim>
   </insert>
 
-  <insert id="batchInsert" parameterType="java.util.List">
+  <insert id="batchInsertBySysUserRoleList" parameterType="java.util.List">
     insert into sys_user_role (user_id, role_id)
     values
     <foreach collection="sysUserRoleList" item="item" index="index" separator=",">
@@ -50,7 +50,7 @@
     </foreach>
   </insert>
 
-  <delete id="batchDelete" parameterType="java.util.List">
+  <delete id="batchDeleteBySysUserRoleList" parameterType="java.util.List">
     delete from sys_user_role
     where user_id in
     <foreach collection="sysUserRoleList" item="item" index="index" open="(" close=")" separator=",">

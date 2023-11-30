@@ -61,7 +61,7 @@ public class SysUserController {
     @PostMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_USER:UPDATE')")
     public R<Void> userRoleBind(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysUserRoleService.batchInsertUserRole(form.getBindId(), form.getToIdSet());
+        int row = sysUserRoleService.batchInsert(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("绑定角色失败");
@@ -73,7 +73,7 @@ public class SysUserController {
     @PutMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_USER:UPDATE')")
     public R<Void> updateUserRole(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysUserRoleService.updateUserRole(form.getBindId(), form.getToIdSet());
+        int row = sysUserRoleService.batchUpdate(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("修改角色失败");
@@ -85,7 +85,7 @@ public class SysUserController {
     @DeleteMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_USER:DELETE')")
     public R<Void> deleteUserRole(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysUserRoleService.deleteUserRole(form.getBindId(), form.getToIdSet());
+        int row = sysUserRoleService.batchDelete(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("删除角色失败");

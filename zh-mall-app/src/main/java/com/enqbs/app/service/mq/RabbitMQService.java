@@ -1,6 +1,6 @@
 package com.enqbs.app.service.mq;
 
-import com.enqbs.common.enums.QueueEnum;
+import com.enqbs.app.enums.QueueEnum;
 
 public interface RabbitMQService {
 

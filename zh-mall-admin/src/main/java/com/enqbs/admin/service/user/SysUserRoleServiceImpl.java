@@ -5,9 +5,9 @@ import com.enqbs.generator.pojo.SysUserRole;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SysUserRoleServiceImpl implements SysUserRoleService {
@@ -16,21 +16,21 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
     private SysUserRoleMapper sysUserRoleMapper;
 
     @Override
-    public int batchInsertUserRole(Integer userId, Set<Integer> roleIdSet) {
+    public int batchInsert(Integer userId, Set<Integer> roleIdSet) {
         List<SysUserRole> sysUserRoleList = buildSysUserRoleList(userId, roleIdSet);
-        return sysUserRoleMapper.batchInsert(sysUserRoleList);
+        return sysUserRoleMapper.batchInsertBySysUserRoleList(sysUserRoleList);
     }
 
     @Override
-    public int updateUserRole(Integer userId, Set<Integer> roleIdSet) {
+    public int batchUpdate(Integer userId, Set<Integer> roleIdSet) {
         sysUserRoleMapper.deleteByUserId(userId);
-        return batchInsertUserRole(userId, roleIdSet);
+        return batchInsert(userId, roleIdSet);
     }
 
     @Override
-    public int deleteUserRole(Integer userId, Set<Integer> roleIdSet) {
+    public int batchDelete(Integer userId, Set<Integer> roleIdSet) {
         List<SysUserRole> sysUserRoleList = buildSysUserRoleList(userId, roleIdSet);
-        return sysUserRoleMapper.batchDelete(sysUserRoleList);
+        return sysUserRoleMapper.batchDeleteBySysUserRoleList(sysUserRoleList);
     }
 
     private SysUserRole buildSysUserRole(Integer userId, Integer roleId) {
@@ -41,14 +41,7 @@ public class SysUserRoleServiceImpl implements SysUserRoleService {
     }
 
     private List<SysUserRole> buildSysUserRoleList(Integer userId, Set<Integer> roleIdSet) {
-        List<SysUserRole> sysUserRoleList = new ArrayList<>();
-
-        for (Integer roleId : roleIdSet) {
-            SysUserRole sysUserRole = buildSysUserRole(userId, roleId);
-            sysUserRoleList.add(sysUserRole);
-        }
-
-        return sysUserRoleList;
+        return roleIdSet.stream().map(e -> buildSysUserRole(userId, e)).collect(Collectors.toList());
     }
 
 }

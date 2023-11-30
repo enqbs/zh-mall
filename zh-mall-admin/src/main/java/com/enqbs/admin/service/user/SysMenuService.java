@@ -39,16 +39,16 @@ public interface SysMenuService {
     /*
      * 新增权限
      * */
-    int insertSysMenu(SysMenuForm form);
+    int insert(SysMenuForm form);
 
     /*
      * 修改权限
      * */
-    int updateSysMenu(Integer id, SysMenuForm form);
+    int update(Integer id, SysMenuForm form);
 
     /*
      * 删除权限
      * */
-    int deleteSysMenu(Integer id);
+    int delete(Integer id);
 
 }

@@ -67,11 +67,7 @@ public class PayInfoServiceImpl implements PayInfoService {
 
         PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(payInfo);
         PayPlatformVO payPlatformVO = payPlatformService.getPayPlatformVO(id);
-
-        if (ObjectUtils.isNotEmpty(payPlatformVO)) {
-            payInfoVO.setPayPlatform(payPlatformVO);
-        }
-
+        payInfoVO.setPayPlatform(payPlatformVO);
         return payInfoVO;
     }
 

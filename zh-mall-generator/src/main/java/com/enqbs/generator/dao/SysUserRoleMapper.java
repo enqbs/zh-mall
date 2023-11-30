@@ -15,8 +15,8 @@ public interface SysUserRoleMapper {
 
     int insertSelective(SysUserRole record);
 
-    int batchInsert(@Param("sysUserRoleList") List<SysUserRole> sysUserRoleList);
+    int batchInsertBySysUserRoleList(@Param("sysUserRoleList") List<SysUserRole> sysUserRoleList);
 
-    int batchDelete(@Param("sysUserRoleList") List<SysUserRole> sysUserRoleList);
+    int batchDeleteBySysUserRoleList(@Param("sysUserRoleList") List<SysUserRole> sysUserRoleList);
 
 }

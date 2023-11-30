@@ -54,20 +54,20 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public int insetSysRole(SysRoleForm form) {
+    public int insert(SysRoleForm form) {
         SysRole sysRole = sysUserConvert.sysRoleForm2SysRole(form);
         return sysRoleMapper.insertSelective(sysRole);
     }
 
     @Override
-    public int updateSysRole(Integer id, SysRoleForm form) {
+    public int update(Integer id, SysRoleForm form) {
         SysRole sysRole = sysUserConvert.sysRoleForm2SysRole(form);
         sysRole.setId(id);
         return sysRoleMapper.updateByPrimaryKeySelective(sysRole);
     }
 
     @Override
-    public int deleteSysRole(Integer id) {
+    public int delete(Integer id) {
         SysRole sysRole = new SysRole();
         sysRole.setId(id);
         sysRole.setDeleteStatus(Constants.IS_DELETE);

@@ -2,6 +2,7 @@ package com.enqbs.admin.service.product;
 
 import com.enqbs.admin.convert.ProductConvert;
 import com.enqbs.admin.vo.SkuStockVO;
+import com.enqbs.common.constant.Constants;
 import com.enqbs.generator.dao.SkuStockMapper;
 import com.enqbs.generator.pojo.SkuStock;
 import org.springframework.stereotype.Service;
@@ -37,9 +38,17 @@ public class SkuStockServiceImpl implements SkuStockService {
 
     @Override
     public int update(Integer skuId, Integer count) {
-        SkuStock skuStock = skuStockMapper.selectBySkuId(skuId);
+        SkuStock skuStock = new SkuStock();
+        skuStock.setSkuId(skuId);
         skuStock.setActualStock(count);
         skuStock.setStock(count);
+        return skuStockMapper.updateByPrimaryKeySelective(skuStock);
+    }
+
+    @Override
+    public int delete(Integer skuId) {
+        SkuStock skuStock = skuStockMapper.selectBySkuId(skuId);
+        skuStock.setDeleteStatus(Constants.IS_DELETE);
         return skuStockMapper.updateByPrimaryKeySelective(skuStock);
     }
 

@@ -166,12 +166,7 @@ public class ProductController {
     @DeleteMapping("/sku/{skuId}")
     @PreAuthorize("hasAuthority('PRODUCT:DELETE')")
     public R<Void> deleteSku(@PathVariable Integer skuId) {
-        int row = skuService.delete(skuId);
-
-        if (row <= 0) {
-            throw new ServiceException("商品规格删除失败");
-        }
-
+        skuService.delete(skuId);
         return R.ok("商品规格删除成功");
     }
 

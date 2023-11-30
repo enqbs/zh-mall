@@ -15,8 +15,8 @@ public interface SysRoleMenuMapper {
 
     int insertSelective(SysRoleMenu record);
 
-    int batchInsert(@Param("sysRoleMenuList") List<SysRoleMenu> sysRoleMenuList);
+    int batchInsertBySysRoleMenuList(@Param("sysRoleMenuList") List<SysRoleMenu> sysRoleMenuList);
 
-    int batchDelete(@Param("sysRoleMenuList") List<SysRoleMenu> sysRoleMenuList);
+    int batchDeleteBysSysRoleMenuList(@Param("sysRoleMenuList") List<SysRoleMenu> sysRoleMenuList);
 
 }

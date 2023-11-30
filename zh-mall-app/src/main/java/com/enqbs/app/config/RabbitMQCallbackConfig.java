@@ -2,7 +2,7 @@ package com.enqbs.app.config;
 
 import com.enqbs.app.service.mq.RabbitMQService;
 import com.enqbs.common.constant.Constants;
-import com.enqbs.common.enums.QueueEnum;
+import com.enqbs.app.enums.QueueEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

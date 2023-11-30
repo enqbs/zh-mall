@@ -38,12 +38,7 @@ public class ProductServiceImpl implements ProductService {
         }
 
         ProductVO productVO = productConvert.product2ProductVO(product);
-        List<SkuVO> skuVOList = skuService.getSkuVOList(productId);
-
-        if (!CollectionUtils.isEmpty(skuVOList)) {
-            productVO.setSkuList(skuVOList);
-        }
-
+        productVO.setSkuList(skuService.getSkuVOList(productId));
         return productVO;
     }
 

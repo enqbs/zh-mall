@@ -19,16 +19,16 @@ public interface SysRoleService {
     /*
      * 新增角色
      * */
-    int insetSysRole(SysRoleForm form);
+    int insert(SysRoleForm form);
 
     /*
      * 修改角色
      * */
-    int updateSysRole(Integer id, SysRoleForm form);
+    int update(Integer id, SysRoleForm form);
 
     /*
      * 删除角色
      * */
-    int deleteSysRole(Integer id);
+    int delete(Integer id);
 
 }

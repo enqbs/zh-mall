@@ -77,20 +77,20 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public int insertSysMenu(SysMenuForm form) {
+    public int insert(SysMenuForm form) {
         SysMenu sysMenu = sysUserConvert.sysMenuForm2SysMenu(form);
         return sysMenuMapper.insertSelective(sysMenu);
     }
 
     @Override
-    public int updateSysMenu(Integer id, SysMenuForm form) {
+    public int update(Integer id, SysMenuForm form) {
         SysMenu sysMenu = sysUserConvert.sysMenuForm2SysMenu(form);
         sysMenu.setId(id);
         return sysMenuMapper.updateByPrimaryKeySelective(sysMenu);
     }
 
     @Override
-    public int deleteSysMenu(Integer id) {
+    public int delete(Integer id) {
         SysMenu sysMenu = new SysMenu();
         sysMenu.setId(id);
         sysMenu.setDeleteStatus(Constants.IS_DELETE);

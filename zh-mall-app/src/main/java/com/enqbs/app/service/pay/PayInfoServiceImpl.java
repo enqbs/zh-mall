@@ -7,7 +7,7 @@ import com.enqbs.app.service.mq.RabbitMQService;
 import com.enqbs.app.service.user.UserService;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.OrderStatusEnum;
-import com.enqbs.common.enums.QueueEnum;
+import com.enqbs.app.enums.QueueEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.dao.PayInfoMapper;
 import com.enqbs.generator.pojo.PayInfo;
@@ -37,14 +37,8 @@ public class PayInfoServiceImpl implements PayInfoService {
     private RabbitMQService rabbitMQService;
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public BigDecimal getPayAmount(Long orderNo) {
         OrderVO orderVO = orderService.getOrderVO(orderNo);
-
-        if (ObjectUtils.isEmpty(orderVO)) {
-            throw new ServiceException("订单号:" + orderNo + ",订单不存在");
-        }
-
         PayInfo payInfo = payInfoMapper.selectByOrderNoOrStatusOrDeleteStatus(orderNo, PayStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isNotEmpty(payInfo) && !PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())
@@ -53,7 +47,17 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         if (ObjectUtils.isEmpty(payInfo)) {
-            insert(orderVO);
+            payInfo.setOrderNo(orderVO.getOrderNo());
+            payInfo.setUserId(orderVO.getUserId());
+            payInfo.setPayAmount(orderVO.getActualAmount());
+            payInfo.setStatus(PayStatusEnum.NOT_PAY.getCode());
+            int row = payInfoMapper.insertSelective(payInfo);
+
+            if (row <= 0) {
+                throw new ServiceException("订单号:" + orderNo + ",支付信息保存失败");
+            }
+
+            log.info("订单号:'{}',支付信息保存成功.", orderNo);
         }
 
         return orderVO.getActualAmount();
@@ -76,34 +80,21 @@ public class PayInfoServiceImpl implements PayInfoService {
         payInfo.setStatus(payStatus.getCode());
         payInfo.setNickName(userInfoVO.getNickName());
         payInfo.setPhoto(userInfoVO.getPhoto());
-        update(orderNo, platformNo, payInfo);
-        payPlatformService.insert(payInfo.getId(), payType, orderNo, platformNo);
-        rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE, orderNo);
-    }
-
-    private void insert(OrderVO order) {
-        PayInfo payInfo = new PayInfo();
-        payInfo.setOrderNo(order.getOrderNo());
-        payInfo.setUserId(order.getUserId());
-        payInfo.setPayAmount(order.getActualAmount());
-        payInfo.setStatus(PayStatusEnum.NOT_PAY.getCode());
-        int row = payInfoMapper.insertSelective(payInfo);
-
-        if (row <= 0) {
-            throw new ServiceException("订单号:" + order.getOrderNo() + ",支付信息保存失败");
-        }
-
-        log.info("订单号:'{}',支付信息保存成功.", order.getOrderNo());
-    }
-
-    private void update(String orderNo, String platformNo, PayInfo payInfo) {
         int row = payInfoMapper.updateByPrimaryKeySelective(payInfo);
 
         if (row <= 0) {
             throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + platformNo + ",支付信息更新失败");
         }
 
+        row = payPlatformService.insert(payInfo.getId(), payType, orderNo, platformNo);
+
+        if (row <= 0) {
+            throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + platformNo + ",支付平台信息保存失败");
+        }
+
+        rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE, orderNo);
         log.info("订单号:'{}',支付平台流水号:'{}',支付信息更新成功.", orderNo, platformNo);
+        log.info("订单号:'{}',支付平台流水号:'{}',支付平台信息保存成功.", orderNo, platformNo);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.enqbs.common.enums;
+package com.enqbs.app.enums;
 
 public enum QueueEnum {
 

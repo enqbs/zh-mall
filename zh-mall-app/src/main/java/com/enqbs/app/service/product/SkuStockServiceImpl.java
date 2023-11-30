@@ -69,13 +69,9 @@ public class SkuStockServiceImpl implements SkuStockService {
     }
 
     private void batchUnLockSkuStock(Long orderNo, List<SkuStock> skuStockList, OrderStatusEnum orderStatusEnum) {
-        int row;
-
-        if (OrderStatusEnum.PAY_SUCCESS.equals(orderStatusEnum)) {
-            row = skuStockMapper.batchUpdateBySkuStockListUnLockStockDelete(skuStockList);
-        } else {
-            row = skuStockMapper.batchUpdateBySkuStockListUnLockStockRollback(skuStockList);
-        }
+        int row = OrderStatusEnum.PAY_SUCCESS.equals(orderStatusEnum) ?
+                skuStockMapper.batchUpdateBySkuStockListUnLockStockDelete(skuStockList) :
+                skuStockMapper.batchUpdateBySkuStockListUnLockStockRollback(skuStockList);
 
         if (row < skuStockList.size()) {
             throw new ServiceException("订单号:" + orderNo + ",库存信息更新失败");

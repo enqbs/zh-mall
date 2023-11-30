@@ -7,16 +7,16 @@ public interface SysUserRoleService {
     /*
      * 用户绑定角色
      * */
-    int batchInsertUserRole(Integer userId, Set<Integer> roleIdSet);
+    int batchInsert(Integer userId, Set<Integer> roleIdSet);
 
     /*
      * 更新用户角色绑定关系
      * */
-    int updateUserRole(Integer userId, Set<Integer> roleIdSet);
+    int batchUpdate(Integer userId, Set<Integer> roleIdSet);
 
     /*
      * 删除用户角色绑定关系
      * */
-    int deleteUserRole(Integer userId, Set<Integer> roleIdSet);
+    int batchDelete(Integer userId, Set<Integer> roleIdSet);
 
 }

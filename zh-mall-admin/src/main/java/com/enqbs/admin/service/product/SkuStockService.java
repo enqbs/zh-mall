@@ -13,4 +13,6 @@ public interface SkuStockService {
 
     int update(Integer skuId, Integer count);
 
+    int delete(Integer skuId);
+
 }

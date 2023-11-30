@@ -24,7 +24,7 @@ import com.enqbs.app.pojo.vo.UserInfoVO;
 import com.enqbs.app.pojo.vo.UserShippingAddressVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.enums.OrderStatusEnum;
-import com.enqbs.common.enums.QueueEnum;
+import com.enqbs.app.enums.QueueEnum;
 import com.enqbs.common.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;

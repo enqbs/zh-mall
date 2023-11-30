@@ -1,7 +1,7 @@
 package com.enqbs.app.config;
 
 import com.enqbs.common.constant.Constants;
-import com.enqbs.common.enums.QueueEnum;
+import com.enqbs.app.enums.QueueEnum;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.CustomExchange;

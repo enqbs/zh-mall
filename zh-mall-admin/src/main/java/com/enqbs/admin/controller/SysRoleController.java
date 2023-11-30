@@ -63,7 +63,7 @@ public class SysRoleController {
     @PostMapping
     @PreAuthorize("hasAuthority('SYS_ROLE:ADD')")
     public R<Void> addRole(@Valid @RequestBody SysRoleForm form) {
-        int row = sysRoleService.insetSysRole(form);
+        int row = sysRoleService.insert(form);
 
         if (row <= 0) {
             throw new ServiceException("角色新增失败");
@@ -75,7 +75,7 @@ public class SysRoleController {
     @PutMapping("/{roleId}")
     @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
     public R<Void> updateRole(@PathVariable Integer roleId, @Valid @RequestBody SysRoleForm form) {
-        int row = sysRoleService.updateSysRole(roleId, form);
+        int row = sysRoleService.update(roleId, form);
 
         if (row <= 0) {
             throw new ServiceException("角色修改失败");
@@ -87,7 +87,7 @@ public class SysRoleController {
     @DeleteMapping("/{roleId}")
     @PreAuthorize("hasAuthority('SYS_ROLE:DELETE')")
     public R<Void> deleteRole(@PathVariable Integer roleId) {
-        int row = sysRoleService.deleteSysRole(roleId);
+        int row = sysRoleService.delete(roleId);
 
         if (row <= 0) {
             throw new ServiceException("角色删除失败");
@@ -99,7 +99,7 @@ public class SysRoleController {
     @PostMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
     public R<Void> roleMenuBind(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysRoleMenuService.batchInsertRoleMenu(form.getBindId(), form.getToIdSet());
+        int row = sysRoleMenuService.batchInsert(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("绑定权限失败");
@@ -111,7 +111,7 @@ public class SysRoleController {
     @PutMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
     public R<Void> updateRoleMenu(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysRoleMenuService.updateRoleMenu(form.getBindId(), form.getToIdSet());
+        int row = sysRoleMenuService.batchUpdate(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("修改权限失败");
@@ -123,7 +123,7 @@ public class SysRoleController {
     @DeleteMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_ROLE:DELETE')")
     public R<Void> deleteRoleMenu(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysRoleMenuService.deleteRoleMenu(form.getBindId(), form.getToIdSet());
+        int row = sysRoleMenuService.batchDelete(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("删除权限失败");

@@ -16,6 +16,6 @@ public interface SkuService {
 
     void update(Integer skuId, SkuForm form);
 
-    int delete(Integer skuId);
+    void delete(Integer skuId);
 
 }

@@ -57,6 +57,7 @@ public class SkuServiceImpl implements SkuService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void update(Integer skuId, SkuForm form) {
         Sku sku = productConvert.skuForm2Sku(form);
         sku.setId(skuId);
@@ -74,10 +75,22 @@ public class SkuServiceImpl implements SkuService {
     }
 
     @Override
-    public int delete(Integer skuId) {
-        Sku sku = skuMapper.selectByPrimaryKey(skuId);
+    @Transactional(rollbackFor = Exception.class)
+    public void delete(Integer skuId) {
+        Sku sku = new Sku();
+        sku.setId(skuId);
         sku.setDeleteStatus(Constants.IS_DELETE);
-        return skuMapper.updateByPrimaryKeySelective(sku);
+        int row = skuMapper.updateByPrimaryKeySelective(sku);
+
+        if (row <= 0) {
+            throw new ServiceException("商品规格删除失败");
+        }
+
+        row = skuStockService.delete(skuId);
+
+        if (row <= 0) {
+            throw new ServiceException("商品规格库存删除失败");
+        }
     }
 
 }
