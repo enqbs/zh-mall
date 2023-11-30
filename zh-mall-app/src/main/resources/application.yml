@@ -19,7 +19,7 @@ jwt:
 secure:
   ignored:
     anonymous:
-      - "/auth/login"
+      - "/auth/login/**"
     permit:
       - "/favicon.ico"
       - "/auth/register/**"

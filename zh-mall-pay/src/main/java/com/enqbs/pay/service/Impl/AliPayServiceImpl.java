@@ -113,7 +113,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            return aliPayConfig.initAlipayClient().pageExecute(request);
+            return aliPayConfig.aliPayClient().pageExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -126,7 +126,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            return aliPayConfig.initAlipayClient().pageExecute(request);
+            return aliPayConfig.aliPayClient().pageExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -138,7 +138,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            return aliPayConfig.initAlipayClient().sdkExecute(request);
+            return aliPayConfig.aliPayClient().sdkExecute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -149,7 +149,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            return aliPayConfig.initAlipayClient().execute(request);
+            return aliPayConfig.aliPayClient().execute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -160,7 +160,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            return aliPayConfig.initAlipayClient().execute(request);
+            return aliPayConfig.aliPayClient().execute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }

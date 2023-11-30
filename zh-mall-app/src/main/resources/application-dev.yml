@@ -77,17 +77,22 @@ thread-pool:
 ali:
   pay:
     gateway: alipay-gateway
-    notify-url: notify-url
-    return-url: return-url
-    app-id: your-appId
+    app-id: your-app-id
     app-private-key: your-private-key
     alipay-public-key: your-alipay-public-key
+    notify-url: notify-url
+    return-url: return-url
   oss:
     endpoint: https://oss-cn-shenzhen.aliyuncs.com
     bucket-domain: https://your-bucket.oss-cn-shenzhen.aliyuncs.com
     access-key-id: your-access-key-id
     access-key-secret: your-access-key-secret
     bucket: your-bucket
+  auth:
+    gateway: https://openapi.alipay.com/gateway.do
+    app-id: your-app-id
+    app-private-key: youur-app-private-key
+    alipay-public-key: your-alipay-public-key
 
 logstash:
   host: 192.168.43.2

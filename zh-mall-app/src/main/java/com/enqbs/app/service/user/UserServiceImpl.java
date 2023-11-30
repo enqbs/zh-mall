@@ -1,6 +1,13 @@
 package com.enqbs.app.service.user;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.request.AlipaySystemOauthTokenRequest;
+import com.alipay.api.request.AlipayUserInfoShareRequest;
+import com.alipay.api.response.AlipaySystemOauthTokenResponse;
+import com.alipay.api.response.AlipayUserInfoShareResponse;
+import com.enqbs.app.config.AliAuthConfig;
 import com.enqbs.app.convert.UserConvert;
+import com.enqbs.app.enums.LoginTypeEnum;
 import com.enqbs.app.form.ChangeNicknameForm;
 import com.enqbs.app.form.ChangePasswordForm;
 import com.enqbs.app.form.ChangePhotoForm;
@@ -19,6 +26,8 @@ import com.enqbs.generator.pojo.UserLevel;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,6 +44,8 @@ public class UserServiceImpl implements UserService {
     private RedisUtil redisUtil;
     @Resource
     private PasswordEncoder passwordEncoder;
+    @Resource
+    private AliAuthConfig aliAuthConfig;
     @Resource
     private UserAuthsService userAuthsService;
     @Resource
@@ -58,9 +69,26 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("密码错误");
         }
 
-        User user = userMapper.selectByPrimaryKey(userAuths.getUserId());
-        UserLevel userLevel = userLevelService.getUserLevel(user.getLevelId());
-        LoginUser loginUser = getLoginUser(user, userAuths, userLevel);
+        LoginUser loginUser = userAuthsGetLoginUser(userAuths);
+        executor.execute(() -> cacheLoginUser(loginUser));
+        return tokenService.getToken(loginUser);
+    }
+
+    @Override
+    public String loginByAliPayPC(String code) {
+        AlipaySystemOauthTokenResponse oauthToken = oauthToken(code);
+        AlipayUserInfoShareResponse userInfoShare = userInfoShare(oauthToken.getAccessToken());
+        String credential = userInfoShare.getUserId();
+
+        if (StringUtils.isEmpty(credential)) {
+            throw new ServiceException("临时授权失败,请重试");
+        }
+
+        UserAuths userAuths = userAuthsService.getUserAuths(null, LoginTypeEnum.ALIPAY_PC.getIdentifier(), credential);
+        UserService userServiceProxy = (UserService) AopContext.currentProxy();
+        LoginUser loginUser = ObjectUtils.isEmpty(userAuths) ?
+                userServiceProxy.insert(credential, userInfoShare.getNickName(), userInfoShare.getAvatar()) :
+                userAuthsGetLoginUser(userAuths);
         executor.execute(() -> cacheLoginUser(loginUser));
         return tokenService.getToken(loginUser);
     }
@@ -82,7 +110,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("用户信息保存失败");
         }
 
-        UserAuths userAuths = buildUserAuths(user.getId(), Constants.LOGIN_TYPE_USERNAME,
+        UserAuths userAuths = buildUserAuths(user.getId(), LoginTypeEnum.USERNAME.getIdentityType(),
                 form.getUsername(), passwordEncoder.encode(form.getPassword()));
         row = userAuthsService.insert(userAuths);
 
@@ -97,6 +125,31 @@ public class UserServiceImpl implements UserService {
     public UserInfoVO getUserInfoVO() {
         LoginUser loginUser = tokenService.getLoginUser();
         return userConvert.loginUser2UserInfoVO(loginUser);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public LoginUser insert(String credential, String nickName, String photo) {
+        User user = new User();
+        user.setUid(IDUtil.getId());
+        user.setNickName(nickName);
+        user.setPhoto(photo);
+        int row = userMapper.insertSelective(user);
+
+        if (row <= 0) {
+            throw new ServiceException("用户信息保存失败");
+        }
+
+        UserAuths userAuths = buildUserAuths(user.getId(), LoginTypeEnum.ALIPAY_PC.getIdentityType(),
+                LoginTypeEnum.ALIPAY_PC.getIdentifier(), credential);
+        row = userAuthsService.insert(userAuths);
+
+        if (row <= 0) {
+            throw new ServiceException("用户账号密码保存失败");
+        }
+
+        UserLevel userLevel = userLevelService.getUserLevel(user.getLevelId());
+        return getLoginUser(user, userAuths, userLevel);
     }
 
     @Override
@@ -150,7 +203,7 @@ public class UserServiceImpl implements UserService {
         int row = userMapper.updateByPrimaryKeySelective(user);
 
         if (row <= 0) {
-            throw new ServiceException("修改昵称失败");
+            throw new ServiceException("修改头像失败");
         }
 
         executor.execute(() -> {
@@ -165,6 +218,12 @@ public class UserServiceImpl implements UserService {
         LoginUser loginUser = tokenService.getLoginUser();
         executor.execute(() -> removeCacheLoginUser(loginUser));
         tokenService.removeLoginUser();
+    }
+
+    private LoginUser userAuthsGetLoginUser(UserAuths userAuths) {
+        User user = userMapper.selectByPrimaryKey(userAuths.getUserId());
+        UserLevel userLevel = userLevelService.getUserLevel(user.getLevelId());
+        return getLoginUser(user, userAuths, userLevel);
     }
 
     private LoginUser getLoginUser(User user, UserAuths userAuths, UserLevel userLevel) {
@@ -190,17 +249,6 @@ public class UserServiceImpl implements UserService {
         return loginUser;
     }
 
-    private void cacheLoginUser(LoginUser loginUser) {
-        String redisKey = String.format(Constants.USER_REDIS_KEY, loginUser.getUserToken());
-        long cacheTimeout = 3600 * 24 * 10 * 1000L;     // 用户信息 redis 缓存10天(免登录)
-        redisUtil.setString(redisKey, GsonUtil.obj2Json(loginUser), cacheTimeout);
-    }
-
-    private void removeCacheLoginUser(LoginUser loginUser) {
-        String redisKey = String.format(Constants.USER_REDIS_KEY, loginUser.getUserToken());
-        redisUtil.deleteKey(redisKey);
-    }
-
     private User buildUser() {
         long uid = IDUtil.getId();
         User user = new User();
@@ -217,6 +265,39 @@ public class UserServiceImpl implements UserService {
         userAuths.setIdentifier(identifier);            // 登录标识符
         userAuths.setCredential(credential);            // 登录凭证
         return userAuths;
+    }
+
+    private AlipaySystemOauthTokenResponse oauthToken(String code) {
+        AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
+        request.setCode(code);
+        request.setGrantType("authorization_code");
+
+        try {
+            return aliAuthConfig.aliAuthClient().execute(request);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private AlipayUserInfoShareResponse userInfoShare(String accessToken) {
+        AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
+
+        try {
+            return aliAuthConfig.aliAuthClient().execute(request, accessToken);
+        } catch (AlipayApiException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void cacheLoginUser(LoginUser loginUser) {
+        String redisKey = String.format(Constants.USER_REDIS_KEY, loginUser.getUserToken());
+        long cacheTimeout = 3600 * 24 * 10 * 1000L;     // 用户信息 redis 缓存10天(免登录)
+        redisUtil.setString(redisKey, GsonUtil.obj2Json(loginUser), cacheTimeout);
+    }
+
+    private void removeCacheLoginUser(LoginUser loginUser) {
+        String redisKey = String.format(Constants.USER_REDIS_KEY, loginUser.getUserToken());
+        redisUtil.deleteKey(redisKey);
     }
 
 }

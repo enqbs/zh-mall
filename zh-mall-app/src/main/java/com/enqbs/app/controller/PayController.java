@@ -29,8 +29,8 @@ public class PayController {
     @Resource
     private PayInfoService payInfoService;
 
-    @GetMapping("/{orderNo}")
-    public ModelAndView alipayPCPage(@PathVariable Long orderNo) {
+    @GetMapping("/alipay-pc/{orderNo}")
+    public ModelAndView payAliPayPC(@PathVariable Long orderNo) {
         PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PC_PAGE);
         String pay = payService.pay(PayTypeEnum.ALIPAY_PC_PAGE, orderNo, payInfoService.getPayAmount(orderNo));
         Map<String, Object> map = new HashMap<>();

@@ -7,6 +7,7 @@ import com.enqbs.app.form.LoginForm;
 import com.enqbs.app.form.RegisterByUsernameForm;
 import com.enqbs.app.service.user.UserService;
 import com.enqbs.common.util.R;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,14 @@ public class AuthController {
     @PostMapping("/login")
     public R<Map<String, String>> login(@Valid @RequestBody LoginForm form) {
         String token = userService.login(form);
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("token", token);
+        return R.ok("登录成功", resultMap);
+    }
+
+    @PostMapping("/login/alipay-pc/{code}")
+    public R<Map<String, String>> loginAliAuthPC(@PathVariable String code) {
+        String token = userService.loginByAliPayPC(code);
         Map<String, String> resultMap = new HashMap<>();
         resultMap.put("token", token);
         return R.ok("登录成功", resultMap);

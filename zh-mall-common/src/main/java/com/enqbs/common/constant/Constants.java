@@ -61,13 +61,4 @@ public class Constants {
 
     public static final Integer MESSAGE_SEND_ERROR = -1;
 
-    /* 登录方式标识 */
-    public static final String LOGIN_TYPE_USERNAME = "username";
-
-//    public static final String LOGIN_TYPE_PHONE = "phone";
-//
-//    public static final String LOGIN_TYPE_EMAIL = "Email";
-//
-//    public static final String LOGIN_TYPE_ALIPAY_PC = "alipay_pc";
-
 }

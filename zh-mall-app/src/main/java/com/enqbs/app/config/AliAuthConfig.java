@@ -1,4 +1,4 @@
-package com.enqbs.pay.config;
+package com.enqbs.app.config;
 
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "ali.pay")
-public class AliPayConfig {
+@ConfigurationProperties(prefix = "ali.auth")
+public class AliAuthConfig {
 
     private String gateway;
 
@@ -17,10 +17,6 @@ public class AliPayConfig {
     private String appPrivateKey;
 
     private String alipayPublicKey;
-
-    private String notifyUrl;
-
-    private String returnUrl;
 
     public String getGateway() {
         return gateway;
@@ -54,27 +50,8 @@ public class AliPayConfig {
         this.alipayPublicKey = alipayPublicKey;
     }
 
-    public String getNotifyUrl() {
-        return notifyUrl;
-    }
-
-    public void setNotifyUrl(String notifyUrl) {
-        this.notifyUrl = notifyUrl;
-    }
-
-    public String getReturnUrl() {
-        return returnUrl;
-    }
-
-    public void setReturnUrl(String returnUrl) {
-        this.returnUrl = returnUrl;
-    }
-
     @Bean
-    public AlipayClient aliPayClient() {
-        /*
-         * ("https://openapi.alipay.com/gateway.do","app_id","your private_key","json","utf-8","alipay_public_key","RSA2");
-         * */
+    public AlipayClient aliAuthClient() {
         return new DefaultAlipayClient(gateway, appId, appPrivateKey, "json", "utf-8", alipayPublicKey, "RSA2");
     }
 
