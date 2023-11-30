@@ -1848,7 +1848,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZTM1NjU5YjNkZjc1NDFiNzljNTMyYjM2YjIzMzU5YjkiLCJleHAiOjE3MDEzMzk1OTF9.nxvNwzvV-Ceuz6Kp_D4mWUBRaPid4fBpznjiAeEho8Q",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiMTIxMzcxZWRlYjljNGYzMGExYWI4NTI5YTUxNjJmMWUiLCJleHAiOjE3MDEzNjc2OTl9.A-lbMyFlOu5h055nAilsOGnIVoQIJsZE1XMqJ4PKHRY",
 												"type": "text"
 											}
 										],
@@ -1897,6 +1897,28 @@
 									"response": []
 								},
 								{
+									"name": "login alipay pc",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:5000/auth/login/alipay-pc/",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "5000",
+											"path": [
+												"auth",
+												"login",
+												"alipay-pc",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
 									"name": "register by username",
 									"request": {
 										"method": "POST",
@@ -1933,7 +1955,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiNzA1NGQwYTMwNTU3NDMwZDhkMjA3YWVhNWExMDU1ZTciLCJleHAiOjE3MDEzMzk2Nzh9.K29gs3CyoHsvKoERx2S_NlcpMhsodQwEdxzGzYGtV7c",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiMTIxMzcxZWRlYjljNGYzMGExYWI4NTI5YTUxNjJmMWUiLCJleHAiOjE3MDEzNjc2OTl9.A-lbMyFlOu5h055nAilsOGnIVoQIJsZE1XMqJ4PKHRY",
 												"type": "text"
 											}
 										],
@@ -2108,7 +2130,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiNjAyOGYxYjE5ZTcyNDdmMzlhZTc4MWE4Y2E2YTdkZWUiLCJleHAiOjE3MDA1ODIzNDJ9.6lMCzenlVmhMYE3GsclmxrnB6D6t6VM8Vh7evIgwNTU",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZjA3N2YwN2Q1MzUwNDExY2I5NTQ2YmNiZDhjMDEyYjUiLCJleHAiOjE3MDEzNDkzNjl9.c09Dfnimy-1atdKqojSRC4qbkeFx6eAP5Al5Ya5e2PQ",
 												"type": "text"
 											}
 										],
@@ -2233,7 +2255,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZjA3N2YwN2Q1MzUwNDExY2I5NTQ2YmNiZDhjMDEyYjUiLCJleHAiOjE3MDEzNDkzNjl9.c09Dfnimy-1atdKqojSRC4qbkeFx6eAP5Al5Ya5e2PQ",
 												"type": "text"
 											}
 										],
@@ -2265,7 +2287,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZjA3N2YwN2Q1MzUwNDExY2I5NTQ2YmNiZDhjMDEyYjUiLCJleHAiOjE3MDEzNDkzNjl9.c09Dfnimy-1atdKqojSRC4qbkeFx6eAP5Al5Ya5e2PQ",
 												"type": "text"
 											}
 										],
@@ -2291,7 +2313,7 @@
 										"header": [
 											{
 												"key": "token",
-												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
+												"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZjA3N2YwN2Q1MzUwNDExY2I5NTQ2YmNiZDhjMDEyYjUiLCJleHAiOjE3MDEzNDkzNjl9.c09Dfnimy-1atdKqojSRC4qbkeFx6eAP5Al5Ya5e2PQ",
 												"type": "text"
 											}
 										],
@@ -2656,7 +2678,7 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZjA3N2YwN2Q1MzUwNDExY2I5NTQ2YmNiZDhjMDEyYjUiLCJleHAiOjE3MDEzNDkzNjl9.c09Dfnimy-1atdKqojSRC4qbkeFx6eAP5Al5Ya5e2PQ",
 										"type": "text"
 									}
 								],
@@ -2720,13 +2742,13 @@
 								"header": [
 									{
 										"key": "token",
-										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZmFhYzY1OTg0MGVhNGY0ODkzYzAyNjkzZjllNDkyZjMiLCJleHAiOjE3MDA2MjgzNTJ9.Z90-W5g7V3Mbcp3bTwIV82MymNhqjXPXEisfMaQnGkI",
+										"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX3Rva2VuIjoiZjA3N2YwN2Q1MzUwNDExY2I5NTQ2YmNiZDhjMDEyYjUiLCJleHAiOjE3MDEzNDkzNjl9.c09Dfnimy-1atdKqojSRC4qbkeFx6eAP5Al5Ya5e2PQ",
 										"type": "text"
 									}
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"orderToken\": \"09f818f0f5e14f97a217861077b1c807\",\r\n    \"shippingAddressId\": 1,\r\n    \"couponsId\": null\r\n}",
+									"raw": "{\r\n    \"orderToken\": \"c0bbab2e2d9f43d6bf5d2bcce57706f1\",\r\n    \"shippingAddressId\": 1,\r\n    \"couponsId\": null\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -2886,7 +2908,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:5000/pay/1713882598990155776",
+									"raw": "http://localhost:5000/pay/alipay-pc/",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -2894,7 +2916,8 @@
 									"port": "5000",
 									"path": [
 										"pay",
-										"1713882598990155776"
+										"alipay-pc",
+										""
 									]
 								}
 							},

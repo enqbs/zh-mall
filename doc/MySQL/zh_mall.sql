@@ -11,7 +11,7 @@
  Target Server Version : 80031
  File Encoding         : 65001
 
- Date: 20/11/2023 21:40:21
+ Date: 30/11/2023 16:21:50
 */
 
 SET NAMES utf8mb4;
@@ -207,7 +207,7 @@ CREATE TABLE `tb_home_banner`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页横幅表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页横幅表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_banner
@@ -226,7 +226,7 @@ CREATE TABLE `tb_home_recommend_advertise`  (
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页推荐广告表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '首页推荐广告表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_home_recommend_advertise
@@ -376,7 +376,7 @@ CREATE TABLE `tb_order_refund`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unq_order_no_user_id_create_time`(`order_no` ASC, `user_id` ASC, `create_time` DESC) USING BTREE,
   INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单申请退款表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单申请退款表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_order_refund
@@ -446,7 +446,7 @@ CREATE TABLE `tb_pay_info`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unq_order_no_user_id_create_time`(`order_no` ASC, `user_id` ASC, `create_time` DESC) USING BTREE,
   INDEX `idx_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付信息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_info
@@ -491,7 +491,7 @@ CREATE TABLE `tb_pay_refund`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unq_order_no_create_time`(`order_no` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付退款记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_pay_refund
@@ -574,7 +574,7 @@ CREATE TABLE `tb_product_category_attribute`  (
   `name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品分类规格名称',
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类属性表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_category_attribute
@@ -618,7 +618,7 @@ CREATE TABLE `tb_product_comment`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id_create_time`(`product_id` ASC, `create_time` DESC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_comment
@@ -635,7 +635,7 @@ CREATE TABLE `tb_product_overview`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品概述表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品概述表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_overview
@@ -652,7 +652,7 @@ CREATE TABLE `tb_product_spec`  (
   `delete_status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '是否删除,0:否、1:是',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品参数表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品参数表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of tb_product_spec
@@ -762,9 +762,9 @@ CREATE TABLE `tb_sku_stock`  (
 -- ----------------------------
 -- Records of tb_sku_stock
 -- ----------------------------
-INSERT INTO `tb_sku_stock` VALUES (1, 1, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-19 12:41:48');
-INSERT INTO `tb_sku_stock` VALUES (2, 2, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-19 12:41:48');
-INSERT INTO `tb_sku_stock` VALUES (3, 3, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-19 12:41:48');
+INSERT INTO `tb_sku_stock` VALUES (1, 1, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-29 13:28:14');
+INSERT INTO `tb_sku_stock` VALUES (2, 2, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-29 13:28:14');
+INSERT INTO `tb_sku_stock` VALUES (3, 3, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-29 13:28:14');
 INSERT INTO `tb_sku_stock` VALUES (4, 4, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-11 13:07:11');
 INSERT INTO `tb_sku_stock` VALUES (5, 5, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-11-11 13:07:14');
 INSERT INTO `tb_sku_stock` VALUES (6, 6, 9999, 0, 9999, 0, '2023-10-11 18:20:01', '2023-10-16 18:34:57');
@@ -883,8 +883,7 @@ CREATE TABLE `tb_user_auths`  (
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `unq_user_id_create_time`(`user_id` ASC, `create_time` DESC) USING BTREE,
-  UNIQUE INDEX `unq_identifier_create_time`(`identifier` ASC, `create_time` DESC) USING BTREE,
-  UNIQUE INDEX `unq_credential_create_time`(`credential` ASC, `create_time` DESC) USING BTREE
+  UNIQUE INDEX `unq_identifier_credential_create_time`(`identifier` ASC, `credential` ASC, `create_time` DESC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录类型表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
