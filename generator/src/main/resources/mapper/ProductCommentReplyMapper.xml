@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enqbs.generator.dao.ProductCommentReplyMapper">
+  <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.ProductCommentReply">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="comment_id" jdbcType="INTEGER" property="commentId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+    <result column="to_user_id" jdbcType="INTEGER" property="toUserId" />
+    <result column="to_nick_name" jdbcType="VARCHAR" property="toNickName" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="like" jdbcType="INTEGER" property="like" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, comment_id, user_id, nick_name, photo, to_user_id, to_nick_name, content, like,
+    delete_status, create_time, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product_comment_reply
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_product_comment_reply
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.enqbs.generator.pojo.ProductCommentReply">
+    insert into tb_product_comment_reply (id, comment_id, user_id,
+                                          nick_name, photo, to_user_id,
+                                          to_nick_name, content, like,
+                                          delete_status, create_time, update_time
+    )
+    values (#{id,jdbcType=INTEGER}, #{commentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER},
+            #{nickName,jdbcType=VARCHAR}, #{photo,jdbcType=VARCHAR}, #{toUserId,jdbcType=INTEGER},
+            #{toNickName,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{like,jdbcType=INTEGER},
+            #{deleteStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+           )
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.ProductCommentReply">
+    insert into tb_product_comment_reply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="commentId != null">
+        comment_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="nickName != null">
+        nick_name,
+      </if>
+      <if test="photo != null">
+        photo,
+      </if>
+      <if test="toUserId != null">
+        to_user_id,
+      </if>
+      <if test="toNickName != null">
+        to_nick_name,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="like != null">
+        like,
+      </if>
+      <if test="deleteStatus != null">
+        delete_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="commentId != null">
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="nickName != null">
+        #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null">
+        #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserId != null">
+        #{toUserId,jdbcType=INTEGER},
+      </if>
+      <if test="toNickName != null">
+        #{toNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="like != null">
+        #{like,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.enqbs.generator.pojo.ProductCommentReply">
+    update tb_product_comment_reply
+    <set>
+      <if test="commentId != null">
+        comment_id = #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="nickName != null">
+        nick_name = #{nickName,jdbcType=VARCHAR},
+      </if>
+      <if test="photo != null">
+        photo = #{photo,jdbcType=VARCHAR},
+      </if>
+      <if test="toUserId != null">
+        to_user_id = #{toUserId,jdbcType=INTEGER},
+      </if>
+      <if test="toNickName != null">
+        to_nick_name = #{toNickName,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="like != null">
+        like = #{like,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.ProductCommentReply">
+    update tb_product_comment_reply
+    set comment_id = #{commentId,jdbcType=INTEGER},
+        user_id = #{userId,jdbcType=INTEGER},
+        nick_name = #{nickName,jdbcType=VARCHAR},
+        photo = #{photo,jdbcType=VARCHAR},
+        to_user_id = #{toUserId,jdbcType=INTEGER},
+        to_nick_name = #{toNickName,jdbcType=VARCHAR},
+        content = #{content,jdbcType=VARCHAR},
+        like = #{like,jdbcType=INTEGER},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectListByCommentId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product_comment_reply
+    where comment_id = #{commentId,jdbcType=INTEGER} and delete_status = 0
+    order by create_time desc
+    limit 0, 5
+  </select>
+
+  <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_product_comment_reply
+    where comment_id = #{commentId,jdbcType=INTEGER} and delete_status = 0
+    <if test="sort != null">
+      order by create_time ${sort}
+    </if>
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize" />
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByCommentId" parameterType="java.lang.Integer" resultType="java.lang.Long">
+    select count(*) from tb_product_comment_reply
+    where comment_id = #{commentId,jdbcType=INTEGER} and delete_status = 0
+  </select>
+
+  <select id="existByIdAndUserId" parameterType="map" resultType="java.lang.Integer">
+    select 1 from tb_product_comment_reply
+    where id = #{id,jdbcType=INTEGER} and user_id = #{userId,jdbcType=INTEGER} and delete_status = 0 limit 1
+  </select>
+</mapper>

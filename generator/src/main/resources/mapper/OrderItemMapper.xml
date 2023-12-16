@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enqbs.generator.dao.OrderItemMapper">
+  <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.OrderItem">
+    <id column="order_no" jdbcType="BIGINT" property="orderNo" />
+    <id column="sku_id" jdbcType="INTEGER" property="skuId" />
+    <result column="spu_id" jdbcType="INTEGER" property="spuId" />
+    <result column="sku_title" jdbcType="VARCHAR" property="skuTitle" />
+    <result column="sku_params" jdbcType="VARCHAR" property="skuParams" />
+    <result column="sku_picture" jdbcType="VARCHAR" property="skuPicture" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="discount_price" jdbcType="DECIMAL" property="discountPrice" />
+    <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
+    <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
+    <result column="sharding" jdbcType="INTEGER" property="sharding" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    order_no, sku_id, spu_id, sku_title, sku_params, sku_picture, num, price, discount_price, 
+    actual_price, total_price, sharding
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_order_item
+    where order_no = #{orderNo,jdbcType=BIGINT}
+      and sku_id = #{skuId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from tb_order_item
+    where order_no = #{orderNo,jdbcType=BIGINT}
+      and sku_id = #{skuId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.enqbs.generator.pojo.OrderItem">
+    insert into tb_order_item (order_no, sku_id, spu_id, 
+      sku_title, sku_params, sku_picture, 
+      num, price, discount_price, 
+      actual_price, total_price, sharding
+      )
+    values (#{orderNo,jdbcType=BIGINT}, #{skuId,jdbcType=INTEGER}, #{spuId,jdbcType=INTEGER}, 
+      #{skuTitle,jdbcType=VARCHAR}, #{skuParams,jdbcType=VARCHAR}, #{skuPicture,jdbcType=VARCHAR}, 
+      #{num,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{discountPrice,jdbcType=DECIMAL}, 
+      #{actualPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, #{sharding,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.OrderItem">
+    insert into tb_order_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderNo != null">
+        order_no,
+      </if>
+      <if test="skuId != null">
+        sku_id,
+      </if>
+      <if test="spuId != null">
+        spu_id,
+      </if>
+      <if test="skuTitle != null">
+        sku_title,
+      </if>
+      <if test="skuParams != null">
+        sku_params,
+      </if>
+      <if test="skuPicture != null">
+        sku_picture,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="discountPrice != null">
+        discount_price,
+      </if>
+      <if test="actualPrice != null">
+        actual_price,
+      </if>
+      <if test="totalPrice != null">
+        total_price,
+      </if>
+      <if test="sharding != null">
+        sharding,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="orderNo != null">
+        #{orderNo,jdbcType=BIGINT},
+      </if>
+      <if test="skuId != null">
+        #{skuId,jdbcType=INTEGER},
+      </if>
+      <if test="spuId != null">
+        #{spuId,jdbcType=INTEGER},
+      </if>
+      <if test="skuTitle != null">
+        #{skuTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="skuParams != null">
+        #{skuParams,jdbcType=VARCHAR},
+      </if>
+      <if test="skuPicture != null">
+        #{skuPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="discountPrice != null">
+        #{discountPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="actualPrice != null">
+        #{actualPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="totalPrice != null">
+        #{totalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="sharding != null">
+        #{sharding,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.enqbs.generator.pojo.OrderItem">
+    update tb_order_item
+    <set>
+      <if test="spuId != null">
+        spu_id = #{spuId,jdbcType=INTEGER},
+      </if>
+      <if test="skuTitle != null">
+        sku_title = #{skuTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="skuParams != null">
+        sku_params = #{skuParams,jdbcType=VARCHAR},
+      </if>
+      <if test="skuPicture != null">
+        sku_picture = #{skuPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="discountPrice != null">
+        discount_price = #{discountPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="actualPrice != null">
+        actual_price = #{actualPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="totalPrice != null">
+        total_price = #{totalPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="sharding != null">
+        sharding = #{sharding,jdbcType=INTEGER},
+      </if>
+    </set>
+    where order_no = #{orderNo,jdbcType=BIGINT}
+      and sku_id = #{skuId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.OrderItem">
+    update tb_order_item
+    set spu_id = #{spuId,jdbcType=INTEGER},
+      sku_title = #{skuTitle,jdbcType=VARCHAR},
+      sku_params = #{skuParams,jdbcType=VARCHAR},
+      sku_picture = #{skuPicture,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER},
+      price = #{price,jdbcType=DECIMAL},
+      discount_price = #{discountPrice,jdbcType=DECIMAL},
+      actual_price = #{actualPrice,jdbcType=DECIMAL},
+      total_price = #{totalPrice,jdbcType=DECIMAL},
+      sharding = #{sharding,jdbcType=INTEGER}
+    where order_no = #{orderNo,jdbcType=BIGINT}
+      and sku_id = #{skuId,jdbcType=INTEGER}
+  </update>
+
+  <insert id="batchInsertByOrderItemList" parameterType="com.enqbs.generator.pojo.OrderItem">
+    insert into tb_order_item (order_no, sku_id, spu_id,
+    sku_title, sku_params, sku_picture,
+    num, price, discount_price,
+    actual_price, total_price, sharding
+    )
+    values
+    <foreach collection="orderItemList" item="item" index="index" separator=",">
+      (#{item.orderNo,jdbcType=BIGINT}, #{item.skuId,jdbcType=INTEGER}, #{item.spuId,jdbcType=INTEGER},
+      #{item.skuTitle,jdbcType=VARCHAR}, #{item.skuParams,jdbcType=VARCHAR}, #{item.skuPicture,jdbcType=VARCHAR},
+      #{item.num,jdbcType=INTEGER}, #{item.price,jdbcType=DECIMAL}, #{item.discountPrice,jdbcType=DECIMAL},
+      #{item.actualPrice,jdbcType=DECIMAL}, #{item.totalPrice,jdbcType=DECIMAL}, #{item.sharding,jdbcType=INTEGER}
+      )
+    </foreach>
+  </insert>
+
+  <select id="selectListByOrderNo" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_order_item
+    where order_no = #{orderNo,jdbcType=BIGINT}
+  </select>
+
+  <select id="selectListByOrderNoSet" parameterType="java.util.Set" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_order_item
+    where
+    <foreach collection="orderNoSet" item="item" index="index" separator="or">
+      order_no = #{item,jdbcType=BIGINT}
+    </foreach>
+  </select>
+</mapper>

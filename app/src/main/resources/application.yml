@@ -1,0 +1,35 @@
+server:
+  port: 5000
+
+spring:
+  application:
+    name: app
+  profiles:
+    active: dev
+  freemarker:
+    suffix: .ftlh
+    charset: UTF-8
+    content-type: text/html
+    template-loader-path: classpath:/templates/
+    cache: false
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:mapper/*.xml
+
+jwt:
+  secret: 2a323d19c4c1434893dcdc5defb305c5
+  expire: 1
+
+secure:
+  ignored:
+    anonymous:
+      - "/auth/login/**"
+    permit:
+      - "/favicon.ico"
+      - "/auth/register/**"
+      - "/user/info"
+      - "/product/**"
+      - "/coupon/**"
+      - "/pay/**"

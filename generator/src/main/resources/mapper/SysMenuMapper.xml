@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enqbs.generator.dao.SysMenuMapper">
+  <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.SysMenu">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="permissions_key" jdbcType="VARCHAR" property="permissionsKey" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, parent_id, title, path, permissions_key, sort, delete_status, create_time, update_time
+  </sql>
+
+  <sql id="Base_Column_List_Join">
+    m.id, m.parent_id, m.title, m.path, m.permissions_key, m.sort, m.delete_status, m.create_time, m.update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_menu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_menu
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.enqbs.generator.pojo.SysMenu">
+    insert into sys_menu (id, parent_id, title,
+                          path, permissions_key, sort,
+                          delete_status, create_time, update_time
+    )
+    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+            #{path,jdbcType=VARCHAR}, #{permissionsKey,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER},
+            #{deleteStatus,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+           )
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.SysMenu">
+    insert into sys_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="permissionsKey != null">
+        permissions_key,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="deleteStatus != null">
+        delete_status,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionsKey != null">
+        #{permissionsKey,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.enqbs.generator.pojo.SysMenu">
+    update sys_menu
+    <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionsKey != null">
+        permissions_key = #{permissionsKey,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.SysMenu">
+    update sys_menu
+    set parent_id = #{parentId,jdbcType=INTEGER},
+        title = #{title,jdbcType=VARCHAR},
+        path = #{path,jdbcType=VARCHAR},
+        permissions_key = #{permissionsKey,jdbcType=VARCHAR},
+        sort = #{sort,jdbcType=INTEGER},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectListByRoot" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from sys_menu
+    where parent_id = 0 and delete_status = 0
+  </select>
+
+  <select id="selectSetByUsername" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List_Join" />
+    from
+    sys_user as u
+    join sys_user_role as ur on ur.user_id = u.id
+    join sys_role as r on r.id = ur.role_id
+    join sys_role_menu as rm on rm.role_id = r.id
+    join sys_menu as m on m.id = rm.menu_id
+    where
+    u.username = #{username,jdbcType=VARCHAR}
+    and u.delete_status = 0
+    and r.delete_status = 0
+    and m.delete_status = 0
+  </select>
+
+  <select id="selectListByRoleId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List_Join" />
+    from
+    sys_menu as m
+    join sys_role_menu as rm on m.id = rm.menu_id
+    join sys_role as r on rm.role_id = r.id
+    where
+    r.id = #{roleId,jdbcType=INTEGER}
+    and r.delete_status = 0
+    and m.delete_status = 0
+  </select>
+
+  <select id="selectListByParam" parameterType="map" resultMap="BaseResultMap">
+    select
+    <if test="roleId == null">
+      <include refid="Base_Column_List" />
+      from sys_menu
+      <trim prefix="where " suffixOverrides="and">
+        <if test="parentId != null">
+          parent_id = #{parentId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+      </trim>
+    </if>
+    <if test="roleId != null">
+      <include refid="Base_Column_List_Join" />
+      from sys_menu as m
+      join sys_role_menu as rm on m.id = rm.menu_id
+      join sys_role as r on rm.role_id = r.id
+      <trim prefix="where " suffixOverrides="and">
+        <if test="parentId != null">
+          m.parent_id = #{parentId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          m.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+        <if test="roleId != null">
+          r.id = #{roleId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          r.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+      </trim>
+    </if>
+    <if test="pageNum != null and pageSize != null">
+      <bind name="pageStart" value="(pageNum - 1) * pageSize" />
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+
+  <select id="countByParam" parameterType="map" resultType="java.lang.Long">
+    select count(*)
+    <if test="roleId == null">
+      from sys_menu
+      <trim prefix="where " suffixOverrides="and">
+        <if test="parentId != null">
+          parent_id = #{parentId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+      </trim>
+    </if>
+    <if test="roleId != null">
+      from sys_menu as m
+      join sys_role_menu as rm on m.id = rm.menu_id
+      join sys_role as r on rm.role_id = r.id
+      <trim prefix="where " suffixOverrides="and">
+        <if test="parentId != null">
+          m.parent_id = #{parentId,jdbcType=INTEGER} and
+        </if>
+        <if test="deleteStatus != null">
+          m.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+        <if test="roleId != null">
+          r.id = #{roleId,jdbcType=INTEGER} and
+        </if>
+        <if test="parentId != null">
+          r.delete_status = #{deleteStatus,jdbcType=INTEGER} and
+        </if>
+      </trim>
+    </if>
+  </select>
+</mapper>

@@ -5,20 +5,21 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>zh-mall-common</module>
-        <module>zh-mall-security</module>
-        <module>zh-mall-generator</module>
-        <module>zh-mall-admin</module>
-        <module>zh-mall-pay</module>
-        <module>zh-mall-app</module>
-        <module>zh-mall-file</module>
+        <module>common</module>
+        <module>security</module>
+        <module>generator</module>
+        <module>admin</module>
+        <module>pay</module>
+        <module>app</module>
+        <module>file</module>
+        <module>search</module>
     </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.17</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>2.7.18</version>
+        <relativePath/>
     </parent>
 
     <groupId>com.enqbs</groupId>
@@ -28,39 +29,26 @@
     <description>zh-mall</description>
 
     <properties>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
         <enqbs.version>0.0.1</enqbs.version>
-        <mybatis.spring.boot.version>2.3.1</mybatis.spring.boot.version>
-        <hutool.version>5.8.18</hutool.version>
-        <auth0.jwt.version>4.4.0</auth0.jwt.version>
-        <logstash.logback.version>7.4</logstash.logback.version>
+        <mybatis-spring-boot-starter.version>2.3.1</mybatis-spring-boot-starter.version>
+        <hutool-all.version>5.8.23</hutool-all.version>
+        <java-jwt.version>4.4.0</java-jwt.version>
+        <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <redisson.version>3.19.1</redisson.version>
-        <ali.pay.version>4.38.105.ALL</ali.pay.version>
-        <ali.oss.version>3.17.2</ali.oss.version>
-        <shardingsphere.jdbc.version>5.1.2</shardingsphere.jdbc.version>
+        <ali-pay.version>4.38.105.ALL</ali-pay.version>
+        <ali-oss.version>3.17.2</ali-oss.version>
+        <shardingsphere-jdbc-core-spring-boot-starter.version>5.1.2</shardingsphere-jdbc-core-spring-boot-starter.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
-        <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
 
@@ -77,25 +65,25 @@
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
-                <version>${mybatis.spring.boot.version}</version>
+                <version>${mybatis-spring-boot-starter.version}</version>
             </dependency>
-            <!-- hutool 工具 -->
+            <!-- hutool -->
             <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
-                <version>${hutool.version}</version>
+                <version>${hutool-all.version}</version>
             </dependency>
             <!-- jwt -->
             <dependency>
                 <groupId>com.auth0</groupId>
                 <artifactId>java-jwt</artifactId>
-                <version>${auth0.jwt.version}</version>
+                <version>${java-jwt.version}</version>
             </dependency>
             <!-- logstash -->
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>
-                <version>${logstash.logback.version}</version>
+                <version>${logstash-logback-encoder.version}</version>
             </dependency>
             <!-- redisson -->
             <dependency>
@@ -103,23 +91,23 @@
                 <artifactId>redisson</artifactId>
                 <version>${redisson.version}</version>
             </dependency>
-            <!-- alipay -->
+            <!-- ali-pay -->
             <dependency>
                 <groupId>com.alipay.sdk</groupId>
                 <artifactId>alipay-sdk-java</artifactId>
-                <version>${ali.pay.version}</version>
+                <version>${ali-pay.version}</version>
             </dependency>
-            <!-- alioss -->
+            <!-- ali-oss -->
             <dependency>
                 <groupId>com.aliyun.oss</groupId>
                 <artifactId>aliyun-sdk-oss</artifactId>
-                <version>${ali.oss.version}</version>
+                <version>${ali-oss.version}</version>
             </dependency>
             <!-- ShardingSphere-jdbc -->
             <dependency>
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
-                <version>${shardingsphere.jdbc.version}</version>
+                <version>${shardingsphere-jdbc-core-spring-boot-starter.version}</version>
             </dependency>
             <!-- mapstruct -->
             <dependency>
@@ -130,27 +118,32 @@
             <!-- enqbs -->
             <dependency>
                 <groupId>com.enqbs</groupId>
-                <artifactId>zh-mall-common</artifactId>
+                <artifactId>common</artifactId>
                 <version>${enqbs.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.enqbs</groupId>
-                <artifactId>zh-mall-security</artifactId>
+                <artifactId>security</artifactId>
                 <version>${enqbs.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.enqbs</groupId>
-                <artifactId>zh-mall-generator</artifactId>
+                <artifactId>generator</artifactId>
                 <version>${enqbs.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.enqbs</groupId>
-                <artifactId>zh-mall-pay</artifactId>
+                <artifactId>pay</artifactId>
                 <version>${enqbs.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.enqbs</groupId>
-                <artifactId>zh-mall-file</artifactId>
+                <artifactId>file</artifactId>
+                <version>${enqbs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.enqbs</groupId>
+                <artifactId>search</artifactId>
                 <version>${enqbs.version}</version>
             </dependency>
         </dependencies>

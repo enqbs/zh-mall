@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.enqbs.generator.dao.SpuOverviewMapper">
+  <resultMap id="BaseResultMap" type="com.enqbs.generator.pojo.SpuOverview">
+    <id column="spu_id" jdbcType="INTEGER" property="spuId" />
+    <result column="pictures" jdbcType="VARCHAR" property="pictures" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    spu_id, pictures
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_spu_overview
+    where spu_id = #{spuId,jdbcType=INTEGER}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_spu_overview
+    where spu_id = #{spuId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insert" parameterType="com.enqbs.generator.pojo.SpuOverview">
+    insert into tb_spu_overview (spu_id, pictures)
+    values (#{spuId,jdbcType=INTEGER}, #{pictures,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.SpuOverview">
+    insert into tb_spu_overview
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="spuId != null">
+        spu_id,
+      </if>
+      <if test="pictures != null">
+        pictures,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="spuId != null">
+        #{spuId,jdbcType=INTEGER},
+      </if>
+      <if test="pictures != null">
+        #{pictures,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.enqbs.generator.pojo.SpuOverview">
+    update tb_spu_overview
+    <set>
+      <if test="pictures != null">
+        pictures = #{pictures,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where spu_id = #{spuId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.SpuOverview">
+    update tb_spu_overview
+    set pictures = #{pictures,jdbcType=VARCHAR}
+    where spu_id = #{spuId,jdbcType=INTEGER}
+  </update>
+</mapper>
