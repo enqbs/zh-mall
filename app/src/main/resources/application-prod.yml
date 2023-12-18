@@ -84,9 +84,5 @@ ali:
     app-private-key: youur-app-private-key
     alipay-public-key: your-alipay-public-key
 
-elastic:
-  address:
-    - "192.168.43.2:9200"
-
 logstash:
   host: 192.168.43.2

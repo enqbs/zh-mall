@@ -39,7 +39,7 @@ spring:
           readwrite-lb:
             type: ROUND_ROBIN
     props:
-      sql-show: false
+      sql-show: true
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -93,10 +93,6 @@ ali:
     app-id: your-app-id
     app-private-key: youur-app-private-key
     alipay-public-key: your-alipay-public-key
-
-elastic:
-  address:
-    - "192.168.43.2:9200"
 
 logstash:
   host: 192.168.43.2

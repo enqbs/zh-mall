@@ -12,7 +12,6 @@ import com.enqbs.generator.pojo.ProductCategory;
 import com.enqbs.generator.pojo.ProductComment;
 import com.enqbs.generator.pojo.ProductCommentReply;
 import com.enqbs.generator.pojo.Sku;
-import com.enqbs.search.pojo.ESProduct;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -22,8 +21,6 @@ public interface ProductConvert {
     ProductCategoryVO category2CategoryVO(ProductCategory category);
 
     ProductVO spu2ProductVO(Spu spu);
-
-    ESProduct spu2ESProduct(Spu spu);
 
     @Mapping(target = "params", ignore = true)
     SkuVO sku2SkuVO(Sku sku);

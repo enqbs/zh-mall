@@ -1,4 +1,4 @@
-package com.enqbs.app.service.product;
+package com.enqbs.search.service.impl;
 
 import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -7,6 +7,7 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.search.constant.ESConstants;
 import com.enqbs.search.pojo.ESProduct;
 import com.enqbs.search.pojo.SearchParam;
+import com.enqbs.search.service.ESProductService;
 import com.enqbs.search.service.ESService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ProductSearchServiceImpl implements ProductSearchService {
+public class ESProductServiceImpl implements ESProductService {
 
     @Resource
     private ESService esService;
-
-    @Resource
-    private SpuService spuService;
 
     @Override
     public PageUtil<ESProduct> search(String searchText, Integer pageNum, Integer pageSize) {
@@ -52,12 +50,10 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     }
 
     @Override
-    public void update(Integer spuId) {
-        ESProduct product = spuService.getESProduct(spuId);
-
-        if (ObjectUtils.isNotEmpty(getESProduct(spuId))) {
+    public void update(ESProduct product) {
+        if (ObjectUtils.isNotEmpty(getESProduct(product.getId()))) {
             try {
-                esService.update(ESConstants.INDEX_PRODUCT, String.valueOf(spuId), product, ESProduct.class);
+                esService.update(ESConstants.INDEX_PRODUCT, String.valueOf(product.getId()), product, ESProduct.class);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -67,9 +63,9 @@ public class ProductSearchServiceImpl implements ProductSearchService {
     }
 
     @Override
-    public void delete(Integer spuId) {
+    public void delete(String spuId) {
         try {
-            esService.delete(ESConstants.INDEX_PRODUCT, String.valueOf(spuId));
+            esService.delete(ESConstants.INDEX_PRODUCT, spuId);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

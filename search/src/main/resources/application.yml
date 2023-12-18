@@ -1,0 +1,8 @@
+server:
+  port: 7000
+
+spring:
+  application:
+    name: search
+  profiles:
+    active: dev

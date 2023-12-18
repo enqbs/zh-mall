@@ -8,7 +8,6 @@ import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.app.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
-import com.enqbs.search.pojo.ESProduct;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,8 +42,6 @@ public class ProductController {
     private SpuOverviewService spuOverviewService;
     @Resource
     private SpuSpecService spuSpecService;
-    @Resource
-    private ProductSearchService productSearchService;
     @Resource
     private ProductCommentService productCommentService;
     @Resource
@@ -104,15 +101,6 @@ public class ProductController {
         Map<String, List<String>> resultMap = new HashMap<>();
         resultMap.put("spec", spuSpecList);
         return R.ok(resultMap);
-    }
-
-    @GetMapping("/search")
-    public R<PageUtil<ESProduct>> productSearch(@RequestParam String searchText,
-                                                @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                                @RequestParam(required = false, defaultValue = "20") Integer pageSize) {
-        PageUtil<ESProduct> pageProductList = productSearchService.search(searchText,
-                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 20 : pageSize);
-        return R.ok(pageProductList);
     }
 
     @GetMapping("/comment/list")

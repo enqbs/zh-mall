@@ -141,11 +141,6 @@
                 <artifactId>file</artifactId>
                 <version>${enqbs.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.enqbs</groupId>
-                <artifactId>search</artifactId>
-                <version>${enqbs.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

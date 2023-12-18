@@ -43,11 +43,6 @@
             <groupId>com.enqbs</groupId>
             <artifactId>file</artifactId>
         </dependency>
-        <!-- 搜索模块 -->
-        <dependency>
-            <groupId>com.enqbs</groupId>
-            <artifactId>search</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
