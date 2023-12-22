@@ -81,7 +81,7 @@ ali:
   auth:
     gateway: https://openapi.alipay.com/gateway.do
     app-id: your-app-id
-    app-private-key: youur-app-private-key
+    app-private-key: your-app-private-key
     alipay-public-key: your-alipay-public-key
 
 logstash:

@@ -44,8 +44,8 @@ public class ESProductServiceImpl implements ESProductService {
             return pageUtil;
         }
 
-        pageUtil.setList(productList);
         pageUtil.setTotal(ObjectUtils.isEmpty(response.hits().total()) ? 0L : response.hits().total().value());
+        pageUtil.setList(productList);
         return pageUtil;
     }
 

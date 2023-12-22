@@ -221,7 +221,7 @@ public class OrderServiceImpl implements OrderService {
         UserShippingAddressVO userShippingAddressVO = userShippingAddressService.getUserShippingAddressVO(form.getShippingAddressId());
         OrderShippingAddress address = orderConvert.userShippingAddressVO2OrderShippingAddress(userShippingAddressVO);
         address.setOrderNo(orderNo);
-        OrderService orderServiceProxy = (OrderService) AopContext.currentProxy();      // 获取接口代理,解决本类方法调用事务失效问题
+        OrderService orderServiceProxy = (OrderService) AopContext.currentProxy();                  // 获取接口代理,解决本类方法调用事务失效问题
         orderServiceProxy.insert(orderNo, userInfoVO.getUserId(), form.getCouponId(), orderItemList, address, stockList, orderConfirm);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();     // 解决多线程丢失请求头问题
         executor.execute(() -> {

@@ -13,8 +13,6 @@ public enum QueueEnum {
 
     CANAL_SYNC_SPU_QUEUE("canal.data", "zh_mall_tb_spu", "canal.sync.spu.queue"),
 
-    CANAL_SYNC_SKU_QUEUE("canal.data", "zh_mall_tb_sku", "canal.sync.sku.queue"),
-
     ES_SYNC_PRODUCTS_QUEUE("es.data", "sync.products", "es.sync.products.queue");
 
     private final String exchange;

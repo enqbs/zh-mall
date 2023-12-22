@@ -45,10 +45,10 @@ public class ProductCommentReplyServiceImpl implements ProductCommentReplyServic
         }
 
         Long total = productCommentReplyMapper.countByCommentId(commentId);
-        List<ProductCommentReplyVO> productCommentReplyVOList = productCommentReplyList.stream()
-                .map(e -> productConvert.productCommentReply2ProductCommentReplyVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
-        pageUtil.setList(productCommentReplyVOList);
+        pageUtil.setList(productCommentReplyList.stream()
+                .map(e -> productConvert.productCommentReply2ProductCommentReplyVO(e)).collect(Collectors.toList())
+        );
         return pageUtil;
     }
 

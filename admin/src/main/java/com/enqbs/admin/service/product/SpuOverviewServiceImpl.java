@@ -35,14 +35,18 @@ public class SpuOverviewServiceImpl implements SpuOverviewService {
     @Override
     public int insert(ProductOverviewForm form) {
         SpuOverview spuOverview = productConvert.productOverviewForm2SpuOverview(form);
-        spuOverview.setPictures(CollectionUtils.isEmpty(form.getPictures()) ? null : GsonUtil.obj2Json(form.getPictures()));
+        spuOverview.setPictures(CollectionUtils.isEmpty(form.getPictures()) ?
+                null : GsonUtil.obj2Json(form.getPictures())
+        );
         return spuOverviewMapper.insertSelective(spuOverview);
     }
 
     @Override
     public int update(ProductOverviewForm form) {
         SpuOverview spuOverview = productConvert.productOverviewForm2SpuOverview(form);
-        spuOverview.setPictures(CollectionUtils.isEmpty(form.getPictures()) ? null : GsonUtil.obj2Json(form.getPictures()));
+        spuOverview.setPictures(CollectionUtils.isEmpty(form.getPictures()) ?
+                null : GsonUtil.obj2Json(form.getPictures())
+        );
         return spuOverviewMapper.updateByPrimaryKeySelective(spuOverview);
     }
 

@@ -59,10 +59,10 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
         Long total = sysUserMapper.countByParam(deleteStatus);
-        List<SysUserInfoVO> sysUserInfoVOList = sysUserList.stream()
-                .map(e -> sysUserConvert.sysUserInfo2SysUserInfoVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
-        pageUtil.setList(sysUserInfoVOList);
+        pageUtil.setList(sysUserList.stream()
+                .map(e -> sysUserConvert.sysUserInfo2SysUserInfoVO(e)).collect(Collectors.toList())
+        );
         return pageUtil;
     }
 

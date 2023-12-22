@@ -41,9 +41,10 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         correlationData.setId(String.valueOf(messageId));
         insert(messageId, queue.getExchange(), queue.getRoutingKey(), queue.getQueue(), message, delay);
         rabbitTemplate.convertAndSend(queue.getExchange(), queue.getRoutingKey(), message, messagePostProcessor -> {
-            messagePostProcessor.getMessageProperties().setDelay(delay);
-            return messagePostProcessor;
-        }, correlationData);
+                    messagePostProcessor.getMessageProperties().setDelay(delay);
+                    return messagePostProcessor;
+                }, correlationData
+        );
     }
 
     @Override
@@ -60,7 +61,8 @@ public class RabbitMQServiceImpl implements RabbitMQService {
                 messageQueueLog.getContent(), messagePostProcessor -> {
                     messagePostProcessor.getMessageProperties().setDelay(messageQueueLog.getDelay());
                     return messagePostProcessor;
-                }, correlationData);
+                }, correlationData
+        );
     }
 
     @Override

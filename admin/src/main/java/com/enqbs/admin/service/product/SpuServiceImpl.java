@@ -60,7 +60,6 @@ public class SpuServiceImpl implements SpuService {
                     return productVO;
                 }
         ).collect(Collectors.toList());
-
         pageUtil.setTotal(total);
         pageUtil.setList(productVOList);
         return pageUtil;

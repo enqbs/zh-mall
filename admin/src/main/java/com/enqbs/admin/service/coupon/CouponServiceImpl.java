@@ -40,9 +40,8 @@ public class CouponServiceImpl implements CouponService {
         }
 
         Long total = couponMapper.countByParam(productId, startDate, endDate, status, deleteStatus);
-        List<CouponVO> couponVOList = couponList.stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
-        pageUtil.setList(couponVOList);
+        pageUtil.setList(couponList.stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList()));
         return pageUtil;
     }
 

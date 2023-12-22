@@ -56,13 +56,17 @@ public class OrderServiceImpl implements OrderService {
 
         Long total = orderMapper.countByParam(orderNo, orderSc, userId, paymentType, status, deleteStatus);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
+
+        List<OrderItemVO> orderItemVOList = orderItemService.getOrderItemVOList(orderNoSet);
+        List<OrderShippingAddressVO> orderShippingAddressVOList = orderShippingAddressService.getOrderShippingAddressVOList(orderNoSet);
+        List<OrderLogisticsInfoVO> orderLogisticsInfoVOList = orderLogisticsInfoService.getOrderLogisticsInfoVOList(orderNoSet);
         /* List to Map */
-        Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemService
-                .getOrderItemVOList(orderNoSet).stream().collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
-        Map<Long, OrderShippingAddressVO> orderShippingAddressVOMap = orderShippingAddressService
-                .getOrderShippingAddressVOList(orderNoSet).stream().collect(Collectors.toMap(OrderShippingAddressVO::getOrderNo, v -> v));
-        Map<Long, OrderLogisticsInfoVO> orderLogisticsInfoVOMap = orderLogisticsInfoService
-                .getOrderLogisticsInfoVOList(orderNoSet).stream().collect(Collectors.toMap(OrderLogisticsInfoVO::getOrderNo, v -> v));
+        Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemVOList.stream()
+                .collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
+        Map<Long, OrderShippingAddressVO> orderShippingAddressVOMap = orderShippingAddressVOList.stream()
+                .collect(Collectors.toMap(OrderShippingAddressVO::getOrderNo, v -> v));
+        Map<Long, OrderLogisticsInfoVO> orderLogisticsInfoVOMap = orderLogisticsInfoVOList.stream()
+                .collect(Collectors.toMap(OrderLogisticsInfoVO::getOrderNo, v -> v));
 
         List<OrderVO> orderVOList = orderList.stream().map(e -> {
                     OrderVO orderVO = orderConvert.order2OrderVO(e);
@@ -72,6 +76,7 @@ public class OrderServiceImpl implements OrderService {
                     return orderVO;
                 }
         ).collect(Collectors.toList());
+
         pageUtil.setTotal(total);
         pageUtil.setList(orderVOList);
         return pageUtil;
@@ -79,7 +84,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderVO getOrderVO(Long orderNo) {
-        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null, null, Constants.IS_NOT_DELETE);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null,
+                null, Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(order)) {
             return new OrderVO();

@@ -40,7 +40,8 @@ public class SysMenuServiceImpl implements SysMenuService {
     }
 
     @Override
-    public PageUtil<SysMenuVO> getSysMenuVOList(Integer parentId, Integer roleId, Integer deleteStatus, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysMenuVO> getSysMenuVOList(Integer parentId, Integer roleId,
+                                                Integer deleteStatus, Integer pageNum, Integer pageSize) {
         PageUtil<SysMenuVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
@@ -51,9 +52,8 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
 
         Long total = sysMenuMapper.countByParam(parentId, roleId, deleteStatus);
-        List<SysMenuVO> sysMenuVOList = sysMenuList.stream().map(e -> sysUserConvert.sysMenu2SysMenuVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
-        pageUtil.setList(sysMenuVOList);
+        pageUtil.setList(sysMenuList.stream().map(e -> sysUserConvert.sysMenu2SysMenuVO(e)).collect(Collectors.toList()));
         return pageUtil;
     }
 
@@ -61,8 +61,9 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Async("threadPoolTaskExecutor")
     public Future<List<SysMenuVO>> getSysMenuVOList(Integer roleId) {
         List<SysMenu> sysMenuList = sysMenuMapper.selectListByRoleId(roleId);
-        List<SysMenuVO> sysMenuVOList = sysMenuList.stream().map(e -> sysUserConvert.sysMenu2SysMenuVO(e)).collect(Collectors.toList());
-        return new AsyncResult<>(sysMenuVOList);
+        return new AsyncResult<>(sysMenuList.stream()
+                .map(e -> sysUserConvert.sysMenu2SysMenuVO(e)).collect(Collectors.toList())
+        );
     }
 
     @Override

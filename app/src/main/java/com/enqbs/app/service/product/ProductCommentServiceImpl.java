@@ -49,15 +49,14 @@ public class ProductCommentServiceImpl implements ProductCommentService {
         }
 
         Long total = productCommentMapper.countBySpuId(spuId);
-        List<ProductCommentVO> productCommentVOList = productCommentList.stream()
-                .map(e -> {
-                            ProductCommentVO productCommentVO = productConvert.productComment2ProductCommentVO(e);
-                            productCommentVO.setPictures(StringUtils.isEmpty(e.getPictures()) ?
-                                    Collections.emptyList() : GsonUtil.json2ArrayList(e.getPictures(), String[].class)
-                            );
-                            return productCommentVO;
-                        }
-                ).collect(Collectors.toList());
+        List<ProductCommentVO> productCommentVOList = productCommentList.stream().map(e -> {
+                    ProductCommentVO productCommentVO = productConvert.productComment2ProductCommentVO(e);
+                    productCommentVO.setPictures(StringUtils.isEmpty(e.getPictures()) ?
+                            Collections.emptyList() : GsonUtil.json2ArrayList(e.getPictures(), String[].class)
+                    );
+                    return productCommentVO;
+                }
+        ).collect(Collectors.toList());
         pageUtil.setTotal(total);
         pageUtil.setList(productCommentVOList);
         return pageUtil;
@@ -86,7 +85,9 @@ public class ProductCommentServiceImpl implements ProductCommentService {
         productComment.setUserId(userInfoVO.getUserId());
         productComment.setNickName(userInfoVO.getNickName());
         productComment.setPhoto(userInfoVO.getPhoto());
-        productComment.setPictures(CollectionUtils.isEmpty(form.getPictures()) ? null : GsonUtil.obj2Json(form.getPictures()));
+        productComment.setPictures(CollectionUtils.isEmpty(form.getPictures()) ?
+                null : GsonUtil.obj2Json(form.getPictures())
+        );
         return productCommentMapper.insertSelective(productComment);
     }
 
@@ -104,7 +105,9 @@ public class ProductCommentServiceImpl implements ProductCommentService {
         productComment.setUserId(userInfoVO.getUserId());
         productComment.setNickName(userInfoVO.getNickName());
         productComment.setPhoto(userInfoVO.getPhoto());
-        productComment.setPictures(CollectionUtils.isEmpty(form.getPictures()) ? null : GsonUtil.obj2Json(form.getPictures()));
+        productComment.setPictures(CollectionUtils.isEmpty(form.getPictures()) ?
+                null : GsonUtil.obj2Json(form.getPictures())
+        );
         return productCommentMapper.updateByPrimaryKeySelective(productComment);
     }
 

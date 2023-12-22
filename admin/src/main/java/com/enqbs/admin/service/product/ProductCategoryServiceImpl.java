@@ -39,10 +39,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
 
         Long total = productCategoryMapper.countByParam(parentId, homeStatus, naviStatus, deleteStatus);
-        List<ProductCategoryVO> categoryVOList = categoryList.stream()
-                .map(e -> productConvert.category2CategoryVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
-        pageUtil.setList(categoryVOList);
+        pageUtil.setList(categoryList.stream().map(e -> productConvert.category2CategoryVO(e)).collect(Collectors.toList()));
         return pageUtil;
     }
 

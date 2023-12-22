@@ -36,9 +36,8 @@ public class SysRoleServiceImpl implements SysRoleService {
         }
 
         Long total = sysRoleMapper.countByParam(deleteStatus);
-        List<SysRoleVO> sysRoleVOList = sysRoleList.stream().map(e -> sysUserConvert.sysRole2SysRoleVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
-        pageUtil.setList(sysRoleVOList);
+        pageUtil.setList(sysRoleList.stream().map(e -> sysUserConvert.sysRole2SysRoleVO(e)).collect(Collectors.toList()));
         return pageUtil;
     }
 

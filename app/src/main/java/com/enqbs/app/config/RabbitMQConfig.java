@@ -63,11 +63,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue canalSyncSkuQueue() {
-        return new Queue(QueueEnum.CANAL_SYNC_SKU_QUEUE.getQueue());
-    }
-
-    @Bean
     public Queue esSyncProductsQueue() {
         return new Queue(QueueEnum.ES_SYNC_PRODUCTS_QUEUE.getQueue());
     }
@@ -94,12 +89,6 @@ public class RabbitMQConfig {
     public Binding canalSyncSpuQueueBindingCanalDataExchange(@Qualifier("canalSyncSpuQueue") Queue queue,
                                                              @Qualifier("canalDataExchange") DirectExchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(QueueEnum.CANAL_SYNC_SPU_QUEUE.getRoutingKey());
-    }
-
-    @Bean
-    public Binding canalSyncSkuQueueBindingCanalDataExchange(@Qualifier("canalSyncSkuQueue") Queue queue,
-                                                             @Qualifier("canalDataExchange") DirectExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(QueueEnum.CANAL_SYNC_SKU_QUEUE.getRoutingKey());
     }
 
     @Bean

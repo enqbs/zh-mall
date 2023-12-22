@@ -8,6 +8,7 @@ import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.app.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,8 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.enqbs.common.constant.Constants.PRODUCT_CATEGORY_HOME;
 import static com.enqbs.common.constant.Constants.PRODUCT_CATEGORY_LIST_HOME;
@@ -46,25 +49,38 @@ public class ProductController {
     private ProductCommentService productCommentService;
     @Resource
     private ProductCommentReplyService productCommentReplyService;
+    @Resource
+    private ThreadPoolTaskExecutor executor;
 
     @GetMapping("/home")
     public R<Map<String, List<ProductCategoryVO>>> home() {
+        Map<String, List<ProductCategoryVO>> resultMap = new ConcurrentHashMap<>();
         /* 导航条商品分类列表 */
-        List<ProductCategoryVO> naviCategoryList = productCategoryService
-                .getCategoryVOList(PRODUCT_CATEGORY_LIST_NAVI, PRODUCT_CATEGORY_LIST_NAVI_LOCK,
-                        null, PRODUCT_CATEGORY_NAVI, 6);
+        CompletableFuture<Void> asyncGetNaviCategoryList = CompletableFuture.runAsync(() -> {
+                    List<ProductCategoryVO> naviCategoryList = productCategoryService
+                            .getCategoryVOList(PRODUCT_CATEGORY_LIST_NAVI, PRODUCT_CATEGORY_LIST_NAVI_LOCK,
+                                    null, PRODUCT_CATEGORY_NAVI, 6);
+                    resultMap.put("naviCategoryList", naviCategoryList);
+                }, executor
+        );
         /* 首页商品分类列表 */
-        List<ProductCategoryVO> homeCategoryList = productCategoryService
-                .getCategoryVOList(PRODUCT_CATEGORY_LIST_HOME, PRODUCT_CATEGORY_LIST_HOME_LOCK,
-                        PRODUCT_CATEGORY_HOME, null, 24);
+        CompletableFuture<Void> asyncGetHomeCategoryList = CompletableFuture.runAsync(() -> {
+                    List<ProductCategoryVO> homeCategoryList = productCategoryService
+                            .getCategoryVOList(PRODUCT_CATEGORY_LIST_HOME, PRODUCT_CATEGORY_LIST_HOME_LOCK,
+                                    PRODUCT_CATEGORY_HOME, null, 24);
+                    resultMap.put("homeCategoryList", homeCategoryList);
+                }, executor
+        );
         /* banner 商品分类列表 */
-        List<ProductCategoryVO> bannerCategoryList = productCategoryService
-                .getCategoryVOList(PRODUCT_CATEGORY_LIST_BANNER, PRODUCT_CATEGORY_LIST_BANNER_LOCK,
-                        null, null, 10);
-        Map<String, List<ProductCategoryVO>> resultMap = new HashMap<>();
-        resultMap.put("naviCategoryList", naviCategoryList);
-        resultMap.put("homeCategoryList", homeCategoryList);
-        resultMap.put("bannerCategoryList", bannerCategoryList);
+        CompletableFuture<Void> asyncGetBannerCategoryList = CompletableFuture.runAsync(() -> {
+                    List<ProductCategoryVO> bannerCategoryList = productCategoryService
+                            .getCategoryVOList(PRODUCT_CATEGORY_LIST_BANNER, PRODUCT_CATEGORY_LIST_BANNER_LOCK,
+                                    null, null, 10);
+                    resultMap.put("bannerCategoryList", bannerCategoryList);
+                }, executor
+        );
+
+        CompletableFuture.allOf(asyncGetNaviCategoryList, asyncGetHomeCategoryList, asyncGetBannerCategoryList).join();
         return R.ok(resultMap);
     }
 

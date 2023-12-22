@@ -38,10 +38,10 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
         }
 
         Long total = productCategoryAttributeMapper.countByParam(null, deleteStatus);
-        List<ProductCategoryAttributeVO> attributeVOList = attributeList.stream()
-                .map(e -> productConvert.attribute2AttributeVO(e)).collect(Collectors.toList());
         pageUtil.setTotal(total);
-        pageUtil.setList(attributeVOList);
+        pageUtil.setList(attributeList.stream()
+                .map(e -> productConvert.attribute2AttributeVO(e)).collect(Collectors.toList())
+        );
         return pageUtil;
     }
 

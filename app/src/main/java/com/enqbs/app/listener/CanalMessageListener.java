@@ -46,12 +46,6 @@ public class CanalMessageListener {
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 
-    @Async("threadPoolTaskExecutor")
-    @RabbitListener(queues = "canal.sync.sku.queue")
-    public void listenerCanalSyncSkuQueue(Message message, Channel channel) throws IOException {
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-    }
-
     private void syncCacheProductCategoryList() {
         executor.execute(() -> productCategoryService.removeCacheCategoryVOList(PRODUCT_CATEGORY_LIST));
         executor.execute(() -> productCategoryService.removeCacheCategoryVOList(PRODUCT_CATEGORY_LIST_NAVI));

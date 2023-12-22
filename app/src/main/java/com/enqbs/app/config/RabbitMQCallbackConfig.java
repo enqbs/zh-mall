@@ -35,26 +35,27 @@ public class RabbitMQCallbackConfig {
      * */
     private void confirmCallback() {
         rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
-            if (ObjectUtils.isNotEmpty(correlationData)) {
-                boolean flag;
+                    if (ObjectUtils.isNotEmpty(correlationData)) {
+                        boolean flag;
 
-                do {
-                    flag = false;
+                        do {
+                            flag = false;
 
-                    try {
-                        if (ack) {
-                            rabbitMQService.update(Long.valueOf(correlationData.getId()), Constants.MESSAGE_SEND_SUCCESS);
-                            log.info("ConfirmCallback:'{}',MessageID:'{}'.", true, correlationData.getId());
-                        } else {
-                            rabbitMQService.update(Long.valueOf(correlationData.getId()), Constants.MESSAGE_SEND_ERROR);
-                            log.warn("ConfirmCallback:'{}',MessageID:'{}'.", false, correlationData.getId());
-                        }
-                    } catch (Exception e) {
-                        flag = true;
+                            try {
+                                if (ack) {
+                                    rabbitMQService.update(Long.valueOf(correlationData.getId()), Constants.MESSAGE_SEND_SUCCESS);
+                                    log.info("ConfirmCallback:'{}',MessageID:'{}'.", true, correlationData.getId());
+                                } else {
+                                    rabbitMQService.update(Long.valueOf(correlationData.getId()), Constants.MESSAGE_SEND_ERROR);
+                                    log.warn("ConfirmCallback:'{}',MessageID:'{}'.", false, correlationData.getId());
+                                }
+                            } catch (Exception e) {
+                                flag = true;
+                            }
+                        } while (flag);
                     }
-                } while (flag);
-            }
-        });
+                }
+        );
     }
 
     /*
@@ -62,33 +63,34 @@ public class RabbitMQCallbackConfig {
      * */
     private void returnsCallback() {
         rabbitTemplate.setReturnsCallback(returned -> {
-            if (!QueueEnum.ORDER_CLOSE_QUEUE.getExchange().equals(returned.getExchange())) {
-                log.warn("MessageId:'{}',Exchange:'{}',RoutingKey:'{}',ReplyText:'{}',消息回退.",
-                        returned.getMessage().getMessageProperties().getMessageId(), returned.getExchange(),
-                        returned.getRoutingKey(), returned.getReplyText());
-                int i = 0;
-                boolean flag;
+                    if (!QueueEnum.ORDER_CLOSE_QUEUE.getExchange().equals(returned.getExchange())) {
+                        log.warn("MessageId:'{}',Exchange:'{}',RoutingKey:'{}',ReplyText:'{}',消息回退.",
+                                returned.getMessage().getMessageProperties().getMessageId(), returned.getExchange(),
+                                returned.getRoutingKey(), returned.getReplyText());
+                        int i = 0;
+                        boolean flag;
 
-                do {
-                    flag = false;
+                        do {
+                            flag = false;
 
-                    try {
-                        rabbitMQService.send(Long.valueOf(returned.getMessage().getMessageProperties().getMessageId()));
-                    } catch (Exception e) {
-                        flag = true;
+                            try {
+                                rabbitMQService.send(Long.valueOf(returned.getMessage().getMessageProperties().getMessageId()));
+                            } catch (Exception e) {
+                                flag = true;
 
-                        if (16 == i) {
-                            log.error("MessageId:'{}',Exchange:'{}',RoutingKey:'{}',ReplyText:'{}',消息异常.",
-                                    returned.getMessage().getMessageProperties().getMessageId(), returned.getExchange(),
-                                    returned.getRoutingKey(), returned.getReplyText());
-                            throw e;
-                        }
+                                if (16 == i) {
+                                    log.error("MessageId:'{}',Exchange:'{}',RoutingKey:'{}',ReplyText:'{}',消息异常.",
+                                            returned.getMessage().getMessageProperties().getMessageId(), returned.getExchange(),
+                                            returned.getRoutingKey(), returned.getReplyText());
+                                    throw e;
+                                }
 
-                        i += 1;
+                                i += 1;
+                            }
+                        } while (flag);
                     }
-                } while (flag);
-            }
-        });
+                }
+        );
     }
 
 }
