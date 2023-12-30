@@ -3,13 +3,13 @@ package com.enqbs.app.listener;
 import com.enqbs.app.service.order.OrderService;
 import com.enqbs.common.util.GsonUtil;
 import com.rabbitmq.client.Channel;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 
 @Slf4j
@@ -19,7 +19,7 @@ public class OrderMessageListener {
     @Resource
     private OrderService orderService;
 
-    @Async("threadPoolTaskExecutor")
+    @Async("executor")
     @RabbitListener(queues = "order.close.queue")
     public void listenerOrderCloseQueue(String content, Message message, Channel channel) throws IOException {
         Long orderNo = GsonUtil.json2Obj(content, Long.class);
@@ -45,7 +45,7 @@ public class OrderMessageListener {
         } while (flag);
     }
 
-    @Async("threadPoolTaskExecutor")
+    @Async("executor")
     @RabbitListener(queues = "pay.success.queue")
     public void listenerPaySuccessQueue(String content, Message message, Channel channel) throws IOException {
         Long orderNo = GsonUtil.json2Obj(content, Long.class);

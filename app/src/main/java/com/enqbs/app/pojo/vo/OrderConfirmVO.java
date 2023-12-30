@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class OrderConfirmVO implements Serializable {
 
-    private transient List<UserShippingAddressVO> shippingAddressList;
+    private transient List<UserAddressVO> shippingAddressList;
 
     private transient List<UserCouponVO> couponList;
 

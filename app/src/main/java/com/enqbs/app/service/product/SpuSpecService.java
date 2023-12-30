@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface SpuSpecService {
 
-    List<String> getSpuSpecList(Integer spuId);
+    List<String> getSpecList(Integer spuId);
 
 }

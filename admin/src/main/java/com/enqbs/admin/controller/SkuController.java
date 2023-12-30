@@ -3,6 +3,8 @@ package com.enqbs.admin.controller;
 import com.enqbs.admin.form.SkuForm;
 import com.enqbs.admin.service.product.SkuService;
 import com.enqbs.common.util.R;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,7 +26,7 @@ public class SkuController {
     @PostMapping("/sku")
     @PreAuthorize("hasAuthority('PRODUCT:ADD')")
     public R<Void> addSku(@Valid @RequestBody List<SkuForm> forms) {
-        forms.forEach(form -> skuService.insert(form));
+        forms.forEach(f -> skuService.insert(f));
         return R.ok("商品规格保存成功");
     }
 

@@ -10,7 +10,7 @@ public interface PayInfoService {
     /*
      * 获取支付金额
      * */
-    BigDecimal getPayAmount(Long orderNo);
+    BigDecimal getAmount(Long orderNo);
 
     /*
      * 更新支付信息

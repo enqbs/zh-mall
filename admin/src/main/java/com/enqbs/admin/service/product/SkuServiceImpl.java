@@ -9,15 +9,14 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.generator.dao.SkuMapper;
 import com.enqbs.generator.pojo.Sku;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class SkuServiceImpl implements SkuService {
@@ -34,32 +33,33 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public List<SkuVO> getSkuVOList(Set<Integer> spuIdSet) {
         List<Sku> skuList = skuMapper.selectListBySpuIdSet(spuIdSet);
-        return skuList.stream().map(e -> {
-                    SkuVO skuVO = productConvert.sku2SkuVO(e);
-                    skuVO.setParams(StringUtils.isEmpty(e.getParams()) ?
-                            Collections.emptyList() : GsonUtil.json2ArrayList(e.getParams(), SkuParamVO[].class)
+        return skuList.stream().map(s -> {
+                    SkuVO skuVO = productConvert.sku2SkuVO(s);
+                    skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?
+                            Collections.emptyList() : GsonUtil.json2ArrayList(s.getParams(), SkuParamVO[].class)
                     );
                     return skuVO;
                 }
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     @Override
     public List<SkuVO> getSkuVOList(Integer spuId) {
         List<Sku> skuList = skuMapper.selectListBySpuId(spuId);
-        return skuList.stream().map(e -> {
-            SkuVO skuVO = productConvert.sku2SkuVO(e);
-            skuVO.setParams(StringUtils.isEmpty(e.getParams()) ?
-                    Collections.emptyList() : GsonUtil.json2ArrayList(e.getParams(), SkuParamVO[].class)
-            );
-            return skuVO;
-        }).collect(Collectors.toList());
+        return skuList.stream().map(s -> {
+                    SkuVO skuVO = productConvert.sku2SkuVO(s);
+                    skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?
+                            Collections.emptyList() : GsonUtil.json2ArrayList(s.getParams(), SkuParamVO[].class)
+                    );
+                    return skuVO;
+                }
+        ).toList();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insert(SkuForm form) {
-        Sku sku = productConvert.skuForm2Sku(form);
+        Sku sku = productConvert.form2Sku(form);
         sku.setParams(GsonUtil.obj2Json(form.getParams()));
         int row = skuMapper.insertSelective(sku);
 
@@ -77,7 +77,7 @@ public class SkuServiceImpl implements SkuService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void update(Integer skuId, SkuForm form) {
-        Sku sku = productConvert.skuForm2Sku(form);
+        Sku sku = productConvert.form2Sku(form);
         sku.setId(skuId);
         sku.setParams(GsonUtil.obj2Json(form.getParams()));
         int row = skuMapper.updateByPrimaryKeySelective(sku);

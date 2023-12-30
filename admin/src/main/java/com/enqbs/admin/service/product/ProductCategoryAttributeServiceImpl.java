@@ -7,13 +7,12 @@ import com.enqbs.common.constant.Constants;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductCategoryAttributeMapper;
 import com.enqbs.generator.pojo.ProductCategoryAttribute;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttributeService {
@@ -25,13 +24,13 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCategoryAttributeVO> getAttributeVOList(Integer categoryId, Integer deleteStatus,
-                                                                   Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCategoryAttributeVO> attributeVOPage(Integer categoryId, Integer deleteStatus,
+                                                                Integer pageNum, Integer pageSize) {
         PageUtil<ProductCategoryAttributeVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCategoryAttribute> attributeList = productCategoryAttributeMapper
-                .selectListByParam(categoryId, deleteStatus, pageNum, pageSize);
+        List<ProductCategoryAttribute> attributeList = productCategoryAttributeMapper.selectListByParam(categoryId, deleteStatus,
+                pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(attributeList)) {
             return pageUtil;
@@ -39,28 +38,25 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
 
         Long total = productCategoryAttributeMapper.countByParam(null, deleteStatus);
         pageUtil.setTotal(total);
-        pageUtil.setList(attributeList.stream()
-                .map(e -> productConvert.attribute2AttributeVO(e)).collect(Collectors.toList())
-        );
+        pageUtil.setList(attributeList.stream().map(a -> productConvert.attribute2AttributeVO(a)).toList());
         return pageUtil;
     }
 
     @Override
     public ProductCategoryAttributeVO getAttributeVO(Integer attributeId) {
         ProductCategoryAttribute attribute = productCategoryAttributeMapper.selectByPrimaryKey(attributeId);
-        return ObjectUtils.isEmpty(attribute) ?
-                new ProductCategoryAttributeVO() : productConvert.attribute2AttributeVO(attribute);
+        return ObjectUtils.isEmpty(attribute) ? new ProductCategoryAttributeVO() : productConvert.attribute2AttributeVO(attribute);
     }
 
     @Override
     public int insert(ProductCategoryAttributeForm form) {
-        ProductCategoryAttribute attribute = productConvert.attributeForm2Attribute(form);
+        ProductCategoryAttribute attribute = productConvert.form2Attribute(form);
         return productCategoryAttributeMapper.insertSelective(attribute);
     }
 
     @Override
     public int update(Integer attributeId, ProductCategoryAttributeForm form) {
-        ProductCategoryAttribute attribute = productConvert.attributeForm2Attribute(form);
+        ProductCategoryAttribute attribute = productConvert.form2Attribute(form);
         attribute.setId(attributeId);
         return productCategoryAttributeMapper.updateByPrimaryKeySelective(attribute);
     }

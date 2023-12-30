@@ -7,6 +7,8 @@ import com.enqbs.admin.vo.CouponVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.Date;
 
 @RestController
@@ -31,7 +30,7 @@ public class CouponController {
     private CouponService couponService;
 
     @GetMapping("/list")
-    public R<PageUtil<CouponVO>> couponList(@RequestParam(required = false) Integer productId,
+    public R<PageUtil<CouponVO>> couponPage(@RequestParam(required = false) Integer productId,
                                             @RequestParam(required = false) Date startDate,
                                             @RequestParam(required = false) Date endDate,
                                             @RequestParam(required = false) Integer status,
@@ -39,9 +38,9 @@ public class CouponController {
                                             @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                             @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                             @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<CouponVO> pageCouponList = couponService.getCouponVOList(productId, startDate, endDate, status,
+        PageUtil<CouponVO> couponVOPage = couponService.couponVOPage(productId, startDate, endDate, status,
                 deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageCouponList);
+        return R.ok(couponVOPage);
     }
 
     @GetMapping("/{couponId}")

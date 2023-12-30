@@ -1,22 +1,21 @@
 package com.enqbs.search.service.impl;
 
 import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.search.constant.ESConstants;
 import com.enqbs.search.pojo.ESProduct;
 import com.enqbs.search.pojo.SearchParam;
 import com.enqbs.search.service.ESProductService;
 import com.enqbs.search.service.ESService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ESProductServiceImpl implements ESProductService {
@@ -29,22 +28,21 @@ public class ESProductServiceImpl implements ESProductService {
         PageUtil<ESProduct> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-
-        SearchResponse<ESProduct> response;
+        HitsMetadata<ESProduct> hitsMetadata;
 
         try {
-            response = esService.search(getSearchParam(searchText, pageNum, pageSize), ESProduct.class);
+            hitsMetadata = esService.search(getSearchParam(searchText, pageNum, pageSize), ESProduct.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        List<ESProduct> productList = response.hits().hits().stream().map(Hit::source).collect(Collectors.toList());
+        List<ESProduct> productList = hitsMetadata.hits().stream().map(Hit::source).toList();
 
         if (CollectionUtils.isEmpty(productList)) {
             return pageUtil;
         }
 
-        pageUtil.setTotal(ObjectUtils.isEmpty(response.hits().total()) ? 0L : response.hits().total().value());
+        pageUtil.setTotal(ObjectUtils.isEmpty(hitsMetadata.total()) ? 0L : hitsMetadata.total().value());
         pageUtil.setList(productList);
         return pageUtil;
     }

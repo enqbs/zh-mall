@@ -2,12 +2,11 @@ package com.enqbs.admin.service.product;
 
 import com.enqbs.generator.dao.ProductCategoryAttributeRelationMapper;
 import com.enqbs.generator.pojo.ProductCategoryAttributeRelation;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductCategoryAttributeRelationServiceImpl implements ProductCategoryAttributeRelationService {
@@ -41,7 +40,7 @@ public class ProductCategoryAttributeRelationServiceImpl implements ProductCateg
     }
 
     private List<ProductCategoryAttributeRelation> buildAttributeRelationList(Integer categoryId, Set<Integer> attributeIdSet) {
-        return attributeIdSet.stream().map(e -> buildAttributeRelation(categoryId, e)).collect(Collectors.toList());
+        return attributeIdSet.stream().map(a -> buildAttributeRelation(categoryId, a)).toList();
     }
 
 }

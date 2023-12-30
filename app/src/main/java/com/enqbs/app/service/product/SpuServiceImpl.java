@@ -11,13 +11,17 @@ import com.enqbs.common.util.GsonUtil;
 import com.enqbs.generator.dao.SpuMapper;
 import com.enqbs.generator.pojo.Spu;
 import com.google.gson.JsonObject;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,8 +37,6 @@ public class SpuServiceImpl implements SpuService {
     private ProductConvert productConvert;
     @Resource
     private RabbitMQService rabbitMQService;
-    @Resource
-    private ThreadPoolTaskExecutor executor;
 
     @Override
     public ProductVO getProductVO(Integer spuId) {
@@ -45,7 +47,7 @@ public class SpuServiceImpl implements SpuService {
         }
 
         ProductVO productVO = productConvert.spu2ProductVO(spu);
-        productVO.setSlide(spuSlideService.getSpuSlideList(spuId));
+        productVO.setSlide(spuSlideService.getSlideList(spuId));
         productVO.setSkuList(skuService.getSkuVOList(spuId));
         return productVO;
     }
@@ -53,7 +55,7 @@ public class SpuServiceImpl implements SpuService {
     @Override
     public List<ProductVO> getProductVOList(Integer categoryId, Integer limit) {
         List<Spu> spuList = spuMapper.selectListByCategoryIdAndLimit(categoryId, limit);
-        return spuList.stream().map(e -> productConvert.spu2ProductVO(e)).collect(Collectors.toList());
+        return spuList.stream().map(s -> productConvert.spu2ProductVO(s)).toList();
     }
 
     @Override
@@ -66,12 +68,12 @@ public class SpuServiceImpl implements SpuService {
 
         Map<Integer, List<SkuVO>> skuVOListMap = skuService.getSkuVOList(Collections.emptySet(), spuIdSet).stream()
                 .collect(Collectors.groupingBy(SkuVO::getSpuId));
-        return spuList.stream().map(e -> {
-                    ProductVO productVO = productConvert.spu2ProductVO(e);
+        return spuList.stream().map(s -> {
+                    ProductVO productVO = productConvert.spu2ProductVO(s);
                     productVO.setSkuList(skuVOListMap.get(productVO.getId()));
                     return productVO;
                 }
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     @Override
@@ -79,7 +81,7 @@ public class SpuServiceImpl implements SpuService {
         ESSyncProducts syncProducts = new ESSyncProducts();
         JsonObject jsonObject = GsonUtil.json2Obj(content, JsonObject.class);
 
-        executor.execute(() -> {
+        Thread.ofVirtual().name("esProductsDeleteOldData").start(() -> {
                     List<String> oldIds = new ArrayList<>();
                     jsonObject.getAsJsonArray("old").forEach(e -> {
                         if (ObjectUtils.isNotEmpty(e.getAsJsonObject().get("id"))) {

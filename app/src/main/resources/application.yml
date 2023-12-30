@@ -6,12 +6,6 @@ spring:
     name: app
   profiles:
     active: dev
-  freemarker:
-    suffix: .ftlh
-    charset: UTF-8
-    content-type: text/html
-    template-loader-path: classpath:/templates/
-    cache: false
 
 mybatis:
   configuration:
@@ -25,11 +19,11 @@ jwt:
 secure:
   ignored:
     anonymous:
-      - "/auth/login/**"
+      - /auth/login/**
     permit:
-      - "/favicon.ico"
-      - "/auth/register/**"
-      - "/user/info"
-      - "/product/**"
-      - "/coupon/**"
-      - "/pay/**"
+      - /favicon.ico
+      - /auth/register/**
+      - /user/info
+      - /product/**
+      - /coupon/**
+      - /pay/**

@@ -3,6 +3,7 @@ package com.enqbs.app.listener;
 import com.enqbs.app.service.product.ProductCategoryService;
 import com.enqbs.app.service.product.SpuService;
 import com.rabbitmq.client.Channel;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -10,7 +11,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 
 import static com.enqbs.common.constant.Constants.PRODUCT_CATEGORY_LIST;
@@ -31,17 +31,17 @@ public class CanalMessageListener {
     @Resource
     private ThreadPoolTaskExecutor executor;
 
-    @Async("threadPoolTaskExecutor")
+    @Async("executor")
     @RabbitListener(queues = "canal.sync.queue")
     public void listenerCanalSyncQueue(Message message, Channel channel) throws IOException {
         syncCacheProductCategoryList();
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
 
-    @Async("threadPoolTaskExecutor")
+    @Async("executor")
     @RabbitListener(queues = "canal.sync.spu.queue")
     public void listenerCanalSyncSpuQueue(String content, Message message, Channel channel) throws IOException {
-        executor.execute(() -> spuService.syncESProducts(content));
+        Thread.ofVirtual().name("CanalSyncSpuQueue-syncESProducts").start(() -> spuService.syncESProducts(content));
         syncCacheProductCategoryList();
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }

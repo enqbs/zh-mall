@@ -1,4 +1,4 @@
-package com.enqbs.admin.service.user;
+package com.enqbs.admin.service.sys;
 
 import com.enqbs.admin.enums.SortEnum;
 import com.enqbs.admin.form.ChangeNicknameForm;
@@ -8,12 +8,12 @@ import com.enqbs.admin.form.RegisterForm;
 import com.enqbs.admin.vo.SysUserInfoVO;
 import com.enqbs.common.util.PageUtil;
 
-public interface SysUserService {
+public interface UserService {
 
     /*
-    * 系统用户列表
-    * */
-    PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
+     * 系统用户列表
+     * */
+    PageUtil<SysUserInfoVO> userInfoVOPage(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 登录
@@ -28,7 +28,7 @@ public interface SysUserService {
     /*
      * 获取用户信息
      * */
-    SysUserInfoVO getSysUserInfoVO();
+    SysUserInfoVO getUserInfoVO();
 
     /*
      * 修改密码
@@ -36,8 +36,8 @@ public interface SysUserService {
     void changePassword(ChangePasswordForm form);
 
     /*
-    * 修改昵称
-    * */
+     * 修改昵称
+     * */
     void changeNickname(ChangeNicknameForm form);
 
     /*

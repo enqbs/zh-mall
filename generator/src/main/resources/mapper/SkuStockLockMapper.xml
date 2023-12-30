@@ -145,12 +145,12 @@
     where order_no = #{orderNo,jdbcType=BIGINT}
   </select>
 
-  <insert id="batchInsertBySkuStockLockList" parameterType="com.enqbs.generator.pojo.SkuStockLock">
+  <insert id="batchInsertByStockLockList" parameterType="com.enqbs.generator.pojo.SkuStockLock">
     insert into tb_sku_stock_lock (order_no, sku_id, spu_id,
     count, status, consume_version,
     create_time, update_time)
     values
-    <foreach collection="skuStockLockList" item="item" index="index" separator=",">
+    <foreach collection="stockLockList" item="item" index="index" separator=",">
       (#{item.orderNo,jdbcType=BIGINT}, #{item.skuId,jdbcType=INTEGER}, #{item.spuId,jdbcType=INTEGER},
       #{item.count,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, #{item.consumeVersion,jdbcType=INTEGER},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP})

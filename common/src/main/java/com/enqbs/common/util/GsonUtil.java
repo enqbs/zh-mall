@@ -2,7 +2,6 @@ package com.enqbs.common.util;
 
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class GsonUtil {
 
     public static <T> List<T> json2ArrayList(String jsonStr, Class<T[]> clazzArray) {
         T[] arrayOfT = GSON.fromJson(jsonStr, clazzArray);
-        return new ArrayList<>(Arrays.asList(arrayOfT));
+        return Arrays.stream(arrayOfT).toList();
     }
 
 }

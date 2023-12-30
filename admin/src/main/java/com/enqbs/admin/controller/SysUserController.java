@@ -2,13 +2,15 @@ package com.enqbs.admin.controller;
 
 import com.enqbs.admin.enums.SortEnum;
 import com.enqbs.admin.form.SysRelationshipBindingForm;
-import com.enqbs.admin.service.user.SysUserRoleService;
-import com.enqbs.admin.service.user.SysUserService;
+import com.enqbs.admin.service.sys.UserRoleService;
+import com.enqbs.admin.service.sys.UserService;
 import com.enqbs.admin.vo.SysUserInfoVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
 import com.enqbs.security.service.TokenService;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,28 +30,28 @@ import java.util.Map;
 public class SysUserController {
 
     @Resource
-    private SysUserService sysUserService;
+    private UserService userService;
 
     @Resource
-    private SysUserRoleService sysUserRoleService;
+    private UserRoleService userRoleService;
 
     @Resource
     private TokenService tokenService;
 
     @GetMapping("/list")
-    public R<PageUtil<SysUserInfoVO>> userList(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+    public R<PageUtil<SysUserInfoVO>> userPage(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                                @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                                @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<SysUserInfoVO> pageUserInfoList = sysUserService.getSysUserInfoVOList(deleteStatus, sort,
+        PageUtil<SysUserInfoVO> userInfoVOPage = userService.userInfoVOPage(deleteStatus, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageUserInfoList);
+        return R.ok(userInfoVOPage);
     }
 
     @GetMapping("/info")
-    public R<Map<String, Object>> userInfo(@RequestHeader String token) throws Exception {
-        String newToken = tokenService.refreshToken(token).get();
-        SysUserInfoVO userInfo = sysUserService.getSysUserInfoVO();
+    public R<Map<String, Object>> userInfo(@RequestHeader String token) {
+        String newToken = tokenService.refreshToken(token);
+        SysUserInfoVO userInfo = userService.getUserInfoVO();
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("userInfo", userInfo);
         resultMap.put("token", newToken);
@@ -61,7 +61,7 @@ public class SysUserController {
     @PostMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_USER:UPDATE')")
     public R<Void> userRoleBind(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysUserRoleService.batchInsert(form.getBindId(), form.getToIdSet());
+        int row = userRoleService.batchInsert(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("绑定角色失败");
@@ -73,7 +73,7 @@ public class SysUserController {
     @PutMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_USER:UPDATE')")
     public R<Void> updateUserRole(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysUserRoleService.batchUpdate(form.getBindId(), form.getToIdSet());
+        int row = userRoleService.batchUpdate(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("修改角色失败");
@@ -85,7 +85,7 @@ public class SysUserController {
     @DeleteMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_USER:DELETE')")
     public R<Void> deleteUserRole(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysUserRoleService.batchDelete(form.getBindId(), form.getToIdSet());
+        int row = userRoleService.batchDelete(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("删除角色失败");

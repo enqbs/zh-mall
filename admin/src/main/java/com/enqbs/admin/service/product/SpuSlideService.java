@@ -1,19 +1,19 @@
 package com.enqbs.admin.service.product;
 
-import com.enqbs.admin.form.ProductSlideForm;
+import com.enqbs.admin.form.SpuSlideForm;
 import com.enqbs.admin.vo.SpuSlideVO;
 
 import java.util.List;
 
 public interface SpuSlideService {
 
-    List<String> getSpuSlideList(Integer spuId);
+    List<String> getSlideList(Integer spuId);
 
-    SpuSlideVO getSpuSlideVO(Integer spuId);
+    SpuSlideVO getSlideVO(Integer spuId);
 
-    int insert(ProductSlideForm form);
+    int insert(SpuSlideForm form);
 
-    int update(ProductSlideForm form);
+    int update(SpuSlideForm form);
 
     int delete(Integer spuId);
 

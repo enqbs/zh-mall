@@ -4,12 +4,11 @@ import com.enqbs.admin.convert.MemberConvert;
 import com.enqbs.admin.vo.MemberLevelVO;
 import com.enqbs.generator.dao.UserLevelMapper;
 import com.enqbs.generator.pojo.UserLevel;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class MemberLevelServiceImpl implements MemberLevelService {
@@ -23,7 +22,7 @@ public class MemberLevelServiceImpl implements MemberLevelService {
     @Override
     public List<MemberLevelVO> getMemberLevelVOList(Set<Integer> userLevelIdSet) {
         List<UserLevel> userLevelList = userLevelMapper.selectListByIdSet(userLevelIdSet);
-        return userLevelList.stream().map(e -> memberConvert.userLevel2MemberLevelVO(e)).collect(Collectors.toList());
+        return userLevelList.stream().map(u -> memberConvert.userLevel2MemberLevelVO(u)).toList();
     }
 
     @Override

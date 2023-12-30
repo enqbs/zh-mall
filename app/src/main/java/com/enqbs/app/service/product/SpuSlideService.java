@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface SpuSlideService {
 
-    List<String> getSpuSlideList(Integer spuId);
+    List<String> getSlideList(Integer spuId);
 
 }

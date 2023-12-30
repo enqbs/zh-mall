@@ -1,42 +1,18 @@
 spring:
-  shardingsphere:
-    datasource:
-      names: master, slave-01
-      master:
-        type: com.zaxxer.hikari.HikariDataSource
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://master.com:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
-        username: root
-        password: root
-        data-source-properties:
-          useLocalSessionState: false
-      slave-01:
-        type: com.zaxxer.hikari.HikariDataSource
-        driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://slave.com:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
-        username: root
-        password: root
-    rules:
-      readwrite-splitting:
-        data-sources:
-          readwrite01:
-            type: Static
-            props:
-              write-data-source-name: master
-              read-data-source-names: slave-01
-              load-balancer-name: readwrite-lb
-        load-balancers:
-          readwrite-lb:
-            type: ROUND_ROBIN
-    props:
-      sql-show: false
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    default-property-inclusion: non_null
-  redis:
-    host: 192.168.43.2
-    port: 6379
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+    username: root
+    password: root
+    hikari:
+      minimum-idle: 12
+      maximum-pool-size: 24
+      connection-timeout: 60000
+  data:
+    redis:
+      host: 192.168.43.2
+      port: 6379
+      password: redis-password
   rabbitmq:
     host: 192.168.43.2
     port: 5672
@@ -50,6 +26,10 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
   servlet:
     multipart:
       max-file-size: 10MB
@@ -57,6 +37,7 @@ spring:
 
 redisson:
   address: redis://192.168.43.2:6379
+  password: redis-password
 
 thread-pool:
   core-pool-size: 12

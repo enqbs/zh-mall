@@ -11,6 +11,8 @@ import com.enqbs.admin.vo.ProductCategoryVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/product")
@@ -39,15 +38,15 @@ public class ProductCategoryController {
     private ProductCategoryAttributeRelationService productCategoryAttributeRelationService;
 
     @GetMapping("/category/list")
-    public R<PageUtil<ProductCategoryVO>> categoryList(@RequestParam(required = false) Integer parentId,
+    public R<PageUtil<ProductCategoryVO>> categoryPage(@RequestParam(required = false) Integer parentId,
                                                        @RequestParam(required = false) Integer homeStatus,
                                                        @RequestParam(required = false) Integer naviStatus,
                                                        @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                                        @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                        @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductCategoryVO> pageCategoryList = productCategoryService.getCategoryVOList(parentId, homeStatus, naviStatus,
-                deleteStatus, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageCategoryList);
+        PageUtil<ProductCategoryVO> categoryVOPage = productCategoryService.categoryVOPage(parentId, homeStatus, naviStatus, deleteStatus,
+                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
+        return R.ok(categoryVOPage);
     }
 
     @GetMapping("/category/{categoryId}")
@@ -117,13 +116,13 @@ public class ProductCategoryController {
     }
 
     @GetMapping("/category/attribute/list")
-    public R<PageUtil<ProductCategoryAttributeVO>> attributeList(@RequestParam(required = false) Integer categoryId,
+    public R<PageUtil<ProductCategoryAttributeVO>> attributePage(@RequestParam(required = false) Integer categoryId,
                                                                  @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                                                  @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                                  @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductCategoryAttributeVO> pageAttributeList = productCategoryAttributeService
-                .getAttributeVOList(categoryId, deleteStatus, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageAttributeList);
+        PageUtil<ProductCategoryAttributeVO> attributeVOPage = productCategoryAttributeService.attributeVOPage(categoryId, deleteStatus,
+                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
+        return R.ok(attributeVOPage);
     }
 
     @GetMapping("/category/attribute/{attributeId}")
@@ -146,8 +145,7 @@ public class ProductCategoryController {
 
     @PutMapping("/category/attribute/{attributeId}")
     @PreAuthorize("hasAuthority('PRODUCT:UPDATE')")
-    public R<Void> updateAttribute(@PathVariable Integer attributeId,
-                                   @Valid @RequestBody ProductCategoryAttributeForm form) {
+    public R<Void> updateAttribute(@PathVariable Integer attributeId, @Valid @RequestBody ProductCategoryAttributeForm form) {
         int row = productCategoryAttributeService.update(attributeId, form);
 
         if (row <= 0) {

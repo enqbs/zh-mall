@@ -23,6 +23,6 @@ public interface SkuStockLockMapper {
 
     List<SkuStockLock> selectListByOrderNo(Long orderNo);
 
-    int batchInsertBySkuStockLockList(@Param("skuStockLockList") List<SkuStockLock> skuStockLockList);
+    int batchInsertByStockLockList(@Param("stockLockList") List<SkuStockLock> stockLockList);
 
 }

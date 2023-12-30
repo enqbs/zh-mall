@@ -3,9 +3,9 @@ package com.enqbs.admin.convert;
 import com.enqbs.admin.form.ProductCategoryAttributeForm;
 import com.enqbs.admin.form.ProductCategoryForm;
 import com.enqbs.admin.form.ProductForm;
-import com.enqbs.admin.form.ProductOverviewForm;
-import com.enqbs.admin.form.ProductSlideForm;
-import com.enqbs.admin.form.ProductSpecForm;
+import com.enqbs.admin.form.SpuOverviewForm;
+import com.enqbs.admin.form.SpuSlideForm;
+import com.enqbs.admin.form.SpuSpecForm;
 import com.enqbs.admin.form.SkuForm;
 import com.enqbs.admin.vo.ProductCategoryAttributeVO;
 import com.enqbs.admin.vo.ProductCategoryVO;
@@ -25,46 +25,75 @@ import com.enqbs.generator.pojo.SpuSlide;
 import com.enqbs.generator.pojo.SpuSpec;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 @Mapper(componentModel = "spring")
 public interface ProductConvert {
 
-    ProductCategory categoryForm2Category(ProductCategoryForm form);
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "deleteStatus", ignore = true)
+    })
+    ProductCategory form2Category(ProductCategoryForm form);
 
     ProductCategoryVO category2CategoryVO(ProductCategory category);
 
-    ProductCategoryAttribute attributeForm2Attribute(ProductCategoryAttributeForm form);
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "deleteStatus", ignore = true)
+    })
+    ProductCategoryAttribute form2Attribute(ProductCategoryAttributeForm form);
 
-    ProductCategoryAttributeVO attribute2AttributeVO(ProductCategoryAttribute categoryAttribute);
+    ProductCategoryAttributeVO attribute2AttributeVO(ProductCategoryAttribute attribute);
 
-    Spu productForm2Product(ProductForm form);
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "deleteStatus", ignore = true),
+            @Mapping(target = "createTime", ignore = true),
+            @Mapping(target = "updateTime", ignore = true)
+    })
+    Spu form2Spu(ProductForm form);
 
+    @Mappings({
+            @Mapping(target = "slide", ignore = true),
+            @Mapping(target = "skuList", ignore = true)
+    })
     ProductVO spu2ProductVO(Spu spu);
 
-    @Mapping(target = "params", ignore = true)
-    Sku skuForm2Sku(SkuForm form);
+    @Mappings({
+            @Mapping(target = "id", ignore = true),
+            @Mapping(target = "params", ignore = true),
+            @Mapping(target = "saleableStatus", ignore = true),
+            @Mapping(target = "deleteStatus", ignore = true),
+            @Mapping(target = "createTime", ignore = true),
+            @Mapping(target = "updateTime", ignore = true)
+    })
+    Sku form2Sku(SkuForm form);
 
-    @Mapping(target = "params", ignore = true)
+    @Mappings({
+            @Mapping(target = "params", ignore = true),
+            @Mapping(target = "stock", ignore = true)
+    })
     SkuVO sku2SkuVO(Sku sku);
 
-    SkuStockVO skuStock2SkuStockVO(SkuStock skuStock);
+    SkuStockVO stock2StockVO(SkuStock stock);
 
     @Mapping(target = "pictures", ignore = true)
-    SpuOverview productOverviewForm2SpuOverview(ProductOverviewForm form);
+    SpuOverview form2Overview(SpuOverviewForm form);
 
     @Mapping(target = "pictures", ignore = true)
-    SpuOverviewVO spuOverview2SpuOverviewVO(SpuOverview spuOverview);
+    SpuOverviewVO overview2OverviewVO(SpuOverview overview);
 
     @Mapping(target = "pictures", ignore = true)
-    SpuSpec productSpecForm2SpuSpec(ProductSpecForm form);
+    SpuSpec form2Spec(SpuSpecForm form);
 
     @Mapping(target = "pictures", ignore = true)
-    SpuSpecVO spuSpec2SpuSpecVO(SpuSpec spuSpec);
+    SpuSpecVO spec2SpecVO(SpuSpec spec);
 
     @Mapping(target = "pictures", ignore = true)
-    SpuSlide productSlideForm2SpuSlide(ProductSlideForm form);
+    SpuSlide form2Slide(SpuSlideForm form);
 
     @Mapping(target = "pictures", ignore = true)
-    SpuSlideVO spuSlide2SpuSlideVO(SpuSlide spuSlide);
+    SpuSlideVO slide2SlideVO(SpuSlide slide);
 
 }

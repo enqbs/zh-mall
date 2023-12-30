@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,11 +15,11 @@ public class OrderItemVO implements Serializable {
 
     private Integer skuId;
 
-    private Integer productId;
+    private Integer spuId;
 
     private String skuTitle;
 
-    private String skuParam;
+    private List<SkuParamVO> skuParams;
 
     private String skuPicture;
 
@@ -37,9 +38,9 @@ public class OrderItemVO implements Serializable {
         return "OrderItemVO{" +
                 "orderNo=" + orderNo +
                 ", skuId=" + skuId +
-                ", productId=" + productId +
+                ", spuId=" + spuId +
                 ", skuTitle='" + skuTitle + '\'' +
-                ", skuParam='" + skuParam + '\'' +
+                ", skuParams=" + skuParams +
                 ", skuPicture='" + skuPicture + '\'' +
                 ", num=" + num +
                 ", price=" + price +

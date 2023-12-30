@@ -3,6 +3,7 @@ package com.enqbs.generator.pojo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
@@ -13,6 +14,7 @@ public class SpuSlide implements Serializable {
 
     private String pictures;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Override

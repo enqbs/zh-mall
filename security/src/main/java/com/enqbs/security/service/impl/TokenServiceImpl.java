@@ -9,17 +9,13 @@ import com.enqbs.common.util.RedisUtil;
 import com.enqbs.security.config.JwtPramConfig;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -33,8 +29,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String getToken(LoginUser loginUser) {
-        return JwtUtil.createToken(loginUser.getUserType(), loginUser.getUserToken(),
-                jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
+        return JwtUtil.createToken(loginUser.getUserType(), loginUser.getUserToken(), jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
     }
 
     @Override
@@ -43,13 +38,12 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    @Async("threadPoolTaskExecutor")
-    public Future<String> refreshToken(String token) {
+    public String refreshToken(String token) {
         long expireTime = JwtUtil.getExpire(token);                 // JWT 过期时间
         long currentTime = System.currentTimeMillis() / 1000;       // 当前时间
         long oneHour = 3600L;                                       // 一小时 3600 秒
         /* 如果 jwt 过期时间小于1小时,返回新 token */
-        return new AsyncResult<>(expireTime - currentTime <= oneHour ? getNewToken(token) : token);
+        return expireTime - currentTime <= oneHour ? getNewToken(token) : token;
     }
 
     @Override
@@ -89,20 +83,18 @@ public class TokenServiceImpl implements TokenService {
                 }
 
                 return true;
-            } else {
-                log.warn("无效Token:'{}'.", token);
-                return false;
             }
+
+            log.warn("无效Token:'{}'.", token);
+            return false;
         }
     }
 
     private String getNewToken(String token) {
         String userToken = getUserToken(token);
         return StringUtils.isNotEmpty(userToken) ?
-                JwtUtil.createToken(Constants.USER_TOKEN, userToken,
-                        jwtPramConfig.getExpire(), jwtPramConfig.getSecret()) :
-                JwtUtil.createToken(Constants.SYS_USER_TOKEN, getSysUserToken(token),
-                        jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
+                JwtUtil.createToken(Constants.USER_TOKEN, userToken, jwtPramConfig.getExpire(), jwtPramConfig.getSecret()) :
+                JwtUtil.createToken(Constants.SYS_USER_TOKEN, getSysUserToken(token), jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
     }
 
     private String getUserToken(String token) {

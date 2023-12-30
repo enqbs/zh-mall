@@ -3,6 +3,7 @@ package com.enqbs.generator.pojo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -31,6 +32,7 @@ public class Sku implements Serializable {
 
     private Date updateTime;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Override

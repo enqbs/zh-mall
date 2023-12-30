@@ -3,13 +3,12 @@ package com.enqbs.app.config;
 import com.enqbs.app.service.mq.RabbitMQService;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.app.enums.QueueEnum;
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 
 /*
  * RabbitMQ 消息发布确认、消息回退配置

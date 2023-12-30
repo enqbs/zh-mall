@@ -9,19 +9,19 @@ import java.util.List;
 public interface UserCouponService {
 
     /*
-     * 用户有效优惠券列表
-     * */
-    List<UserCouponVO> getUserCouponVOList();
-
-    /*
      * 用户优惠券列表
      * */
-    PageUtil<UserCouponVO> getUserCouponVOList(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<UserCouponVO> couponVOPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
+
+    /*
+     * 用户有效优惠券列表
+     * */
+    List<UserCouponVO> getCouponVOList();
 
     /*
      * 用户优惠券详情
      * */
-    UserCouponVO getUserCouponVO(Integer couponId);
+    UserCouponVO getCouponVO(Integer couponId);
 
     /*
      * 用户新增优惠券

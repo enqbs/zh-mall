@@ -6,20 +6,20 @@ import com.enqbs.admin.enums.SortEnum;
 import com.enqbs.admin.form.LogisticsInfoForm;
 import com.enqbs.admin.vo.OrderItemVO;
 import com.enqbs.admin.vo.OrderLogisticsInfoVO;
-import com.enqbs.admin.vo.OrderShippingAddressVO;
+import com.enqbs.admin.vo.OrderAddressVO;
 import com.enqbs.admin.vo.OrderVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.OrderMapper;
 import com.enqbs.generator.pojo.Order;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,21 +34,20 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private OrderItemService orderItemService;
     @Resource
-    private OrderShippingAddressService orderShippingAddressService;
+    private OrderAddressService orderAddressService;
     @Resource
     private OrderLogisticsInfoService orderLogisticsInfoService;
     @Resource
     private OrderConvert orderConvert;
 
     @Override
-    public PageUtil<OrderVO> getOrderVOList(Long orderNo, String orderSc, Integer userId,
-                                            Integer paymentType, Integer status, Integer deleteStatus,
-                                            SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<OrderVO> orderVOPage(Long orderNo, String orderSc, Integer userId, Integer paymentType,
+                                         Integer status, Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<OrderVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<Order> orderList = orderMapper.selectListByParam(orderNo, orderSc, userId, paymentType,
-                status, deleteStatus, sort.getSortType(), pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectListByParam(orderNo, orderSc, userId, paymentType, status,
+                deleteStatus, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(orderList)) {
             return pageUtil;
@@ -56,27 +55,24 @@ public class OrderServiceImpl implements OrderService {
 
         Long total = orderMapper.countByParam(orderNo, orderSc, userId, paymentType, status, deleteStatus);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
-
         List<OrderItemVO> orderItemVOList = orderItemService.getOrderItemVOList(orderNoSet);
-        List<OrderShippingAddressVO> orderShippingAddressVOList = orderShippingAddressService.getOrderShippingAddressVOList(orderNoSet);
+        List<OrderAddressVO> orderAddressVOList = orderAddressService.getOrderAddressVOList(orderNoSet);
         List<OrderLogisticsInfoVO> orderLogisticsInfoVOList = orderLogisticsInfoService.getOrderLogisticsInfoVOList(orderNoSet);
         /* List to Map */
         Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemVOList.stream()
                 .collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
-        Map<Long, OrderShippingAddressVO> orderShippingAddressVOMap = orderShippingAddressVOList.stream()
-                .collect(Collectors.toMap(OrderShippingAddressVO::getOrderNo, v -> v));
+        Map<Long, OrderAddressVO> orderAddressVOMap = orderAddressVOList.stream()
+                .collect(Collectors.toMap(OrderAddressVO::getOrderNo, v -> v));
         Map<Long, OrderLogisticsInfoVO> orderLogisticsInfoVOMap = orderLogisticsInfoVOList.stream()
                 .collect(Collectors.toMap(OrderLogisticsInfoVO::getOrderNo, v -> v));
-
-        List<OrderVO> orderVOList = orderList.stream().map(e -> {
-                    OrderVO orderVO = orderConvert.order2OrderVO(e);
-                    orderVO.setShippingAddress(orderShippingAddressVOMap.get(orderVO.getOrderNo()));
+        List<OrderVO> orderVOList = orderList.stream().map(o -> {
+                    OrderVO orderVO = orderConvert.order2OrderVO(o);
+                    orderVO.setAddress(orderAddressVOMap.get(orderVO.getOrderNo()));
                     orderVO.setLogisticsInfo(orderLogisticsInfoVOMap.get(orderVO.getOrderNo()));
                     orderVO.setOrderItemList(orderItemVOListMap.get(orderVO.getOrderNo()));
                     return orderVO;
                 }
-        ).collect(Collectors.toList());
-
+        ).toList();
         pageUtil.setTotal(total);
         pageUtil.setList(orderVOList);
         return pageUtil;
@@ -92,12 +88,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         List<OrderItemVO> orderItemVOList = orderItemService.getOrderItemVOList(orderNo);
-        OrderShippingAddressVO orderShippingAddressVO = orderShippingAddressService.getOrderShippingAddressVO(orderNo);
+        OrderAddressVO orderAddressVO = orderAddressService.getOrderAddressVO(orderNo);
         OrderLogisticsInfoVO orderLogisticsInfoVO = orderLogisticsInfoService.getOrderLogisticsInfoVO(orderNo);
-
         OrderVO orderVO = orderConvert.order2OrderVO(order);
         orderVO.setOrderItemList(orderItemVOList);
-        orderVO.setShippingAddress(orderShippingAddressVO);
+        orderVO.setAddress(orderAddressVO);
         orderVO.setLogisticsInfo(orderLogisticsInfoVO);
         return orderVO;
     }

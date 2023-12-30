@@ -7,11 +7,11 @@ import com.enqbs.admin.vo.MemberVO;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.UserMapper;
 import com.enqbs.generator.pojo.User;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,14 +30,12 @@ public class MemberServiceImpl implements MemberService {
     private MemberConvert memberConvert;
 
     @Override
-    public PageUtil<MemberVO> getMemberVOList(Integer id, Long uid, String identifier,
-                                              Integer status, Integer deleteStatus, SortEnum sort,
-                                              Integer pageNum, Integer pageSize) {
+    public PageUtil<MemberVO> memberVOPage(Integer id, Long uid, String identifier, Integer status,
+                                           Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<MemberVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<User> userList = userMapper.selectListByParam(id, uid, identifier, status,
-                deleteStatus, sort.getSortType(), pageNum, pageSize);
+        List<User> userList = userMapper.selectListByParam(id, uid, identifier, status, deleteStatus, sort.getSortType(), pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(userList)) {
             return pageUtil;
@@ -47,12 +45,12 @@ public class MemberServiceImpl implements MemberService {
         Set<Integer> levelIdSet = userList.stream().map(User::getLevelId).collect(Collectors.toSet());
         Map<Integer, MemberLevelVO> memberLevelVOMap = memberLevelService.getMemberLevelVOList(levelIdSet).stream()
                 .collect(Collectors.toMap(MemberLevelVO::getId, v -> v));
-        List<MemberVO> memberVOList = userList.stream().map(e -> {
-                    MemberVO memberVO = memberConvert.user2MemberVO(e);
+        List<MemberVO> memberVOList = userList.stream().map(u -> {
+                    MemberVO memberVO = memberConvert.user2MemberVO(u);
                     memberVO.setLevelInfo(memberLevelVOMap.get(memberVO.getLevelId()));
                     return memberVO;
                 }
-        ).collect(Collectors.toList());
+        ).toList();
         pageUtil.setTotal(total);
         pageUtil.setList(memberVOList);
         return pageUtil;

@@ -1,6 +1,6 @@
-package com.enqbs.admin.service.user;
+package com.enqbs.admin.service.sys;
 
-import com.enqbs.admin.convert.SysUserConvert;
+import com.enqbs.admin.convert.SysConvert;
 import com.enqbs.admin.enums.SortEnum;
 import com.enqbs.admin.form.ChangeNicknameForm;
 import com.enqbs.admin.form.ChangePasswordForm;
@@ -18,19 +18,17 @@ import com.enqbs.generator.pojo.SysMenu;
 import com.enqbs.generator.pojo.SysUser;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
-public class SysUserServiceImpl implements SysUserService {
+public class UserServiceImpl implements UserService {
 
     @Resource
     private SysUserMapper sysUserMapper;
@@ -39,49 +37,45 @@ public class SysUserServiceImpl implements SysUserService {
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
-    private SysMenuService sysMenuService;
+    private MenuService menuService;
     @Resource
     private TokenService tokenService;
     @Resource
-    private SysUserConvert sysUserConvert;
-    @Resource
-    private ThreadPoolTaskExecutor executor;
+    private SysConvert sysConvert;
 
     @Override
-    public PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysUserInfoVO> userInfoVOPage(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<SysUserInfoVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<SysUser> sysUserList = sysUserMapper.selectListByParam(deleteStatus, sort.getSortType(), pageNum, pageSize);
+        List<SysUser> userList = sysUserMapper.selectListByParam(deleteStatus, sort.getSortType(), pageNum, pageSize);
 
-        if (CollectionUtils.isEmpty(sysUserList)) {
+        if (CollectionUtils.isEmpty(userList)) {
             return pageUtil;
         }
 
         Long total = sysUserMapper.countByParam(deleteStatus);
         pageUtil.setTotal(total);
-        pageUtil.setList(sysUserList.stream()
-                .map(e -> sysUserConvert.sysUserInfo2SysUserInfoVO(e)).collect(Collectors.toList())
-        );
+        pageUtil.setList(userList.stream().map(u -> sysConvert.user2UserInfoVO(u)).toList());
         return pageUtil;
     }
 
     @Override
     public String login(LoginForm form) {
-        SysUser sysUser = sysUserMapper.selectByUsername(form.getUsername());
+        SysUser user = sysUserMapper.selectByUsername(form.getUsername());
 
-        if (ObjectUtils.isEmpty(sysUser)) {
+        if (ObjectUtils.isEmpty(user)) {
             throw new ServiceException("用户不存在");
         }
 
-        if (!passwordEncoder.matches(form.getPassword(), sysUser.getPassword())) {
+        if (!passwordEncoder.matches(form.getPassword(), user.getPassword())) {
             throw new ServiceException("密码错误");
         }
 
-        Set<SysMenu> sysMenuSet = sysMenuService.getSysMenuSet(form.getUsername());
-        List<String> permissionList = sysMenuSet.stream().map(SysMenu::getPermissionsKey).collect(Collectors.toList());
-        LoginUser loginUser = getLoginUser(sysUser, permissionList);
-        executor.execute(() -> cacheLoginUser(loginUser));
+        Set<SysMenu> menuSet = menuService.getMenuSet(form.getUsername());
+        List<String> permissionList = menuSet.stream().map(SysMenu::getPermissionsKey).toList();
+        LoginUser loginUser = getLoginUser(user, permissionList);
+        Thread.ofVirtual().name("login-cacheLoginUser").start(() -> cacheLoginUser(loginUser));
         return tokenService.getToken(loginUser);
     }
 
@@ -93,22 +87,22 @@ public class SysUserServiceImpl implements SysUserService {
             throw new ServiceException("用户已存在");
         }
 
-        SysUser sysUser = new SysUser();
-        sysUser.setUsername(form.getUsername());
-        sysUser.setPassword(passwordEncoder.encode(form.getPassword()));
-        int row = sysUserMapper.insertSelective(sysUser);
+        SysUser user = new SysUser();
+        user.setUsername(form.getUsername());
+        user.setPassword(passwordEncoder.encode(form.getPassword()));
+        int row = sysUserMapper.insertSelective(user);
 
         if (row <= 0) {
             throw new ServiceException("用户账号密码保存失败");
         }
 
-        return sysUser.getId();
+        return user.getId();
     }
 
     @Override
-    public SysUserInfoVO getSysUserInfoVO() {
+    public SysUserInfoVO getUserInfoVO() {
         LoginUser loginUser = tokenService.getLoginUser();
-        return sysUserConvert.loginUser2SysUserInfoVO(loginUser);
+        return sysConvert.loginUser2UserInfoVO(loginUser);
     }
 
     @Override
@@ -123,10 +117,10 @@ public class SysUserServiceImpl implements SysUserService {
             throw new ServiceException("两次输入的密码不一样");
         }
 
-        SysUser sysUser = new SysUser();
-        sysUser.setId(loginUser.getUserId());
-        sysUser.setPassword(passwordEncoder.encode(form.getNewPassword()));
-        int row = sysUserMapper.updateByPrimaryKeySelective(sysUser);
+        SysUser user = new SysUser();
+        user.setId(loginUser.getUserId());
+        user.setPassword(passwordEncoder.encode(form.getNewPassword()));
+        int row = sysUserMapper.updateByPrimaryKeySelective(user);
 
         if (row <= 0) {
             throw new ServiceException("修改密码失败");
@@ -138,16 +132,16 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void changeNickname(ChangeNicknameForm form) {
         LoginUser loginUser = tokenService.getLoginUser();
-        SysUser sysUser = new SysUser();
-        sysUser.setId(loginUser.getUserId());
-        sysUser.setNickName(form.getNickName());
-        int row = sysUserMapper.updateByPrimaryKeySelective(sysUser);
+        SysUser user = new SysUser();
+        user.setId(loginUser.getUserId());
+        user.setNickName(form.getNickName());
+        int row = sysUserMapper.updateByPrimaryKeySelective(user);
 
         if (row <= 0) {
             throw new ServiceException("修改昵称失败");
         }
 
-        executor.execute(() -> {
+        Thread.ofVirtual().name("changeNickname-updateLoginUser").start(() -> {
                     loginUser.setNickName(form.getNickName());
                     removeCacheLoginUser(loginUser);
                     cacheLoginUser(loginUser);
@@ -158,19 +152,19 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void logout() {
         LoginUser loginUser = tokenService.getLoginUser();
-        executor.execute(() -> removeCacheLoginUser(loginUser));
+        Thread.ofVirtual().name("logout-removeCacheLoginUser").start(() -> removeCacheLoginUser(loginUser));
         tokenService.removeLoginUser();
     }
 
-    private LoginUser getLoginUser(SysUser sysUser, List<String> permissionList) {
+    private LoginUser getLoginUser(SysUser user, List<String> permissionList) {
         LoginUser loginUser = new LoginUser();
         loginUser.setUserToken(IDUtil.getUUID());
         loginUser.setUserType(Constants.SYS_USER_TOKEN);
-        loginUser.setUserId(sysUser.getId());
-        loginUser.setUsername(sysUser.getUsername());
-        loginUser.setPassword(sysUser.getPassword());
-        loginUser.setNickName(sysUser.getNickName());
-        loginUser.setPhoto(sysUser.getPhoto());
+        loginUser.setUserId(user.getId());
+        loginUser.setUsername(user.getUsername());
+        loginUser.setPassword(user.getPassword());
+        loginUser.setNickName(user.getNickName());
+        loginUser.setPhoto(user.getPhoto());
         loginUser.setPermissionList(permissionList);
         return loginUser;
     }

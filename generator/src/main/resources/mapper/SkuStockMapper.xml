@@ -150,7 +150,7 @@
     </foreach>
   </select>
 
-  <update id="batchUpdateBySkuStockListLockStock" parameterType="java.util.List">
+  <update id="batchUpdateByStockListLockStock" parameterType="java.util.List">
     update `tb_sku_stock`
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="lock_stock = case" suffix="end,">
@@ -177,7 +177,7 @@
     </foreach>
   </update>
 
-  <update id="batchUpdateBySkuStockListUnLockStockRollback" parameterType="java.util.List">
+  <update id="batchUpdateByStockListUnLockStockRollback" parameterType="java.util.List">
     update `tb_sku_stock`
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="lock_stock = case" suffix="end,">
@@ -201,7 +201,7 @@
     </foreach>
   </update>
 
-  <update id="batchUpdateBySkuStockListUnLockStockDelete" parameterType="java.util.List">
+  <update id="batchUpdateByStockListUnLockStockDelete" parameterType="java.util.List">
     update `tb_sku_stock`
     <trim prefix="set" suffixOverrides=",">
       <trim prefix="actual_stock = case" suffix="end,">

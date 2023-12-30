@@ -6,11 +6,11 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.dao.SkuStockMapper;
 import com.enqbs.generator.pojo.SkuStock;
 import com.enqbs.generator.pojo.SkuStockLock;
+import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,73 +27,72 @@ public class SkuStockServiceImpl implements SkuStockService {
     private SkuStockLockService skuStockLockService;
 
     @Override
-    public List<SkuStock> getSkuStockList(Set<Integer> skuIdSet) {
+    public List<SkuStock> getStockList(Set<Integer> skuIdSet) {
         return skuStockMapper.selectListBySkuIdSet(skuIdSet);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void lockSkuStock(Long orderNo, List<SkuStockDTO> skuStockDTOList) {
-        List<SkuStock> skuStockList = skuStockDTOList.stream().map(this::skuStockDTO2SkuStock).collect(Collectors.toList());
-        List<SkuStockLock> skuStockLockList = skuStockDTOList.stream()
-                .map(e -> skuStockDTO2SkuStockLock(orderNo, e)).collect(Collectors.toList());
-        skuStockLockService.batchInsert(orderNo, skuStockLockList);
-        batchLockSkuStock(orderNo, skuStockList);
+    public void lockStock(Long orderNo, List<SkuStockDTO> stockDTOList) {
+        List<SkuStock> stockList = stockDTOList.stream().map(this::stockDTO2Stock).toList();
+        List<SkuStockLock> stockLockList = stockDTOList.stream().map(s -> stockDTO2StockLock(orderNo, s)).toList();
+        skuStockLockService.batchInsert(orderNo, stockLockList);
+        batchLockSkuStock(orderNo, stockList);
         log.info("订单号:'{}',库存锁定成功.", orderNo);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void unLockSkuStock(Long orderNo, OrderStatusEnum orderStatusEnum) {
-        List<SkuStockLock> stockLockList = skuStockLockService.getSkuStockLockList(orderNo);
+    public void unLockStock(Long orderNo, OrderStatusEnum orderStatusEnum) {
+        List<SkuStockLock> stockLockList = skuStockLockService.getStockLockList(orderNo);
         Set<Integer> skuIdSet = stockLockList.stream().map(SkuStockLock::getSkuId).collect(Collectors.toSet());
-        Map<Integer, SkuStockLock> skuStockLockMap = stockLockList.stream().collect(Collectors.toMap(SkuStockLock::getSkuId, v -> v));
-        List<SkuStock> skuStockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
-        skuStockList.forEach(skuStock -> {
-                    SkuStockLock skuStockLock = skuStockLockMap.get(skuStock.getSkuId());
-                    skuStock.setActualStock(skuStockLock.getCount());
-                    skuStock.setLockStock(skuStockLock.getCount());
-                    skuStock.setStock(skuStockLock.getCount());
+        Map<Integer, SkuStockLock> stockLockMap = stockLockList.stream().collect(Collectors.toMap(SkuStockLock::getSkuId, v -> v));
+        List<SkuStock> stockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
+        stockList.forEach(s -> {
+                    SkuStockLock stockLock = stockLockMap.get(s.getSkuId());
+                    s.setActualStock(stockLock.getCount());
+                    s.setLockStock(stockLock.getCount());
+                    s.setStock(stockLock.getCount());
                 }
         );
         skuStockLockService.delete(orderNo);
-        batchUnLockSkuStock(orderNo, skuStockList, orderStatusEnum);
+        batchUnLockStock(orderNo, stockList, orderStatusEnum);
         log.info("订单号:'{}',库存解锁成功.", orderNo);
     }
 
-    private void batchLockSkuStock(Long orderNo, List<SkuStock> skuStockList) {
-        int row = skuStockMapper.batchUpdateBySkuStockListLockStock(skuStockList);
+    private void batchLockSkuStock(Long orderNo, List<SkuStock> stockList) {
+        int row = skuStockMapper.batchUpdateByStockListLockStock(stockList);
 
-        if (row < skuStockList.size()) {
+        if (row < stockList.size()) {
             throw new ServiceException("订单号:" + orderNo + ",库存信息更新失败");
         }
     }
 
-    private void batchUnLockSkuStock(Long orderNo, List<SkuStock> skuStockList, OrderStatusEnum orderStatusEnum) {
+    private void batchUnLockStock(Long orderNo, List<SkuStock> stockList, OrderStatusEnum orderStatusEnum) {
         int row = OrderStatusEnum.PAY_SUCCESS.equals(orderStatusEnum) ?
-                skuStockMapper.batchUpdateBySkuStockListUnLockStockDelete(skuStockList) :
-                skuStockMapper.batchUpdateBySkuStockListUnLockStockRollback(skuStockList);
+                skuStockMapper.batchUpdateByStockListUnLockStockDelete(stockList) :
+                skuStockMapper.batchUpdateByStockListUnLockStockRollback(stockList);
 
-        if (row < skuStockList.size()) {
+        if (row < stockList.size()) {
             throw new ServiceException("订单号:" + orderNo + ",库存信息更新失败");
         }
     }
 
-    private SkuStock skuStockDTO2SkuStock(SkuStockDTO skuStockDTO) {
-        SkuStock skuStock = new SkuStock();
-        skuStock.setId(skuStockDTO.getSkuStockId());
-        skuStock.setLockStock(skuStockDTO.getLockStock());
-        skuStock.setStock(skuStockDTO.getStock());
-        return skuStock;
+    private SkuStock stockDTO2Stock(SkuStockDTO stockDTO) {
+        SkuStock stock = new SkuStock();
+        stock.setId(stockDTO.getSkuStockId());
+        stock.setLockStock(stockDTO.getLockStock());
+        stock.setStock(stockDTO.getStock());
+        return stock;
     }
 
-    private SkuStockLock skuStockDTO2SkuStockLock(Long orderNo, SkuStockDTO skuStockDTO) {
-        SkuStockLock skuStockLock = new SkuStockLock();
-        skuStockLock.setOrderNo(orderNo);
-        skuStockLock.setSkuId(skuStockDTO.getSkuId());
-        skuStockLock.setSpuId(skuStockDTO.getSpuId());
-        skuStockLock.setCount(skuStockDTO.getQuantity());
-        return skuStockLock;
+    private SkuStockLock stockDTO2StockLock(Long orderNo, SkuStockDTO stockDTO) {
+        SkuStockLock stockLock = new SkuStockLock();
+        stockLock.setOrderNo(orderNo);
+        stockLock.setSkuId(stockDTO.getSkuId());
+        stockLock.setSpuId(stockDTO.getSpuId());
+        stockLock.setCount(stockDTO.getQuantity());
+        return stockLock;
     }
 
 }

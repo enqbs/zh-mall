@@ -12,15 +12,14 @@ import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductCommentMapper;
 import com.enqbs.generator.pojo.ProductComment;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductCommentServiceImpl implements ProductCommentService {
@@ -38,57 +37,55 @@ public class ProductCommentServiceImpl implements ProductCommentService {
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCommentVO> getProductCommentVOList(Integer spuId, SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCommentVO> commentVOPage(Integer spuId, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<ProductCommentVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductComment> productCommentList = productCommentMapper.selectListByParam(spuId, sort.getSortType(), pageNum, pageSize);
+        List<ProductComment> commentList = productCommentMapper.selectListByParam(spuId, sort.getSortType(), pageNum, pageSize);
 
-        if (CollectionUtils.isEmpty(productCommentList)) {
+        if (CollectionUtils.isEmpty(commentList)) {
             return pageUtil;
         }
 
         Long total = productCommentMapper.countBySpuId(spuId);
-        List<ProductCommentVO> productCommentVOList = productCommentList.stream().map(e -> {
-                    ProductCommentVO productCommentVO = productConvert.productComment2ProductCommentVO(e);
-                    productCommentVO.setPictures(StringUtils.isEmpty(e.getPictures()) ?
-                            Collections.emptyList() : GsonUtil.json2ArrayList(e.getPictures(), String[].class)
+        List<ProductCommentVO> commentVOList = commentList.stream().map(c -> {
+                    ProductCommentVO commentVO = productConvert.comment2CommentVO(c);
+                    commentVO.setPictures(StringUtils.isEmpty(c.getPictures()) ?
+                            Collections.emptyList() : GsonUtil.json2ArrayList(c.getPictures(), String[].class)
                     );
-                    return productCommentVO;
+                    return commentVO;
                 }
-        ).collect(Collectors.toList());
+        ).toList();
         pageUtil.setTotal(total);
-        pageUtil.setList(productCommentVOList);
+        pageUtil.setList(commentVOList);
         return pageUtil;
     }
 
     @Override
-    public ProductCommentVO getProductCommentVO(Integer commentId) {
-        ProductComment productComment = productCommentMapper.selectByPrimaryKey(commentId);
+    public ProductCommentVO getCommentVO(Integer commentId) {
+        ProductComment comment = productCommentMapper.selectByPrimaryKey(commentId);
 
-        if (ObjectUtils.isEmpty(productComment) || Constants.IS_DELETE.equals(productComment.getDeleteStatus())) {
+        if (ObjectUtils.isEmpty(comment) || Constants.IS_DELETE.equals(comment.getDeleteStatus())) {
             return new ProductCommentVO();
         }
 
-        ProductCommentVO productCommentVO = productConvert.productComment2ProductCommentVO(productComment);
-        productCommentVO.setPictures(StringUtils.isEmpty(productComment.getPictures()) ?
-                Collections.emptyList() : GsonUtil.json2ArrayList(productComment.getPictures(), String[].class)
+        ProductCommentVO commentVO = productConvert.comment2CommentVO(comment);
+        commentVO.setPictures(StringUtils.isEmpty(comment.getPictures()) ?
+                Collections.emptyList() : GsonUtil.json2ArrayList(comment.getPictures(), String[].class)
         );
-        productCommentVO.setReplyList(productCommentReplyService.getProductCommentReplyVOList(commentId));
-        return productCommentVO;
+        commentVO.setReplyList(productCommentReplyService.getCommentReplyVOList(commentId));
+        return commentVO;
     }
 
     @Override
     public int insert(ProductCommentForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        ProductComment productComment = productConvert.productCommentForm2ProductComment(form);
-        productComment.setUserId(userInfoVO.getUserId());
-        productComment.setNickName(userInfoVO.getNickName());
-        productComment.setPhoto(userInfoVO.getPhoto());
-        productComment.setPictures(CollectionUtils.isEmpty(form.getPictures()) ?
-                null : GsonUtil.obj2Json(form.getPictures())
-        );
-        return productCommentMapper.insertSelective(productComment);
+        ProductComment comment = productConvert.form2Comment(form);
+        comment.setUserId(userInfoVO.getUserId());
+        comment.setNickName(userInfoVO.getNickName());
+        comment.setPhoto(userInfoVO.getPhoto());
+        comment.setPictures(CollectionUtils.isEmpty(form.getPictures()) ? null : GsonUtil.obj2Json(form.getPictures()));
+        return productCommentMapper.insertSelective(comment);
     }
 
     @Override
@@ -100,15 +97,13 @@ public class ProductCommentServiceImpl implements ProductCommentService {
             throw new ServiceException("商品评价不存在");
         }
 
-        ProductComment productComment = productConvert.productCommentForm2ProductComment(form);
-        productComment.setId(commentId);
-        productComment.setUserId(userInfoVO.getUserId());
-        productComment.setNickName(userInfoVO.getNickName());
-        productComment.setPhoto(userInfoVO.getPhoto());
-        productComment.setPictures(CollectionUtils.isEmpty(form.getPictures()) ?
-                null : GsonUtil.obj2Json(form.getPictures())
-        );
-        return productCommentMapper.updateByPrimaryKeySelective(productComment);
+        ProductComment comment = productConvert.form2Comment(form);
+        comment.setId(commentId);
+        comment.setUserId(userInfoVO.getUserId());
+        comment.setNickName(userInfoVO.getNickName());
+        comment.setPhoto(userInfoVO.getPhoto());
+        comment.setPictures(CollectionUtils.isEmpty(form.getPictures()) ? null : GsonUtil.obj2Json(form.getPictures()));
+        return productCommentMapper.updateByPrimaryKeySelective(comment);
     }
 
     @Override
@@ -120,10 +115,10 @@ public class ProductCommentServiceImpl implements ProductCommentService {
             throw new ServiceException("商品评价不存在");
         }
 
-        ProductComment productComment = new ProductComment();
-        productComment.setId(commentId);
-        productComment.setDeleteStatus(Constants.IS_DELETE);
-        return productCommentMapper.updateByPrimaryKeySelective(productComment);
+        ProductComment comment = new ProductComment();
+        comment.setId(commentId);
+        comment.setDeleteStatus(Constants.IS_DELETE);
+        return productCommentMapper.updateByPrimaryKeySelective(comment);
     }
 
 }

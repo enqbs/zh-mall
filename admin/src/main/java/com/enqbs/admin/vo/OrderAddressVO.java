@@ -1,4 +1,4 @@
-package com.enqbs.app.pojo.vo;
+package com.enqbs.admin.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-public class OrderShippingAddressVO implements Serializable {
+public class OrderAddressVO implements Serializable {
 
     private Long orderNo;
 
@@ -21,7 +21,7 @@ public class OrderShippingAddressVO implements Serializable {
 
     @Override
     public String toString() {
-        return "OrderShippingAddressVO{" +
+        return "OrderAddressVO{" +
                 "orderNo=" + orderNo +
                 ", name='" + name + '\'' +
                 ", telNo='" + telNo + '\'' +

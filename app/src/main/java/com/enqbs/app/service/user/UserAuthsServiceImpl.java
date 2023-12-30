@@ -2,9 +2,8 @@ package com.enqbs.app.service.user;
 
 import com.enqbs.generator.dao.UserAuthsMapper;
 import com.enqbs.generator.pojo.UserAuths;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
 
 @Service
 public class UserAuthsServiceImpl implements UserAuthsService {

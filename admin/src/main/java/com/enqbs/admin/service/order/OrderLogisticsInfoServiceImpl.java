@@ -5,12 +5,11 @@ import com.enqbs.admin.form.LogisticsInfoForm;
 import com.enqbs.admin.vo.OrderLogisticsInfoVO;
 import com.enqbs.generator.dao.OrderLogisticsInfoMapper;
 import com.enqbs.generator.pojo.OrderLogisticsInfo;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderLogisticsInfoServiceImpl implements OrderLogisticsInfoService {
@@ -24,8 +23,7 @@ public class OrderLogisticsInfoServiceImpl implements OrderLogisticsInfoService 
     @Override
     public List<OrderLogisticsInfoVO> getOrderLogisticsInfoVOList(Set<Long> orderNoSet) {
         List<OrderLogisticsInfo> orderLogisticsInfoList = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
-        return orderLogisticsInfoList.stream()
-                .map(e -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(e)).collect(Collectors.toList());
+        return orderLogisticsInfoList.stream().map(o -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(o)).toList();
     }
 
     @Override

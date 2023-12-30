@@ -6,12 +6,11 @@ import com.enqbs.common.util.IDUtil;
 import com.enqbs.file.config.AliOSSConfig;
 import com.enqbs.file.enums.DirEnum;
 import com.enqbs.file.service.FileService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
 
 @Service
 public class FileServiceImpl implements FileService {

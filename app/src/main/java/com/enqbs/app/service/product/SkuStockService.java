@@ -12,16 +12,16 @@ public interface SkuStockService {
     /*
      * 批量获取 sku 库存信息
      * */
-    List<SkuStock> getSkuStockList(Set<Integer> skuIdSet);
+    List<SkuStock> getStockList(Set<Integer> skuIdSet);
 
     /*
      * 锁定商品库存
      * */
-    void lockSkuStock(Long orderNo, List<SkuStockDTO> skuStockDTOList);
+    void lockStock(Long orderNo, List<SkuStockDTO> stockDTOList);
 
     /*
      * 解锁商品库存
      * */
-    void unLockSkuStock(Long orderNo, OrderStatusEnum orderStatusEnum);
+    void unLockStock(Long orderNo, OrderStatusEnum orderStatusEnum);
 
 }

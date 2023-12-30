@@ -1,8 +1,8 @@
 package com.enqbs.admin.controller;
 
-import com.enqbs.admin.form.ProductOverviewForm;
-import com.enqbs.admin.form.ProductSlideForm;
-import com.enqbs.admin.form.ProductSpecForm;
+import com.enqbs.admin.form.SpuOverviewForm;
+import com.enqbs.admin.form.SpuSlideForm;
+import com.enqbs.admin.form.SpuSpecForm;
 import com.enqbs.admin.service.product.SpuOverviewService;
 import com.enqbs.admin.service.product.SpuSlideService;
 import com.enqbs.admin.service.product.SpuSpecService;
@@ -11,6 +11,8 @@ import com.enqbs.admin.vo.SpuSlideVO;
 import com.enqbs.admin.vo.SpuSpecVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.R;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,9 +22,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/product")
@@ -39,13 +38,13 @@ public class SpuAdditionalController {
 
     @GetMapping("/overview/{spuId}")
     public R<SpuOverviewVO> productOverview(@PathVariable Integer spuId) {
-        SpuOverviewVO spuOverviewInfo = spuOverviewService.getSpuOverviewVO(spuId);
-        return R.ok(spuOverviewInfo);
+        SpuOverviewVO overviewInfo = spuOverviewService.getOverviewVO(spuId);
+        return R.ok(overviewInfo);
     }
 
     @PostMapping("/overview")
     @PreAuthorize("hasAuthority('PRODUCT:ADD')")
-    public R<Void> addProductOverview(@Valid @RequestBody ProductOverviewForm form) {
+    public R<Void> addProductOverview(@Valid @RequestBody SpuOverviewForm form) {
         int row = spuOverviewService.insert(form);
 
         if (row <= 0) {
@@ -57,7 +56,7 @@ public class SpuAdditionalController {
 
     @PutMapping("/overview")
     @PreAuthorize("hasAuthority('PRODUCT:UPDATE')")
-    public R<Void> updateProductOverview(@Valid @RequestBody ProductOverviewForm form) {
+    public R<Void> updateProductOverview(@Valid @RequestBody SpuOverviewForm form) {
         int row = spuOverviewService.update(form);
 
         if (row <= 0) {
@@ -81,13 +80,13 @@ public class SpuAdditionalController {
 
     @GetMapping("/spec/{spuId}")
     public R<SpuSpecVO> productSpec(@PathVariable Integer spuId) {
-        SpuSpecVO spuSpecInfo = spuSpecService.getSpuSpecVO(spuId);
-        return R.ok(spuSpecInfo);
+        SpuSpecVO specInfo = spuSpecService.getSpecVO(spuId);
+        return R.ok(specInfo);
     }
 
     @PostMapping("/spec")
     @PreAuthorize("hasAuthority('PRODUCT:ADD')")
-    public R<Void> addProductSpec(@Valid @RequestBody ProductSpecForm form) {
+    public R<Void> addProductSpec(@Valid @RequestBody SpuSpecForm form) {
         int row = spuSpecService.insert(form);
 
         if (row <= 0) {
@@ -99,7 +98,7 @@ public class SpuAdditionalController {
 
     @PutMapping("/spec")
     @PreAuthorize("hasAuthority('PRODUCT:UPDATE')")
-    public R<Void> updateProductSpec(@Valid @RequestBody ProductSpecForm form) {
+    public R<Void> updateProductSpec(@Valid @RequestBody SpuSpecForm form) {
         int row = spuSpecService.update(form);
 
         if (row <= 0) {
@@ -123,13 +122,13 @@ public class SpuAdditionalController {
 
     @GetMapping("/slide/{spuId}")
     public R<SpuSlideVO> productSlide(@PathVariable Integer spuId) {
-        SpuSlideVO spuSlideInfo = spuSlideService.getSpuSlideVO(spuId);
-        return R.ok(spuSlideInfo);
+        SpuSlideVO slideInfo = spuSlideService.getSlideVO(spuId);
+        return R.ok(slideInfo);
     }
 
     @PostMapping("/slide")
     @PreAuthorize("hasAuthority('PRODUCT:ADD')")
-    public R<Void> addProductSlide(@Valid @RequestBody ProductSlideForm form) {
+    public R<Void> addProductSlide(@Valid @RequestBody SpuSlideForm form) {
         int row = spuSlideService.insert(form);
 
         if (row <= 0) {
@@ -141,7 +140,7 @@ public class SpuAdditionalController {
 
     @PutMapping("/slide")
     @PreAuthorize("hasAuthority('PRODUCT:UPDATE')")
-    public R<Void> updateProductSlide(@Valid @RequestBody ProductSlideForm form) {
+    public R<Void> updateProductSlide(@Valid @RequestBody SpuSlideForm form) {
         int row = spuSlideService.update(form);
 
         if (row <= 0) {

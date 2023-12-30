@@ -2,14 +2,15 @@ package com.enqbs.admin.controller;
 
 import com.enqbs.admin.form.SysRelationshipBindingForm;
 import com.enqbs.admin.form.SysRoleForm;
-import com.enqbs.admin.service.user.SysMenuService;
-import com.enqbs.admin.service.user.SysRoleMenuService;
-import com.enqbs.admin.service.user.SysRoleService;
-import com.enqbs.admin.vo.SysMenuVO;
+import com.enqbs.admin.service.sys.MenuService;
+import com.enqbs.admin.service.sys.RoleMenuService;
+import com.enqbs.admin.service.sys.RoleService;
 import com.enqbs.admin.vo.SysRoleVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,49 +22,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/role")
 public class SysRoleController {
 
     @Resource
-    private SysRoleService sysRoleService;
+    private RoleService roleService;
 
     @Resource
-    private SysMenuService sysMenuService;
+    private MenuService menuService;
 
     @Resource
-    private SysRoleMenuService sysRoleMenuService;
+    private RoleMenuService roleMenuService;
 
     @GetMapping("/list")
-    public R<PageUtil<SysRoleVO>> roleList(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+    public R<PageUtil<SysRoleVO>> rolePage(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                            @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<SysRoleVO> pageSysRoleList = sysRoleService.getSysRoleVOList(deleteStatus,
-                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageSysRoleList);
+        PageUtil<SysRoleVO> roleVOPage = roleService.roleVOPage(deleteStatus, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
+        return R.ok(roleVOPage);
     }
 
     @GetMapping("/{roleId}")
-    public R<Map<String, Object>> roleDetail(@PathVariable Integer roleId) throws ExecutionException, InterruptedException {
-        List<SysMenuVO> sysMenuList = sysMenuService.getSysMenuVOList(roleId).get();
-        SysRoleVO sysRoleInfo = sysRoleService.getSysRoleVO(roleId);
+    public R<Map<String, Object>> roleDetail(@PathVariable Integer roleId) {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("roleInfo", sysRoleInfo);
-        resultMap.put("menuList", sysMenuList);
+        resultMap.put("roleInfo", roleService.getRoleVO(roleId));
+        resultMap.put("menuList", menuService.getMenuVOList(roleId));
         return R.ok(resultMap);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority('SYS_ROLE:ADD')")
     public R<Void> addRole(@Valid @RequestBody SysRoleForm form) {
-        int row = sysRoleService.insert(form);
+        int row = roleService.insert(form);
 
         if (row <= 0) {
             throw new ServiceException("角色新增失败");
@@ -75,7 +69,7 @@ public class SysRoleController {
     @PutMapping("/{roleId}")
     @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
     public R<Void> updateRole(@PathVariable Integer roleId, @Valid @RequestBody SysRoleForm form) {
-        int row = sysRoleService.update(roleId, form);
+        int row = roleService.update(roleId, form);
 
         if (row <= 0) {
             throw new ServiceException("角色修改失败");
@@ -87,7 +81,7 @@ public class SysRoleController {
     @DeleteMapping("/{roleId}")
     @PreAuthorize("hasAuthority('SYS_ROLE:DELETE')")
     public R<Void> deleteRole(@PathVariable Integer roleId) {
-        int row = sysRoleService.delete(roleId);
+        int row = roleService.delete(roleId);
 
         if (row <= 0) {
             throw new ServiceException("角色删除失败");
@@ -99,7 +93,7 @@ public class SysRoleController {
     @PostMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
     public R<Void> roleMenuBind(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysRoleMenuService.batchInsert(form.getBindId(), form.getToIdSet());
+        int row = roleMenuService.batchInsert(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("绑定权限失败");
@@ -111,7 +105,7 @@ public class SysRoleController {
     @PutMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_ROLE:UPDATE')")
     public R<Void> updateRoleMenu(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysRoleMenuService.batchUpdate(form.getBindId(), form.getToIdSet());
+        int row = roleMenuService.batchUpdate(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("修改权限失败");
@@ -123,7 +117,7 @@ public class SysRoleController {
     @DeleteMapping("/bind")
     @PreAuthorize("hasAuthority('SYS_ROLE:DELETE')")
     public R<Void> deleteRoleMenu(@Valid @RequestBody SysRelationshipBindingForm form) {
-        int row = sysRoleMenuService.batchDelete(form.getBindId(), form.getToIdSet());
+        int row = roleMenuService.batchDelete(form.getBindId(), form.getToIdSet());
 
         if (row <= 0) {
             throw new ServiceException("删除权限失败");

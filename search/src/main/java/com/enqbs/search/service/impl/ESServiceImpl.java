@@ -3,11 +3,12 @@ package com.enqbs.search.service.impl;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import com.enqbs.search.pojo.SearchParam;
 import com.enqbs.search.service.ESService;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 
 @Service
@@ -17,8 +18,8 @@ public class ESServiceImpl implements ESService {
     private ElasticsearchClient esClient;
 
     @Override
-    public <T> SearchResponse<T> search(SearchParam param, Class<T> clazz) throws IOException {
-        return esClient.search(s -> s
+    public <T> HitsMetadata<T> search(SearchParam param, Class<T> clazz) throws IOException {
+        SearchResponse<T> response = esClient.search(s -> s
                 .index(param.getIndex())
                 .query(q -> q
                         .match(m -> m
@@ -26,7 +27,7 @@ public class ESServiceImpl implements ESService {
                                 .query(param.getSearchText())
                         )
                 )
-                .sort(sort -> sort
+                .sort(st -> st
                         .field(f -> f
                                 .field(param.getSortField())
                                 .order(param.getSortOrder())
@@ -35,6 +36,7 @@ public class ESServiceImpl implements ESService {
                 .from((param.getPageNum() - 1) * param.getPageSize())
                 .size(param.getPageSize()), clazz
         );
+        return response.hits();
     }
 
     @Override
@@ -43,7 +45,6 @@ public class ESServiceImpl implements ESService {
                 .index(index)
                 .id(id), clazz
         );
-
         return response.source();
     }
 

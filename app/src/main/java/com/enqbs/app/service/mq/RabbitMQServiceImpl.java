@@ -6,13 +6,12 @@ import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.IDUtil;
 import com.enqbs.generator.dao.MessageQueueLogMapper;
 import com.enqbs.generator.pojo.MessageQueueLog;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 
 @Service
 public class RabbitMQServiceImpl implements RabbitMQService {
@@ -40,9 +39,9 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageId));
         insert(messageId, queue.getExchange(), queue.getRoutingKey(), queue.getQueue(), message, delay);
-        rabbitTemplate.convertAndSend(queue.getExchange(), queue.getRoutingKey(), message, messagePostProcessor -> {
-                    messagePostProcessor.getMessageProperties().setDelay(delay);
-                    return messagePostProcessor;
+        rabbitTemplate.convertAndSend(queue.getExchange(), queue.getRoutingKey(), message, m -> {
+                    m.getMessageProperties().setDelay(delay);
+                    return m;
                 }, correlationData
         );
     }
@@ -58,9 +57,9 @@ public class RabbitMQServiceImpl implements RabbitMQService {
         CorrelationData correlationData = new CorrelationData();
         correlationData.setId(String.valueOf(messageQueueLog.getMessageId()));
         rabbitTemplate.convertAndSend(messageQueueLog.getExchange(), messageQueueLog.getRoutingKey(),
-                messageQueueLog.getContent(), messagePostProcessor -> {
-                    messagePostProcessor.getMessageProperties().setDelay(messageQueueLog.getDelay());
-                    return messagePostProcessor;
+                messageQueueLog.getContent(), m -> {
+                    m.getMessageProperties().setDelay(messageQueueLog.getDelay());
+                    return m;
                 }, correlationData
         );
     }

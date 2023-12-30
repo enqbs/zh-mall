@@ -1,14 +1,14 @@
 package com.enqbs.admin.form;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
 @Setter
-public class ProductOverviewForm {
+public class SpuOverviewForm {
 
     @NotNull(message = "商品ID不能为空")
     private Integer spuId;

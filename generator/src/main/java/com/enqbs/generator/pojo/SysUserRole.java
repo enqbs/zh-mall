@@ -3,6 +3,7 @@ package com.enqbs.generator.pojo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Getter
@@ -13,6 +14,7 @@ public class SysUserRole implements Serializable {
 
     private Integer roleId;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Override

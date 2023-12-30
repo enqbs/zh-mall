@@ -24,10 +24,10 @@ public interface SkuStockMapper {
 
     List<SkuStock> selectListBySkuIdSet(@Param("skuIdSet") Set<Integer> skuIdSet);
 
-    int batchUpdateBySkuStockListLockStock(@Param("stockList") List<SkuStock> stockList);
+    int batchUpdateByStockListLockStock(@Param("stockList") List<SkuStock> stockList);
 
-    int batchUpdateBySkuStockListUnLockStockRollback(@Param("stockList") List<SkuStock> stockList);
+    int batchUpdateByStockListUnLockStockRollback(@Param("stockList") List<SkuStock> stockList);
 
-    int batchUpdateBySkuStockListUnLockStockDelete(@Param("stockList") List<SkuStock> stockList);
+    int batchUpdateByStockListUnLockStockDelete(@Param("stockList") List<SkuStock> stockList);
 
 }

@@ -1,9 +1,7 @@
 package com.enqbs.security.service;
 
 import com.enqbs.security.pojo.LoginUser;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.concurrent.Future;
+import jakarta.servlet.http.HttpServletRequest;
 
 public interface TokenService {
 
@@ -20,7 +18,7 @@ public interface TokenService {
     /*
      * 刷新 token
      * */
-    Future<String> refreshToken(String token);
+    String refreshToken(String token);
 
     /*
      * 获取 LoginUser

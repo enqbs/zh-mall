@@ -8,6 +8,8 @@ import com.enqbs.app.pojo.vo.OrderVO;
 import com.enqbs.app.enums.SortEnum;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,13 +56,13 @@ public class OrderController {
     }
 
     @GetMapping("/list")
-    public R<PageUtil<OrderVO>> orderList(@RequestParam(required = false) Integer status,
+    public R<PageUtil<OrderVO>> orderPage(@RequestParam(required = false) Integer status,
                                           @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                           @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        PageUtil<OrderVO> pageOrderList = orderService.getOrderVOList(status, sort,
+        PageUtil<OrderVO> orderVOPage = orderService.orderVOPage(status, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 5 : pageSize);
-        return R.ok(pageOrderList);
+        return R.ok(orderVOPage);
     }
 
     @PutMapping("/receipt/{orderNo}")

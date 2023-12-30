@@ -44,7 +44,7 @@ public class OrderVO implements Serializable {
 
     private Date updateTime;
 
-    private OrderShippingAddressVO shippingAddress;
+    private OrderAddressVO address;
 
     private OrderLogisticsInfoVO logisticsInfo;
 
@@ -69,7 +69,7 @@ public class OrderVO implements Serializable {
                 ", shipTime=" + shipTime +
                 ", signReceiptTime=" + signReceiptTime +
                 ", updateTime=" + updateTime +
-                ", shippingAddress=" + shippingAddress +
+                ", address=" + address +
                 ", logisticsInfo=" + logisticsInfo +
                 ", orderItemList=" + orderItemList +
                 '}';

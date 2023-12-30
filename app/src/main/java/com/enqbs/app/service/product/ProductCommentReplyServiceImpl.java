@@ -11,13 +11,12 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductCommentReplyMapper;
 import com.enqbs.generator.pojo.ProductCommentReply;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductCommentReplyServiceImpl implements ProductCommentReplyService {
@@ -32,41 +31,36 @@ public class ProductCommentReplyServiceImpl implements ProductCommentReplyServic
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCommentReplyVO> getProductCommentReplyVOList(Integer commentId, SortEnum sort,
-                                                                        Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCommentReplyVO> commentReplyVOPage(Integer commentId, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<ProductCommentReplyVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCommentReply> productCommentReplyList = productCommentReplyMapper
-                .selectListByParam(commentId, sort.getSortType(), pageNum, pageSize);
+        List<ProductCommentReply> commentReplyList = productCommentReplyMapper.selectListByParam(commentId, sort.getSortType(), pageNum, pageSize);
 
-        if (CollectionUtils.isEmpty(productCommentReplyList)) {
+        if (CollectionUtils.isEmpty(commentReplyList)) {
             return pageUtil;
         }
 
         Long total = productCommentReplyMapper.countByCommentId(commentId);
         pageUtil.setTotal(total);
-        pageUtil.setList(productCommentReplyList.stream()
-                .map(e -> productConvert.productCommentReply2ProductCommentReplyVO(e)).collect(Collectors.toList())
-        );
+        pageUtil.setList(commentReplyList.stream().map(c -> productConvert.commentReply2CommentReplyVO(c)).toList());
         return pageUtil;
     }
 
     @Override
-    public List<ProductCommentReplyVO> getProductCommentReplyVOList(Integer commentId) {
-        List<ProductCommentReply> productCommentReplyList = productCommentReplyMapper.selectListByCommentId(commentId);
-        return productCommentReplyList.stream()
-                .map(e -> productConvert.productCommentReply2ProductCommentReplyVO(e)).collect(Collectors.toList());
+    public List<ProductCommentReplyVO> getCommentReplyVOList(Integer commentId) {
+        List<ProductCommentReply> commentReplyList = productCommentReplyMapper.selectListByCommentId(commentId);
+        return commentReplyList.stream().map(c -> productConvert.commentReply2CommentReplyVO(c)).toList();
     }
 
     @Override
     public int insert(ProductCommentReplyForm form) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        ProductCommentReply productCommentReply = productConvert.productCommentReplyForm2ProductCommentReply(form);
-        productCommentReply.setUserId(userInfoVO.getUserId());
-        productCommentReply.setNickName(userInfoVO.getNickName());
-        productCommentReply.setPhoto(userInfoVO.getPhoto());
-        return productCommentReplyMapper.insertSelective(productCommentReply);
+        ProductCommentReply commentReply = productConvert.form2CommentReply(form);
+        commentReply.setUserId(userInfoVO.getUserId());
+        commentReply.setNickName(userInfoVO.getNickName());
+        commentReply.setPhoto(userInfoVO.getPhoto());
+        return productCommentReplyMapper.insertSelective(commentReply);
     }
 
     @Override
@@ -78,10 +72,10 @@ public class ProductCommentReplyServiceImpl implements ProductCommentReplyServic
             throw new ServiceException("评论不存在");
         }
 
-        ProductCommentReply productCommentReply = new ProductCommentReply();
-        productCommentReply.setId(replyId);
-        productCommentReply.setDeleteStatus(Constants.IS_DELETE);
-        return productCommentReplyMapper.updateByPrimaryKeySelective(productCommentReply);
+        ProductCommentReply commentReply = new ProductCommentReply();
+        commentReply.setId(replyId);
+        commentReply.setDeleteStatus(Constants.IS_DELETE);
+        return productCommentReplyMapper.updateByPrimaryKeySelective(commentReply);
     }
 
 }

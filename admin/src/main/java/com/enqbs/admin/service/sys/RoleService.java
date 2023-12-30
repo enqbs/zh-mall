@@ -1,20 +1,20 @@
-package com.enqbs.admin.service.user;
+package com.enqbs.admin.service.sys;
 
 import com.enqbs.admin.form.SysRoleForm;
 import com.enqbs.admin.vo.SysRoleVO;
 import com.enqbs.common.util.PageUtil;
 
-public interface SysRoleService {
+public interface RoleService {
 
     /*
      * 角色列表
      * */
-    PageUtil<SysRoleVO> getSysRoleVOList(Integer deleteStatus, Integer pageNum, Integer pageSize);
+    PageUtil<SysRoleVO> roleVOPage(Integer deleteStatus, Integer pageNum, Integer pageSize);
 
     /*
      * 角色详情
      * */
-    SysRoleVO getSysRoleVO(Integer id);
+    SysRoleVO getRoleVO(Integer id);
 
     /*
      * 新增角色

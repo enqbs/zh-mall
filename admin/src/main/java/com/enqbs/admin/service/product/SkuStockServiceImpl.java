@@ -5,12 +5,11 @@ import com.enqbs.admin.vo.SkuStockVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.generator.dao.SkuStockMapper;
 import com.enqbs.generator.pojo.SkuStock;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class SkuStockServiceImpl implements SkuStockService {
@@ -22,34 +21,34 @@ public class SkuStockServiceImpl implements SkuStockService {
     private ProductConvert productConvert;
 
     @Override
-    public List<SkuStockVO> getSkuStockVOList(Set<Integer> skuIdSet) {
-        List<SkuStock> skuStockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
-        return skuStockList.stream().map(e -> productConvert.skuStock2SkuStockVO(e)).collect(Collectors.toList());
+    public List<SkuStockVO> getStockVOList(Set<Integer> skuIdSet) {
+        List<SkuStock> stockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
+        return stockList.stream().map(s -> productConvert.stock2StockVO(s)).toList();
     }
 
     @Override
     public int insert(Integer skuId, Integer count) {
-        SkuStock skuStock = new SkuStock();
-        skuStock.setSkuId(skuId);
-        skuStock.setActualStock(count);
-        skuStock.setStock(count);
-        return skuStockMapper.insertSelective(skuStock);
+        SkuStock stock = new SkuStock();
+        stock.setSkuId(skuId);
+        stock.setActualStock(count);
+        stock.setStock(count);
+        return skuStockMapper.insertSelective(stock);
     }
 
     @Override
     public int update(Integer skuId, Integer count) {
-        SkuStock skuStock = new SkuStock();
-        skuStock.setSkuId(skuId);
-        skuStock.setActualStock(count);
-        skuStock.setStock(count);
-        return skuStockMapper.updateByPrimaryKeySelective(skuStock);
+        SkuStock stock = new SkuStock();
+        stock.setSkuId(skuId);
+        stock.setActualStock(count);
+        stock.setStock(count);
+        return skuStockMapper.updateByPrimaryKeySelective(stock);
     }
 
     @Override
     public int delete(Integer skuId) {
-        SkuStock skuStock = skuStockMapper.selectBySkuId(skuId);
-        skuStock.setDeleteStatus(Constants.IS_DELETE);
-        return skuStockMapper.updateByPrimaryKeySelective(skuStock);
+        SkuStock stock = skuStockMapper.selectBySkuId(skuId);
+        stock.setDeleteStatus(Constants.IS_DELETE);
+        return skuStockMapper.updateByPrimaryKeySelective(stock);
     }
 
 }

@@ -1,8 +1,4 @@
 spring:
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    default-property-inclusion: non_null
   rabbitmq:
     host: 192.168.43.2
     port: 5672
@@ -16,16 +12,14 @@ spring:
     listener:
       simple:
         acknowledge-mode: manual
-
-thread-pool:
-  core-pool-size: 12
-  max-pool-size: 24
-  work-queue-size: 1000
-  keep-alive-seconds: 300
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
 
 elastic:
   address:
-    - "192.168.43.2:9200"
+    - 192.168.43.2:9200
 
 logstash:
   host: 192.168.43.2

@@ -6,16 +6,15 @@ import com.enqbs.pay.enums.PayStatusEnum;
 import com.enqbs.pay.enums.PayTypeEnum;
 import com.enqbs.pay.factory.PayFactory;
 import com.enqbs.pay.service.PayService;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/pay")
@@ -29,21 +28,21 @@ public class PayController {
 
     @GetMapping("/alipay-page/{orderNo}")
     public ModelAndView aliPayPage(@PathVariable Long orderNo) {
-        PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PC_PAGE);
-        String body = payService.createPay(PayTypeEnum.ALIPAY_PC_PAGE, orderNo, payInfoService.getPayAmount(orderNo));
-        return new ModelAndView("alipayPage").addObject("body", body);
+        PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PC);
+        String body = payService.createPay(PayTypeEnum.ALIPAY_PC, orderNo, payInfoService.getAmount(orderNo));
+        return new ModelAndView("alipay-page").addObject("body", body);
     }
 
     @PostMapping("/async-notify")
     public void asyncNotify(HttpServletRequest request, HttpServletResponse response) {
         String orderNo = request.getParameter("out_trade_no");
         String platformNo = request.getParameter("trade_no");
-        PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PC_PAGE);
+        PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PC);
         boolean result = payService.asyncNotify(request, response);
 
         if (result) {
-            payInfoService.update(PayTypeEnum.ALIPAY_PC_PAGE, PayStatusEnum.PAY_SUCCESS, orderNo, platformNo);
-            payService.closePay(orderNo, platformNo);       // 关闭支付
+            Thread.ofVirtual().name("asyncNotify-closePay").start(() -> payService.closePay(orderNo, platformNo));
+            payInfoService.update(PayTypeEnum.ALIPAY_PC, PayStatusEnum.PAY_SUCCESS, orderNo, platformNo);
         } else {
             throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + platformNo + ",支付回调通知异常");
         }

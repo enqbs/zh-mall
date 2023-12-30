@@ -1,8 +1,8 @@
-package com.enqbs.admin.service.user;
+package com.enqbs.admin.service.sys;
 
 import java.util.Set;
 
-public interface SysUserRoleService {
+public interface UserRoleService {
 
     /*
      * 用户绑定角色

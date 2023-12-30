@@ -172,11 +172,11 @@
   <update id="updateByDeductQuantity" parameterType="map">
     update tb_coupon
     set quantity = quantity - #{quantity,jdbcType=INTEGER}
-    where id = #{couponId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
       and quantity >= #{quantity,jdbcType=INTEGER}
   </update>
 
-  <select id="selectListByCouponIdSet" parameterType="java.util.Set" resultMap="BaseResultMap">
+  <select id="selectListByIdSet" parameterType="java.util.Set" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from tb_coupon

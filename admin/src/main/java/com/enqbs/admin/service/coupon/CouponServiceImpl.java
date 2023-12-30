@@ -8,14 +8,13 @@ import com.enqbs.common.constant.Constants;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.CouponMapper;
 import com.enqbs.generator.pojo.Coupon;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CouponServiceImpl implements CouponService {
@@ -27,8 +26,8 @@ public class CouponServiceImpl implements CouponService {
     private CouponConvert couponConvert;
 
     @Override
-    public PageUtil<CouponVO> getCouponVOList(Integer productId, Date startDate, Date endDate, Integer status,
-                                              Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<CouponVO> couponVOPage(Integer productId, Date startDate, Date endDate, Integer status,
+                                           Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         PageUtil<CouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
@@ -41,7 +40,7 @@ public class CouponServiceImpl implements CouponService {
 
         Long total = couponMapper.countByParam(productId, startDate, endDate, status, deleteStatus);
         pageUtil.setTotal(total);
-        pageUtil.setList(couponList.stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList()));
+        pageUtil.setList(couponList.stream().map(c -> couponConvert.coupon2CouponVO(c)).toList());
         return pageUtil;
     }
 
@@ -53,13 +52,13 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public int insert(CouponForm form) {
-        Coupon coupon = couponConvert.couponForm2Coupon(form);
+        Coupon coupon = couponConvert.form2Coupon(form);
         return couponMapper.insertSelective(coupon);
     }
 
     @Override
     public int update(Integer couponId, CouponForm form) {
-        Coupon coupon = couponConvert.couponForm2Coupon(form);
+        Coupon coupon = couponConvert.form2Coupon(form);
         coupon.setId(couponId);
         return couponMapper.updateByPrimaryKeySelective(coupon);
     }

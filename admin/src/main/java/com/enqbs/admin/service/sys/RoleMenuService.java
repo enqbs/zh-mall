@@ -1,8 +1,8 @@
-package com.enqbs.admin.service.user;
+package com.enqbs.admin.service.sys;
 
 import java.util.Set;
 
-public interface SysRoleMenuService {
+public interface RoleMenuService {
 
     /*
      * 角色绑定菜单（权限）

@@ -7,7 +7,7 @@ import java.util.Set;
 
 public interface SkuStockService {
 
-    List<SkuStockVO> getSkuStockVOList(Set<Integer> skuIdSet);
+    List<SkuStockVO> getStockVOList(Set<Integer> skuIdSet);
 
     int insert(Integer skuId, Integer count);
 

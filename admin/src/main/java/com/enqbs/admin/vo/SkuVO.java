@@ -32,7 +32,7 @@ public class SkuVO implements Serializable {
 
     private Date updateTime;
 
-    private SkuStockVO skuStock;
+    private SkuStockVO stock;
 
     @Override
     public String toString() {
@@ -47,7 +47,7 @@ public class SkuVO implements Serializable {
                 ", deleteStatus=" + deleteStatus +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
-                ", skuStock=" + skuStock +
+                ", stock=" + stock +
                 '}';
     }
 

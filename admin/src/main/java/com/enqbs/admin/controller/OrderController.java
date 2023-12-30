@@ -8,6 +8,8 @@ import com.enqbs.admin.vo.OrderVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +34,7 @@ public class OrderController {
     private OrderLogisticsInfoService orderLogisticsInfoService;
 
     @GetMapping("/list")
-    public R<PageUtil<OrderVO>> orderList(@RequestParam(required = false) Long orderNo,
+    public R<PageUtil<OrderVO>> orderPage(@RequestParam(required = false) Long orderNo,
                                           @RequestParam(required = false) String orderSc,
                                           @RequestParam(required = false) Integer userId,
                                           @RequestParam(required = false) Integer paymentType,
@@ -43,9 +43,9 @@ public class OrderController {
                                           @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                           @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<OrderVO> pageOrderList = orderService.getOrderVOList(orderNo, orderSc, userId, paymentType, status,
+        PageUtil<OrderVO> orderVOPage = orderService.orderVOPage(orderNo, orderSc, userId, paymentType, status,
                 deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageOrderList);
+        return R.ok(orderVOPage);
     }
 
     @GetMapping("/{orderNo}")

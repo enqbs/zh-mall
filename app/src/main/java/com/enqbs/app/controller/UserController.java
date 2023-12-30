@@ -5,16 +5,18 @@ import com.enqbs.app.form.UserShippingAddressForm;
 import com.enqbs.app.pojo.vo.CartVO;
 import com.enqbs.app.pojo.vo.UserCouponVO;
 import com.enqbs.app.pojo.vo.UserInfoVO;
-import com.enqbs.app.pojo.vo.UserShippingAddressVO;
+import com.enqbs.app.pojo.vo.UserAddressVO;
 import com.enqbs.app.service.user.CartService;
 import com.enqbs.app.service.user.UserCouponService;
 import com.enqbs.app.service.user.UserService;
-import com.enqbs.app.service.user.UserShippingAddressService;
+import com.enqbs.app.service.user.UserAddressService;
 import com.enqbs.app.enums.SortEnum;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.common.util.R;
 import com.enqbs.security.service.TokenService;
+import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class UserController {
     @Resource
     private UserService userService;
     @Resource
-    private UserShippingAddressService shippingAddressService;
+    private UserAddressService userAddressService;
     @Resource
     private CartService cartService;
     @Resource
@@ -54,12 +54,7 @@ public class UserController {
         String newToken = token;
 
         if (StringUtils.isNotEmpty(newToken)) {
-            try {
-                newToken = tokenService.refreshToken(newToken).get();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
+            newToken = tokenService.refreshToken(newToken);
             UserInfoVO userInfo = userService.getUserInfoVO();
             resultMap.put("userInfo", userInfo);
             resultMap.put("token", newToken);
@@ -69,8 +64,8 @@ public class UserController {
     }
 
     @PostMapping("/shipping")
-    public R<Void> addShippingAddress(@Valid @RequestBody UserShippingAddressForm form) {
-        int row = shippingAddressService.insert(form);
+    public R<Void> addAddress(@Valid @RequestBody UserShippingAddressForm form) {
+        int row = userAddressService.insert(form);
 
         if (row <= 0) {
             throw new ServiceException("新增收货地址失败");
@@ -79,9 +74,9 @@ public class UserController {
         return R.ok("新增收货地址成功");
     }
 
-    @PutMapping("/shipping/{shippingAddressId}")
-    public R<Void> updateShippingAddress(@PathVariable Integer shippingAddressId, @Valid @RequestBody UserShippingAddressForm form) {
-        int row = shippingAddressService.update(shippingAddressId, form);
+    @PutMapping("/shipping/{addressId}")
+    public R<Void> updateAddress(@PathVariable Integer addressId, @Valid @RequestBody UserShippingAddressForm form) {
+        int row = userAddressService.update(addressId, form);
 
         if (row <= 0) {
             throw new ServiceException("修改收货地址失败");
@@ -90,9 +85,9 @@ public class UserController {
         return R.ok("修改收货地址成功");
     }
 
-    @DeleteMapping("/shipping/{shippingAddressId}")
-    public R<Void> deleteShippingAddress(@PathVariable Integer shippingAddressId) {
-        int row = shippingAddressService.delete(shippingAddressId);
+    @DeleteMapping("/shipping/{addressId}")
+    public R<Void> deleteAddress(@PathVariable Integer addressId) {
+        int row = userAddressService.delete(addressId);
 
         if (row <= 0) {
             throw new ServiceException("删除收货地址失败");
@@ -101,16 +96,16 @@ public class UserController {
         return R.ok("删除收货地址成功");
     }
 
-    @GetMapping("/shipping/{shippingAddressId}")
-    public R<UserShippingAddressVO> shippingAddressDetail(@PathVariable Integer shippingAddressId) {
-        UserShippingAddressVO shippingAddressInfo = shippingAddressService.getUserShippingAddressVO(shippingAddressId);
-        return R.ok(shippingAddressInfo);
+    @GetMapping("/shipping/{addressId}")
+    public R<UserAddressVO> addressDetail(@PathVariable Integer addressId) {
+        UserAddressVO addressInfo = userAddressService.getAddressVO(addressId);
+        return R.ok(addressInfo);
     }
 
     @GetMapping("/shipping/list")
-    public R<List<UserShippingAddressVO>> shippingAddressList() {
-        List<UserShippingAddressVO> shippingAddressList = shippingAddressService.getUserShippingAddressVOList();
-        return R.ok(shippingAddressList);
+    public R<List<UserAddressVO>> addressList() {
+        List<UserAddressVO> addressVOList = userAddressService.getAddressVOList();
+        return R.ok(addressVOList);
     }
 
     @GetMapping("/cart")
@@ -156,19 +151,19 @@ public class UserController {
     }
 
     @GetMapping("/coupon/list")
-    public R<PageUtil<UserCouponVO>> userCouponList(@RequestParam(required = false) Integer status,
-                                                    @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                                    @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                                    @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        PageUtil<UserCouponVO> pageUserCouponList = userCouponService.getUserCouponVOList(status, sort,
+    public R<PageUtil<UserCouponVO>> couponPage(@RequestParam(required = false) Integer status,
+                                                @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                                @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
+        PageUtil<UserCouponVO> couponVOPage = userCouponService.couponVOPage(status, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 5 : pageSize);
-        return R.ok(pageUserCouponList);
+        return R.ok(couponVOPage);
     }
 
     @GetMapping("/coupon/{couponId}")
-    public R<UserCouponVO> userCouponDetail(@PathVariable Integer couponId) {
-        UserCouponVO userCouponInfo = userCouponService.getUserCouponVO(couponId);
-        return R.ok(userCouponInfo);
+    public R<UserCouponVO> couponDetail(@PathVariable Integer couponId) {
+        UserCouponVO couponInfo = userCouponService.getCouponVO(couponId);
+        return R.ok(couponInfo);
     }
 
     @PostMapping("/coupon/{couponId}")

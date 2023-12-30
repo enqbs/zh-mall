@@ -1,11 +1,11 @@
 package com.enqbs.app.service.user;
 
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipaySystemOauthTokenRequest;
 import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
-import com.enqbs.app.config.AliAuthConfig;
 import com.enqbs.app.convert.UserConvert;
 import com.enqbs.app.enums.LoginTypeEnum;
 import com.enqbs.app.form.ChangeNicknameForm;
@@ -25,15 +25,13 @@ import com.enqbs.generator.pojo.UserAuths;
 import com.enqbs.generator.pojo.UserLevel;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -45,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
-    private AliAuthConfig aliAuthConfig;
+    private AlipayClient aliAuthClient;
     @Resource
     private UserAuthsService userAuthsService;
     @Resource
@@ -54,8 +52,6 @@ public class UserServiceImpl implements UserService {
     private TokenService tokenService;
     @Resource
     private UserConvert userConvert;
-    @Resource
-    private ThreadPoolTaskExecutor executor;
 
     @Override
     public String login(LoginForm form) {
@@ -70,7 +66,7 @@ public class UserServiceImpl implements UserService {
         }
 
         LoginUser loginUser = userAuthsGetLoginUser(userAuths);
-        executor.execute(() -> cacheLoginUser(loginUser));
+        Thread.ofVirtual().name("login-cacheLoginUser").start(() -> cacheLoginUser(loginUser));
         return tokenService.getToken(loginUser);
     }
 
@@ -89,7 +85,7 @@ public class UserServiceImpl implements UserService {
         LoginUser loginUser = ObjectUtils.isEmpty(userAuths) ?
                 userServiceProxy.insert(credential, userInfoShare.getNickName(), userInfoShare.getAvatar()) :
                 userAuthsGetLoginUser(userAuths);
-        executor.execute(() -> cacheLoginUser(loginUser));
+        Thread.ofVirtual().name("loginByAlipayPageAuth-cacheLoginUser").start(() -> cacheLoginUser(loginUser));
         return tokenService.getToken(loginUser);
     }
 
@@ -187,7 +183,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("修改昵称失败");
         }
 
-        executor.execute(() -> {
+        Thread.ofVirtual().name("changeNickname-updateLoginUser").start(() -> {
                     loginUser.setNickName(form.getNickName());
                     removeCacheLoginUser(loginUser);
                     cacheLoginUser(loginUser);
@@ -207,7 +203,7 @@ public class UserServiceImpl implements UserService {
             throw new ServiceException("修改头像失败");
         }
 
-        executor.execute(() -> {
+        Thread.ofVirtual().name("changePhoto-updateLoginUser").start(() -> {
                     loginUser.setPhoto(form.getPhotoURL());
                     removeCacheLoginUser(loginUser);
                     cacheLoginUser(loginUser);
@@ -218,7 +214,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void logout() {
         LoginUser loginUser = tokenService.getLoginUser();
-        executor.execute(() -> removeCacheLoginUser(loginUser));
+        Thread.ofVirtual().name("logout-removeCacheLoginUser").start(() -> removeCacheLoginUser(loginUser));
         tokenService.removeLoginUser();
     }
 
@@ -275,7 +271,7 @@ public class UserServiceImpl implements UserService {
         request.setGrantType("authorization_code");
 
         try {
-            return aliAuthConfig.aliAuthClient().execute(request);
+            return aliAuthClient.execute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -285,7 +281,7 @@ public class UserServiceImpl implements UserService {
         AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
 
         try {
-            return aliAuthConfig.aliAuthClient().execute(request, accessToken);
+            return aliAuthClient.execute(request, accessToken);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }

@@ -3,6 +3,7 @@ package com.enqbs.generator.pojo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -32,6 +33,7 @@ public class User implements Serializable {
 
     private Date updateTime;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Override

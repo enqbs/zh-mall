@@ -1,15 +1,15 @@
 package com.enqbs.admin.service.product;
 
-import com.enqbs.admin.form.ProductSpecForm;
+import com.enqbs.admin.form.SpuSpecForm;
 import com.enqbs.admin.vo.SpuSpecVO;
 
 public interface SpuSpecService {
 
-    SpuSpecVO getSpuSpecVO(Integer spuId);
+    SpuSpecVO getSpecVO(Integer spuId);
 
-    int insert(ProductSpecForm form);
+    int insert(SpuSpecForm form);
 
-    int update(ProductSpecForm form);
+    int update(SpuSpecForm form);
 
     int delete(Integer spuId);
 

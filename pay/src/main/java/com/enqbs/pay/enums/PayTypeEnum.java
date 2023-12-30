@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum PayTypeEnum {
 
-    ALIPAY_PC_PAGE("FAST_INSTANT_TRADE_PAY", PayPlatformEnum.ALI_PAY.getDesc(), "支付宝电脑网站支付"),
+    ALIPAY_PC("FAST_INSTANT_TRADE_PAY", PayPlatformEnum.ALI_PAY.getDesc(), "支付宝电脑网站支付"),
 
     ALIPAY_WAP("QUICK_WAP_WAY", PayPlatformEnum.ALI_PAY.getDesc(), "支付宝手机网站支付"),
 

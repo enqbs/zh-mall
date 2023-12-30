@@ -9,12 +9,12 @@ public interface SkuStockLockService {
     /*
      * 库存锁定信息列表
      * */
-    List<SkuStockLock> getSkuStockLockList(Long orderNo);
+    List<SkuStockLock> getStockLockList(Long orderNo);
 
     /*
      * 批量插入库存锁定信息
      * */
-    void batchInsert(Long orderNo, List<SkuStockLock> skuStockLockList);
+    void batchInsert(Long orderNo, List<SkuStockLock> stockLockList);
 
     /*
      * 删除库存锁定信息

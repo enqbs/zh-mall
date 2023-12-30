@@ -3,10 +3,10 @@ package com.enqbs.pay.factory;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.pay.enums.PayTypeEnum;
 import com.enqbs.pay.service.PayService;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

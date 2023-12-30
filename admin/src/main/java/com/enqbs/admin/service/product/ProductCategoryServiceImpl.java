@@ -8,13 +8,12 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductCategoryMapper;
 import com.enqbs.generator.pojo.ProductCategory;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductCategoryServiceImpl implements ProductCategoryService {
@@ -26,8 +25,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCategoryVO> getCategoryVOList(Integer parentId, Integer homeStatus, Integer naviStatus,
-                                                         Integer deleteStatus, Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCategoryVO> categoryVOPage(Integer parentId, Integer homeStatus, Integer naviStatus,
+                                                      Integer deleteStatus, Integer pageNum, Integer pageSize) {
         PageUtil<ProductCategoryVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
@@ -40,7 +39,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
         Long total = productCategoryMapper.countByParam(parentId, homeStatus, naviStatus, deleteStatus);
         pageUtil.setTotal(total);
-        pageUtil.setList(categoryList.stream().map(e -> productConvert.category2CategoryVO(e)).collect(Collectors.toList()));
+        pageUtil.setList(categoryList.stream().map(c -> productConvert.category2CategoryVO(c)).toList());
         return pageUtil;
     }
 
@@ -52,13 +51,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public int insert(ProductCategoryForm form) {
-        ProductCategory category = productConvert.categoryForm2Category(form);
+        ProductCategory category = productConvert.form2Category(form);
         return productCategoryMapper.insertSelective(category);
     }
 
     @Override
     public int update(Integer categoryId, ProductCategoryForm form) {
-        ProductCategory category = productConvert.categoryForm2Category(form);
+        ProductCategory category = productConvert.form2Category(form);
         category.setId(categoryId);
         return productCategoryMapper.updateByPrimaryKeySelective(category);
     }

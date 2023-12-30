@@ -1,8 +1,8 @@
 package com.enqbs.common.util;
 
 import com.enqbs.common.constant.Constants;
+import jakarta.servlet.http.HttpServletResponse;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 

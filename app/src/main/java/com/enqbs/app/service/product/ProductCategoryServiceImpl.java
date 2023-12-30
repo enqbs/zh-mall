@@ -8,19 +8,17 @@ import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.RedisUtil;
 import com.enqbs.generator.dao.ProductCategoryMapper;
 import com.enqbs.generator.pojo.ProductCategory;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductCategoryServiceImpl implements ProductCategoryService {
@@ -35,8 +33,6 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private SpuService spuService;
     @Resource
     private ProductConvert productConvert;
-    @Resource
-    private ThreadPoolTaskExecutor executor;
 
     @Override
     public ProductCategoryVO getCategoryVO(Integer categoryId) {
@@ -61,8 +57,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             RReadWriteLock lock = redissonClient.getReadWriteLock(lockKey);
             RLock readLock = lock.readLock();
             RLock writeLock = lock.writeLock();
-            /* 异步执行 MySQL 查询 */
-            executor.execute(() -> {
+            /* 异步执行 MySQL 查询(JDK 21新特性 VirtualThread) */
+            Thread.ofVirtual().name("productCategory-handleDBSource").start(() -> {
                         writeLock.lock();
 
                         try {
@@ -98,22 +94,17 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     private void handleDBSource(String key, Integer homeStatus, Integer naviStatus, Integer limit) {
-        String redisStr2 = redisUtil.getString(key);
+        String redisStr = redisUtil.getString(key);
         /* double check,缓存确实为空再查询数据库 */
-        if (StringUtils.isEmpty(redisStr2)) {
-            List<ProductCategory> categoryList = productCategoryMapper
-                    .selectListByParam(null, homeStatus, naviStatus,
-                            Constants.IS_NOT_DELETE, null, null);
+        if (StringUtils.isEmpty(redisStr)) {
+            /* DBSource */
+            List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(null, homeStatus, naviStatus,
+                    Constants.IS_NOT_DELETE, null, null);
             List<ProductCategoryVO> categoryVOList = categoryList.stream()
-                    .filter(category -> category.getParentId().equals(0))
-                    .map(category -> productConvert.category2CategoryVO(category))
-                    .collect(Collectors.toList());
-            findSubProductCategoryVOList(categoryList, categoryVOList);
-            categoryVOList.forEach(categoryVO -> {
-                        List<ProductVO> productVOList = spuService.getProductVOList(categoryVO.getId(), limit);
-                        categoryVO.setProductList(productVOList);
-                    }
-            );
+                    .filter(c -> c.getParentId().equals(0))
+                    .map(c -> productConvert.category2CategoryVO(c)).toList();
+            findSubCategoryVOList(categoryList, categoryVOList);
+            categoryVOList.forEach(cvo -> cvo.setProductList(spuService.getProductVOList(cvo.getId(), limit)));
             long cacheTimeout;
             /* 避免缓存穿透 redis 存放特殊占位符 */
             if (CollectionUtils.isEmpty(categoryVOList)) {
@@ -126,14 +117,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
     }
 
-    private void findSubProductCategoryVOList(List<ProductCategory> categoryList, List<ProductCategoryVO> categoryVOList) {
-        categoryVOList.forEach(categoryVO -> {
+    private void findSubCategoryVOList(List<ProductCategory> categoryList, List<ProductCategoryVO> categoryVOList) {
+        categoryVOList.forEach(cvo -> {
                     List<ProductCategoryVO> subCategoryVOList = categoryList.stream()
-                            .filter(category -> categoryVO.getId().equals(category.getParentId()))
-                            .map(category -> productConvert.category2CategoryVO(category))
-                            .collect(Collectors.toList());
-                    categoryVO.setCategoryList(subCategoryVOList);
-                    findSubProductCategoryVOList(categoryList, subCategoryVOList);
+                            .filter(c -> cvo.getId().equals(c.getParentId()))
+                            .map(c -> productConvert.category2CategoryVO(c)).toList();
+                    cvo.setCategoryList(subCategoryVOList);
+                    findSubCategoryVOList(categoryList, subCategoryVOList);
                 }
         );
     }

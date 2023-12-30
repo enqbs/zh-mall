@@ -3,10 +3,10 @@ package com.enqbs.app.service.product;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.generator.dao.SpuSlideMapper;
 import com.enqbs.generator.pojo.SpuSlide;
+import jakarta.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,11 +17,10 @@ public class SpuSlideServiceImpl implements SpuSlideService {
     private SpuSlideMapper spuSlideMapper;
 
     @Override
-    public List<String> getSpuSlideList(Integer spuId) {
-        SpuSlide spuSlide = spuSlideMapper.selectByPrimaryKey(spuId);
-        return StringUtils.isEmpty(spuSlide.getPictures()) ?
-                Collections.emptyList() :
-                GsonUtil.json2ArrayList(spuSlide.getPictures(), String[].class);
+    public List<String> getSlideList(Integer spuId) {
+        SpuSlide slide = spuSlideMapper.selectByPrimaryKey(spuId);
+        return StringUtils.isEmpty(slide.getPictures()) ?
+                Collections.emptyList() : GsonUtil.json2ArrayList(slide.getPictures(), String[].class);
     }
 
 }
