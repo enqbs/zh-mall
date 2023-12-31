@@ -31,7 +31,7 @@ public class ESProductServiceImpl implements ESProductService {
         HitsMetadata<ESProduct> hitsMetadata;
 
         try {
-            hitsMetadata = esService.search(getSearchParam(searchText, pageNum, pageSize), ESProduct.class);
+            hitsMetadata = esService.search(getSearchParam(searchText, pageNum, pageSize), ESProduct.class).hits();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -83,7 +83,7 @@ public class ESProductServiceImpl implements ESProductService {
 
     private ESProduct getESProduct(Integer spuId) {
         try {
-            return esService.get(ESConstants.INDEX_PRODUCT, String.valueOf(spuId), ESProduct.class);
+            return esService.get(ESConstants.INDEX_PRODUCT, String.valueOf(spuId), ESProduct.class).source();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

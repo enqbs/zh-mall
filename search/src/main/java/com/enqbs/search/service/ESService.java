@@ -1,6 +1,7 @@
 package com.enqbs.search.service;
 
-import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
+import co.elastic.clients.elasticsearch.core.GetResponse;
+import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.enqbs.search.pojo.SearchParam;
 
 import java.io.IOException;
@@ -10,12 +11,12 @@ public interface ESService {
     /*
      * 简单搜索
      * */
-    <T> HitsMetadata<T> search(SearchParam param, Class<T> clazz) throws IOException;
+    <T> SearchResponse<T> search(SearchParam param, Class<T> clazz) throws IOException;
 
     /*
      * Getting documents
      * */
-    <T> T get(String index, String id, Class<T> clazz) throws IOException;
+    <T> GetResponse<T> get(String index, String id, Class<T> clazz) throws IOException;
 
     /*
      * Indexing documents
