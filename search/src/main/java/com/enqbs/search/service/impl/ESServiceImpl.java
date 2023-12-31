@@ -38,13 +38,11 @@ public class ESServiceImpl implements ESService {
     }
 
     @Override
-    public <T> T get(String index, String id, Class<T> clazz) throws IOException {
-        GetResponse<T> response = esClient.get(g -> g
+    public <T> GetResponse<T> get(String index, String id, Class<T> clazz) throws IOException {
+        return esClient.get(g -> g
                 .index(index)
                 .id(id), clazz
         );
-
-        return response.source();
     }
 
     @Override

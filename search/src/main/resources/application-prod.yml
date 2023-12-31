@@ -25,7 +25,7 @@ thread-pool:
 
 elastic:
   address:
-    - "192.168.43.2:9200"
+    - 192.168.43.2:9200
 
 logstash:
   host: 192.168.43.2

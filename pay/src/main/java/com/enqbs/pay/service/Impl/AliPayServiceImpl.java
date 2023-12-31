@@ -2,6 +2,7 @@ package com.enqbs.pay.service.Impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeCloseRequest;
 import com.alipay.api.request.AlipayTradePagePayRequest;
@@ -31,6 +32,9 @@ public class AliPayServiceImpl implements PayService {
 
     @Resource
     private AliPayConfig aliPayConfig;
+
+    @Resource
+    private AlipayClient aliPayClient;
 
     @Override
     public String createPay(PayTypeEnum payType, Long orderNo, BigDecimal amount) {
@@ -85,7 +89,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            AlipayTradePagePayResponse response = aliPayConfig.aliPayClient().pageExecute(request);
+            AlipayTradePagePayResponse response = aliPayClient.pageExecute(request);
 
             if (response.isSuccess()) {
                 return response.getBody();
@@ -104,7 +108,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            AlipayTradeWapPayResponse response = aliPayConfig.aliPayClient().pageExecute(request);
+            AlipayTradeWapPayResponse response = aliPayClient.pageExecute(request);
 
             if (response.isSuccess()) {
                 return response.getBody();
@@ -122,7 +126,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            AlipayTradeAppPayResponse response = aliPayConfig.aliPayClient().sdkExecute(request);
+            AlipayTradeAppPayResponse response = aliPayClient.sdkExecute(request);
 
             if (response.isSuccess()) {
                 return response.getBody();
@@ -139,7 +143,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            AlipayTradeQueryResponse response = aliPayConfig.aliPayClient().execute(request);
+            AlipayTradeQueryResponse response = aliPayClient.execute(request);
             return response.isSuccess();
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
@@ -151,7 +155,7 @@ public class AliPayServiceImpl implements PayService {
         request.setBizContent(bizContent.toString());
 
         try {
-            AlipayTradeCloseResponse response = aliPayConfig.aliPayClient().execute(request);
+            AlipayTradeCloseResponse response = aliPayClient.execute(request);
 
             if (response.isSuccess()) {
                 log.info("订单号:'{}',支付平台流水号:'{}',关闭支付成功.", response.getOutTradeNo(), response.getTradeNo());

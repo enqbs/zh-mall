@@ -33,8 +33,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String getToken(LoginUser loginUser) {
-        return JwtUtil.createToken(loginUser.getUserType(), loginUser.getUserToken(),
-                jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
+        return JwtUtil.createToken(loginUser.getUserType(), loginUser.getUserToken(), jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
     }
 
     @Override
@@ -89,20 +88,18 @@ public class TokenServiceImpl implements TokenService {
                 }
 
                 return true;
-            } else {
-                log.warn("无效Token:'{}'.", token);
-                return false;
             }
+
+            log.warn("无效Token:'{}'.", token);
+            return false;
         }
     }
 
     private String getNewToken(String token) {
         String userToken = getUserToken(token);
         return StringUtils.isNotEmpty(userToken) ?
-                JwtUtil.createToken(Constants.USER_TOKEN, userToken,
-                        jwtPramConfig.getExpire(), jwtPramConfig.getSecret()) :
-                JwtUtil.createToken(Constants.SYS_USER_TOKEN, getSysUserToken(token),
-                        jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
+                JwtUtil.createToken(Constants.USER_TOKEN, userToken, jwtPramConfig.getExpire(), jwtPramConfig.getSecret()) :
+                JwtUtil.createToken(Constants.SYS_USER_TOKEN, getSysUserToken(token), jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
     }
 
     private String getUserToken(String token) {

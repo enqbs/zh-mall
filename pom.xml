@@ -2,6 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.18</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.enqbs</groupId>
+    <artifactId>zh-mall</artifactId>
+    <version>0.0.1</version>
+    <name>zh-mall</name>
+    <description>zh-mall</description>
     <packaging>pom</packaging>
 
     <modules>
@@ -15,32 +27,19 @@
         <module>search</module>
     </modules>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
-        <relativePath/>
-    </parent>
-
-    <groupId>com.enqbs</groupId>
-    <artifactId>zh-mall</artifactId>
-    <version>0.0.1</version>
-    <name>zh-mall</name>
-    <description>zh-mall</description>
-
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <enqbs.version>0.0.1</enqbs.version>
         <mybatis-spring-boot-starter.version>2.3.1</mybatis-spring-boot-starter.version>
-        <hutool-all.version>5.8.23</hutool-all.version>
+        <hutool-all.version>5.8.24</hutool-all.version>
         <java-jwt.version>4.4.0</java-jwt.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <redisson.version>3.19.1</redisson.version>
         <ali-pay.version>4.38.105.ALL</ali-pay.version>
         <ali-oss.version>3.17.2</ali-oss.version>
-        <shardingsphere-jdbc-core-spring-boot-starter.version>5.1.2</shardingsphere-jdbc-core-spring-boot-starter.version>
+        <shardingsphere-jdbc-core-spring-boot-starter.version>5.2.0</shardingsphere-jdbc-core-spring-boot-starter.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     </properties>
@@ -115,7 +114,7 @@
                 <artifactId>mapstruct</artifactId>
                 <version>${mapstruct.version}</version>
             </dependency>
-            <!-- enqbs -->
+            <!-- zh-mall -->
             <dependency>
                 <groupId>com.enqbs</groupId>
                 <artifactId>common</artifactId>

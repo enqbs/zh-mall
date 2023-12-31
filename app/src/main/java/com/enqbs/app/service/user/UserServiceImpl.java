@@ -1,11 +1,11 @@
 package com.enqbs.app.service.user;
 
 import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
 import com.alipay.api.request.AlipaySystemOauthTokenRequest;
 import com.alipay.api.request.AlipayUserInfoShareRequest;
 import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayUserInfoShareResponse;
-import com.enqbs.app.config.AliAuthConfig;
 import com.enqbs.app.convert.UserConvert;
 import com.enqbs.app.enums.LoginTypeEnum;
 import com.enqbs.app.form.ChangeNicknameForm;
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     private PasswordEncoder passwordEncoder;
     @Resource
-    private AliAuthConfig aliAuthConfig;
+    private AlipayClient aliAuthClient;
     @Resource
     private UserAuthsService userAuthsService;
     @Resource
@@ -275,7 +275,7 @@ public class UserServiceImpl implements UserService {
         request.setGrantType("authorization_code");
 
         try {
-            return aliAuthConfig.aliAuthClient().execute(request);
+            return aliAuthClient.execute(request);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }
@@ -285,7 +285,7 @@ public class UserServiceImpl implements UserService {
         AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
 
         try {
-            return aliAuthConfig.aliAuthClient().execute(request, accessToken);
+            return aliAuthClient.execute(request, accessToken);
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);
         }

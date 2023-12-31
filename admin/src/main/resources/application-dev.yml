@@ -1,20 +1,21 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://db.com:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
     username: root
     password: root
     hikari:
       minimum-idle: 12
       maximum-pool-size: 24
       connection-timeout: 60000
+  redis:
+    host: 192.168.43.2
+    port: 6379
+    password: redis-password
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     default-property-inclusion: non_null
-  redis:
-    host: 192.168.43.2
-    port: 6379
   servlet:
     multipart:
       max-file-size: 10MB

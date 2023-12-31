@@ -47,6 +47,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         if (ObjectUtils.isEmpty(payInfo)) {
+            payInfo = new PayInfo();
             payInfo.setOrderNo(orderVO.getOrderNo());
             payInfo.setUserId(orderVO.getUserId());
             payInfo.setPayAmount(orderVO.getActualAmount());

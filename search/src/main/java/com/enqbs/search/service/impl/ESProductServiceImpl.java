@@ -85,7 +85,7 @@ public class ESProductServiceImpl implements ESProductService {
 
     private ESProduct getESProduct(Integer spuId) {
         try {
-            return esService.get(ESConstants.INDEX_PRODUCT, String.valueOf(spuId), ESProduct.class);
+            return esService.get(ESConstants.INDEX_PRODUCT, String.valueOf(spuId), ESProduct.class).source();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

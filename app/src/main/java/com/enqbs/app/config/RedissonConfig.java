@@ -17,10 +17,12 @@ public class RedissonConfig {
 
     private String address;
 
+    private String password;
+
     @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.useSingleServer().setAddress(address);
+        config.useSingleServer().setAddress(address).setPassword(password);
         return Redisson.create(config);
     }
 

@@ -1,5 +1,6 @@
 package com.enqbs.search.service;
 
+import co.elastic.clients.elasticsearch.core.GetResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import com.enqbs.search.pojo.SearchParam;
 
@@ -15,7 +16,7 @@ public interface ESService {
     /*
     * Getting documents
     * */
-    <T> T get(String index, String id, Class<T> clazz) throws IOException;
+    <T> GetResponse<T> get(String index, String id, Class<T> clazz) throws IOException;
 
     /*
     * Indexing documents

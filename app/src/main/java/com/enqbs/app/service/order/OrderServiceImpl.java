@@ -130,8 +130,8 @@ public class OrderServiceImpl implements OrderService {
         String redisKeyOrderConfirm = String.format(Constants.ORDER_CONFIRM_REDIS_KEY, userInfoVO.getUserId());
         OrderConfirmVO orderConfirmVO = GsonUtil.json2Obj(redisUtil.getString(redisKeyOrderConfirm), OrderConfirmVO.class);
 
-        if (ObjectUtils.isNotEmpty(form.getCouponsId())) {
-            try {
+        try {
+            if (ObjectUtils.isNotEmpty(form.getCouponsId())) {
                 UserCouponVO userCouponVO = userCouponService.getUserCouponVO(form.getCouponsId());
 
                 if (Constants.COUPON_USED.equals(userCouponVO.getStatus())
@@ -147,21 +147,15 @@ public class OrderServiceImpl implements OrderService {
                 } else {
                     throw new ServiceException("订单未满足优惠条件");
                 }
-            } catch (Exception e) {
-                redisUtil.setString(redisKeyOrderToken, form.getOrderToken(), Long.valueOf(ORDER_TIMEOUT));
-                redisUtil.setString(redisKeyOrderConfirm, GsonUtil.obj2Json(orderConfirmVO), Long.valueOf(ORDER_TIMEOUT));
-                throw e;
             }
-        } else {
-            orderConfirmVO.setCouponAmount(BigDecimal.ZERO);
-            orderConfirmVO.setActualAmount(orderConfirmVO.getAmount());
+        } finally {
+            executor.execute(() -> {
+                        redisUtil.setString(redisKeyOrderToken, form.getOrderToken(), Long.valueOf(ORDER_TIMEOUT));
+                        redisUtil.setString(redisKeyOrderConfirm, GsonUtil.obj2Json(orderConfirmVO), Long.valueOf(ORDER_TIMEOUT));
+                    }
+            );
         }
 
-        executor.execute(() -> {
-                    redisUtil.setString(redisKeyOrderToken, form.getOrderToken(), Long.valueOf(ORDER_TIMEOUT));
-                    redisUtil.setString(redisKeyOrderConfirm, GsonUtil.obj2Json(orderConfirmVO), Long.valueOf(ORDER_TIMEOUT));
-                }
-        );
         return orderConfirmVO;
     }
 
@@ -174,14 +168,15 @@ public class OrderServiceImpl implements OrderService {
         if (result == 0) {
             throw new ServiceException("订单凭证失效,请刷新页面");
         }
-
-        long orderNo = IDUtil.getId();
-        List<OrderItem> orderItemList = new ArrayList<>();      // 订单项
-        List<SkuStockDTO> stockList = new ArrayList<>();        // 锁定商品库存列表
         /* 缓存获取预生成的订单信息 */
         String redisKeyOrderConfirm = String.format(Constants.ORDER_CONFIRM_REDIS_KEY, userInfoVO.getUserId());
         OrderConfirmVO orderConfirm = GsonUtil.json2Obj(redisUtil.getString(redisKeyOrderConfirm), OrderConfirmVO.class);
-        List<OrderItemVO> orderItemVOList = orderConfirm.getOrderItemList();      // 获取预生成的订单项信息
+        executor.execute(() ->  redisUtil.deleteKey(redisKeyOrderConfirm));
+
+        long orderNo = IDUtil.getId();                                              // 订单号
+        List<OrderItem> orderItemList = new ArrayList<>();                          // 订单项
+        List<SkuStockDTO> stockList = new ArrayList<>();                            // 锁定商品库存列表
+        List<OrderItemVO> orderItemVOList = orderConfirm.getOrderItemList();        // 获取预生成的订单项信息
         Set<Integer> productIdSet = orderItemVOList.stream().map(OrderItemVO::getSpuId).collect(Collectors.toSet());
         Set<Integer> skuIdSet = orderItemVOList.stream().map(OrderItemVO::getSkuId).collect(Collectors.toSet());
         /* List to Map */
@@ -194,28 +189,25 @@ public class OrderServiceImpl implements OrderService {
         /* 验证库存是否充足 */
         for (OrderItemVO orderItemVO : orderItemVOList) {
             ProductVO productVO = productVOMap.get(orderItemVO.getSpuId());
-
-            if (ObjectUtils.isEmpty(productVO)) {
-                throw new ServiceException("商品ID:" + orderItemVO.getSpuId() + ",商品:" + orderItemVO.getSkuTitle() + ",下架或删除");
-            }
-
             SkuVO skuVO = skuVOMap.get(orderItemVO.getSkuId());
             SkuStock stock = stockMap.get(orderItemVO.getSkuId());
 
-            if (ObjectUtils.isEmpty(skuVO) || ObjectUtils.isEmpty(stock)) {
-                throw new ServiceException("商品规格ID:" + orderItemVO.getSkuId() + ",商品:" + orderItemVO.getSkuTitle() + ",下架或删除");
+            if (ObjectUtils.isEmpty(productVO) || ObjectUtils.isEmpty(skuVO) || ObjectUtils.isEmpty(stock)) {
+                throw new ServiceException("商品ID:" + orderItemVO.getSpuId() +
+                        "商品规格ID:" + orderItemVO.getSkuId() + ",商品:" + orderItemVO.getSkuTitle() + ",下架或删除");
             }
 
             if (orderItemVO.getNum() > stock.getStock()) {
-                throw new ServiceException("商品规格ID:" + orderItemVO.getSkuId() + ",商品:" + orderItemVO.getSkuTitle() + ",库存不足");
+                throw new ServiceException("商品ID:" + orderItemVO.getSpuId() +
+                        "商品规格ID:" + orderItemVO.getSkuId() + ",商品:" + orderItemVO.getSkuTitle() + ",库存不足");
             }
 
+            SkuStockDTO skuStockDTO = getSkuStockDTO(stock, orderItemVO);
+            stockList.add(skuStockDTO);
             OrderItem orderItem = orderConvert.orderItemVO2OrderItem(orderItemVO);
             orderItem.setOrderNo(orderNo);
             orderItem.setSkuParams(GsonUtil.obj2Json(orderItemVO.getSkuParams()));
             orderItemList.add(orderItem);
-            SkuStockDTO skuStockDTO = getSkuStockDTO(stock, orderItemVO);
-            stockList.add(skuStockDTO);
         }
         /* 订单收货地址信息 */
         UserShippingAddressVO userShippingAddressVO = userShippingAddressService.getUserShippingAddressVO(form.getShippingAddressId());
@@ -227,7 +219,6 @@ public class OrderServiceImpl implements OrderService {
         executor.execute(() -> {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     cartService.deleteCartProductVOListBySelected();
-                    redisUtil.deleteKey(redisKeyOrderConfirm);
                 }
         );
         log.info("订单号:'{}',订单提交成功.", orderNo);
@@ -268,8 +259,8 @@ public class OrderServiceImpl implements OrderService {
         Long total = orderMapper.countByParam(null, null, userInfoVO.getUserId(),
                 null, status, Constants.IS_NOT_DELETE);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
-        Map<Long, List<OrderItemVO>> orderItemVOMap = orderItemService
-                .getOrderItemVOList(orderNoSet).stream().collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
+        Map<Long, List<OrderItemVO>> orderItemVOMap = orderItemService.getOrderItemVOList(orderNoSet).stream()
+                .collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
         List<OrderVO> orderVOList = orderList.stream().map(e -> {
                     OrderVO orderVO = orderConvert.order2OrderVO(e);
                     orderVO.setOrderItemList(orderItemVOMap.get(orderVO.getOrderNo()));
