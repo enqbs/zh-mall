@@ -59,7 +59,7 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 | AliYun-OSS              | 阿里云对象存储        | 3.17.4            |
 | JWT                     | Json Web Token | -                 |
 | Elasticsearch           | 全文检索           | 8.10.4            |
-| Logstash                | 日志收集工具         | 8.10.4            |
+| Logstash                | 日志收集插件         | 8.10.4            |
 | Kibana                  | ES 可视化工具       | 8.10.4            |
 
 PS：ShardingSphere-JDBC 5.4.1（当前最新版）与 JDK 21部分包名不兼容，项目暂时舍弃该功能。
