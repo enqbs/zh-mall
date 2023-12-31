@@ -34,45 +34,45 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 
 项目达到上线标准。已解决 MySQL 事务原子性、线程安全问题。生产环境（双核2GB内存VPS）写操作压测 QPS 1000 吞吐量 200+/sec。后续会新增项目微服务版本及社区等功能。
 
-PS：项目 Spring Boot 2.0稳定版已完成。后续可能会停止更新，直接升级 Spring Boot 3.0。
+PS：项目 Spring Boot 2.0稳定版已完成。后续可能会停止更新，直接升级 Spring Boot 3.0。极力推荐主（[main](https://github.com/enqbs/zh-mall/tree/main)）分支，第一时间更新功能。
 
 # 技术选择
 
-| 技术                  | 说明                  | 版本                |
-|---------------------| --------------------- |-------------------|
-| Spring Boot         | 容器管理、MVC          | 2.7.18            |
-| Spring Security     | 认证、授权             | 2.7.18            |
-| MyBatis             | ORM                   | 3.5.13            |
-| MyBatis-Generator   | 代码生成插件            | 1.3.7             |
-| MySQL               | 数据库               | 8.0.31            |
-| Redis               | 缓存                | 6.2               |
-| RabbitMQ            | 消息队列              | 3.12.7-management |
-| Canal               | 数据库增量日志解析工具   | deployer-1.1.7    |
-| ShardingSphere-JDBC | 读写分离、数据分片     | 5.1.2             |
-| AliPay-SDK          | 支付宝开源开发工具     | 4.38.105.ALL      |
-| AliYun-OSS          | 阿里云对象存储          | 3.17.2            |
-| JWT                 | Json Web Token      | -                 |
-| Elasticsearch       | 全文检索              | 7.17.15           |
-| Logstash            | 日志收集工具           | 7.17.15           |
-| Kibana              | ES 可视化工具          | 7.17.15           |
+| 技术                  | 说明             | 版本                |
+|---------------------|----------------|-------------------|
+| Spring Boot         | 容器管理、MVC       | 2.7.18            |
+| Spring Security     | 认证、授权          | 5.7.11            |
+| MyBatis             | ORM            | 3.5.13            |
+| MyBatis-Generator   | 代码生成插件         | 1.3.7             |
+| MySQL               | 数据库            | 8.0.31            |
+| Redis               | 缓存             | 6.2               |
+| RabbitMQ            | 消息队列           | 3.12.7-management |
+| Canal               | 数据库增量日志解析工具    | deployer-1.1.7    |
+| ShardingSphere-JDBC | 读写分离、数据分片      | 5.2.0             |
+| AliPay-SDK          | 支付宝开源开发工具      | 4.38.105.ALL      |
+| AliYun-OSS          | 阿里云对象存储        | 3.17.2            |
+| JWT                 | Json Web Token | -                 |
+| Elasticsearch       | 全文检索           | 7.17.15           |
+| Logstash            | 日志收集插件         | 7.17.15           |
+| Kibana              | ES 可视化工具       | 7.17.15           |
 
 # 运行时持久层、中间件选择
 
-| 技术                  | 说明                                         | 是否必选* |
-|---------------------|--------------------------------------------|-------|
-| MySQL               | 数据库 | *     |
-| Redis               | 缓存                                         | *     |
-| RabbitMQ            | 消息队列                                       | *     |
-| Canal               | MySQL、Redis、Elasticsearch 数据同步             | -     |
-| Elasticsearch       | 搜索、日志收集数据库                                 | -     |
-| Logstash            | 日志收集工具                                     | -     |
-| Kibana              | ES 可视化工具                                   | -     |
+| 技术            | 说明                             | 是否必选* |
+|---------------|--------------------------------|-------|
+| MySQL         | 数据库                            | *     |
+| Redis         | 缓存                             | *     |
+| RabbitMQ      | 消息队列                           | *     |
+| Canal         | MySQL、Redis、Elasticsearch 数据同步 | -     |
+| Elasticsearch | 搜索、日志收集                        | -     |
+| Logstash      | 日志收集插件                         | -     |
+| Kibana        | ES 可视化工具                       | -     |
 
 PS：如无需读写分离注释 ShardingSphere-JDBC 依赖，修改配置文件为单数据源。
 
 # 目录结构
 
-```shell
+```text
 zh-mall
 ├─admin       --  后台管理系统
 ├─app         --  前台商城系统
