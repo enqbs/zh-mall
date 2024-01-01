@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.1</version>
+        <version>3.1.7</version>
         <relativePath/>
     </parent>
 
@@ -34,6 +34,7 @@
         <enqbs.version>0.0.2</enqbs.version>
         <mysql-connector-j.version>8.2.0</mysql-connector-j.version>
         <mybatis-spring-boot-starter.version>3.0.3</mybatis-spring-boot-starter.version>
+        <shardingsphere-jdbc.version>5.2.1</shardingsphere-jdbc.version>
         <hutool-all.version>5.8.24</hutool-all.version>
         <java-jwt.version>4.4.0</java-jwt.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
@@ -73,6 +74,13 @@
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>${mybatis-spring-boot-starter.version}</version>
+            </dependency>
+
+            <!-- shardingsphere-jdbc -->
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+                <version>${shardingsphere-jdbc.version}</version>
             </dependency>
 
             <!-- hutool -->

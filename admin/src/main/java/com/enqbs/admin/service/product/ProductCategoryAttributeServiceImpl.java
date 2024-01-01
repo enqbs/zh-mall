@@ -29,8 +29,7 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
         PageUtil<ProductCategoryAttributeVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCategoryAttribute> attributeList = productCategoryAttributeMapper.selectListByParam(categoryId, deleteStatus,
-                pageNum, pageSize);
+        List<ProductCategoryAttribute> attributeList = productCategoryAttributeMapper.selectListByParam(categoryId, deleteStatus, pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(attributeList)) {
             return pageUtil;

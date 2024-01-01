@@ -386,8 +386,7 @@ public class OrderServiceImpl implements OrderService {
 
     private OrderConfirmVO buildOrderConfirmVO(String orderToken, List<UserAddressVO> addressVOList,
                                                List<UserCouponVO> couponVOList, List<OrderItemVO> orderItemVOList) {
-        BigDecimal amount = orderItemVOList.stream()
-                .map(OrderItemVO::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal amount = orderItemVOList.stream().map(OrderItemVO::getTotalPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         /* 筛选满足优惠券条件的优惠券 */
         couponVOList = CollectionUtils.isEmpty(couponVOList) ? Collections.emptyList() : couponVOList.stream()
                 .filter(cvo -> amount.compareTo(cvo.getCoupon().getCondition()) > -1)

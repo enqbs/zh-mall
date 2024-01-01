@@ -80,8 +80,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderVO getOrderVO(Long orderNo) {
-        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null,
-                null, Constants.IS_NOT_DELETE);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null, null, Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(order)) {
             return new OrderVO();

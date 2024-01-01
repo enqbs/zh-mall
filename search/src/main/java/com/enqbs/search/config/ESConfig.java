@@ -21,12 +21,12 @@ public class ESConfig {
 
     @Bean
     public ElasticsearchClient esClient() {
-        RestClient restClient = RestClient.builder(hosts()).build();
+        RestClient restClient = RestClient.builder(getHosts()).build();
         ElasticsearchTransport transport = new RestClientTransport(restClient, new JacksonJsonpMapper());
         return new ElasticsearchClient(transport);
     }
 
-    private HttpHost[] hosts() {
+    private HttpHost[] getHosts() {
         List<HttpHost> hostList = new ArrayList<>();
 
         for (String address : ESPramConfig.getAddress()) {

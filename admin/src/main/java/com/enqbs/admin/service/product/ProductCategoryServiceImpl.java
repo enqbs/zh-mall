@@ -30,8 +30,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         PageUtil<ProductCategoryVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(parentId, homeStatus, naviStatus,
-                deleteStatus, pageNum, pageSize);
+        List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(parentId, homeStatus, naviStatus, deleteStatus, pageNum, pageSize);
 
         if (CollectionUtils.isEmpty(categoryList)) {
             return pageUtil;

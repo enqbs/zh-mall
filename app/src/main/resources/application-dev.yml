@@ -1,13 +1,43 @@
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
-    username: root
-    password: root
-    hikari:
-      minimum-idle: 12
-      maximum-pool-size: 24
-      connection-timeout: 60000
+  #  datasource:
+  #    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+  #    username: root
+  #    password: root
+  #    hikari:
+  #      minimum-idle: 12
+  #      maximum-pool-size: 24
+  #      connection-timeout: 60000
+  shardingsphere:
+    datasource:
+      names: m, s_1
+      m:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+        username: root
+        password: root
+        data-source-properties:
+          useLocalSessionState: false
+      s_1:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+        username: root
+        password: root
+    rules:
+      readwrite-splitting:
+        data-sources:
+          readwrite_ds:
+            static-strategy:
+              write-data-source-name: m
+              read-data-source-names: s_1
+            load-balancer-name: round_robin
+        load-balancers:
+          round_robin:
+            type: ROUND_ROBIN
+    props:
+      sql-show: true
   data:
     redis:
       host: 192.168.43.2

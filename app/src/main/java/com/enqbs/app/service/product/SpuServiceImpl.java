@@ -16,9 +16,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -82,18 +80,16 @@ public class SpuServiceImpl implements SpuService {
         JsonObject jsonObject = GsonUtil.json2Obj(content, JsonObject.class);
 
         Thread.ofVirtual().name("esProductsDeleteOldData").start(() -> {
-                    List<String> oldIds = new ArrayList<>();
-                    jsonObject.getAsJsonArray("old").forEach(e -> {
-                        if (ObjectUtils.isNotEmpty(e.getAsJsonObject().get("id"))) {
-                            oldIds.add(e.getAsJsonObject().get("id").getAsString());
-                        }
-                    });
+                    List<String> oldIds = jsonObject.getAsJsonArray("old").asList().stream()
+                            .filter(e -> ObjectUtils.isNotEmpty(e.getAsJsonObject().get("id")))
+                            .map(e -> e.getAsJsonObject().get("id").getAsString()).toList();
                     syncProducts.setOldIds(oldIds);
                 }
         );
 
-        Set<Integer> spuIdSet = new HashSet<>();
-        jsonObject.getAsJsonArray("data").forEach(e -> spuIdSet.add(e.getAsJsonObject().get("id").getAsInt()));
+
+        Set<Integer> spuIdSet = jsonObject.getAsJsonArray("data").asList().stream()
+                .map(e -> e.getAsJsonObject().get("id").getAsInt()).collect(Collectors.toSet());
         syncProducts.setData(spuMapper.selectListByIdSet(spuIdSet));
         rabbitMQService.send(QueueEnum.ES_SYNC_PRODUCTS_QUEUE, syncProducts);
     }
