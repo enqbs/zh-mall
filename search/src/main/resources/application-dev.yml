@@ -1,9 +1,9 @@
 spring:
   rabbitmq:
-    host: 8.217.21.159
+    host: 192.168.43.2
     port: 5672
     username: guest
-    password: 0508@qq.com
+    password: guest
     virtual-host: /
     template:
       mandatory: true
