@@ -8,6 +8,9 @@ spring:
   #      minimum-idle: 12
   #      maximum-pool-size: 24
   #      connection-timeout: 60000
+  datasource:
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+    url: jdbc:shardingsphere:classpath:shardingsphere-config.yml
   data:
     redis:
       host: 192.168.43.2
