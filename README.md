@@ -32,9 +32,9 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 - 订单下单流程、超时自动取消
 - 支付发起、关闭
 
-项目达到上线标准。已解决 MySQL 事务原子性、线程安全问题。生产环境（双核2GB内存VPS）写操作压测 QPS 1000 吞吐量 200+/sec。后续会新增项目微服务版本及社区等功能。
+项目达到上线标准。已解决 MySQL 事务原子性、线程安全问题。生产环境（双核2GB内存VPS）写操作压测 QPS 1000 吞吐量 200+/sec。
 
-PS：项目 Spring Boot 2.0稳定版已完成。后续可能会停止更新，直接升级 Spring Boot 3.0。极力推荐主（[main](https://github.com/enqbs/zh-mall/tree/main)）分支，第一时间更新功能。
+PS：项目 Spring Boot 2.0稳定版已完成。当前分支后续可能会停止更新，直接升级 Spring Boot 3.0。极力推荐主（[main](https://github.com/enqbs/zh-mall/tree/main)）分支，第一时间更新功能。
 
 # 技术选择
 
@@ -68,7 +68,7 @@ PS：项目 Spring Boot 2.0稳定版已完成。后续可能会停止更新，�
 | Logstash      | 日志收集插件                         | -     |
 | Kibana        | ES 可视化工具                       | -     |
 
-PS：如无需读写分离注释 ShardingSphere-JDBC 依赖，修改配置文件为单数据源。
+PS：如无需读写分离，注释 ShardingSphere-JDBC 依赖，修改配置文件为单数据源。
 
 # 目录结构
 
