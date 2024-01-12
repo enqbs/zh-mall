@@ -24,7 +24,7 @@ public class SkuStockServiceImpl implements SkuStockService {
     @Override
     public List<SkuStockVO> getSkuStockVOList(Set<Integer> skuIdSet) {
         List<SkuStock> skuStockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
-        return skuStockList.stream().map(e -> productConvert.skuStock2SkuStockVO(e)).collect(Collectors.toList());
+        return skuStockList.stream().map(s -> productConvert.skuStock2SkuStockVO(s)).collect(Collectors.toList());
     }
 
     @Override

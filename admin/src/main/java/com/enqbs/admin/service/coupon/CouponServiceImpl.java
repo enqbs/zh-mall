@@ -10,7 +10,6 @@ import com.enqbs.generator.dao.CouponMapper;
 import com.enqbs.generator.pojo.Coupon;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -27,21 +26,16 @@ public class CouponServiceImpl implements CouponService {
     private CouponConvert couponConvert;
 
     @Override
-    public PageUtil<CouponVO> getCouponVOList(Integer productId, Date startDate, Date endDate, Integer status,
-                                              Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<CouponVO> couponVOListPage(Integer productId, Date startDate, Date endDate, Integer status,
+                                               Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+        Long total = couponMapper.countByParam(productId, startDate, endDate, status, deleteStatus);
+        List<Coupon> couponList = couponMapper.selectListByParam(productId, startDate, endDate, status,
+                deleteStatus, sort.getSortType(), pageNum, pageSize);
         PageUtil<CouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<Coupon> couponList = couponMapper.selectListByParam(productId, startDate, endDate, status,
-                deleteStatus, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(couponList)) {
-            return pageUtil;
-        }
-
-        Long total = couponMapper.countByParam(productId, startDate, endDate, status, deleteStatus);
         pageUtil.setTotal(total);
-        pageUtil.setList(couponList.stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList()));
+        pageUtil.setList(couponList.stream().map(c -> couponConvert.coupon2CouponVO(c)).collect(Collectors.toList()));
         return pageUtil;
     }
 

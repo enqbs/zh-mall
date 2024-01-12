@@ -10,7 +10,6 @@ import com.enqbs.generator.dao.ProductCategoryMapper;
 import com.enqbs.generator.pojo.ProductCategory;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,21 +25,15 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCategoryVO> getCategoryVOList(Integer parentId, Integer homeStatus, Integer naviStatus,
-                                                         Integer deleteStatus, Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCategoryVO> categoryVOListPage(Integer parentId, Integer homeStatus, Integer naviStatus,
+                                                          Integer deleteStatus, Integer pageNum, Integer pageSize) {
+        Long total = productCategoryMapper.countByParam(parentId, homeStatus, naviStatus, deleteStatus);
+        List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(parentId, homeStatus, naviStatus, deleteStatus, pageNum, pageSize);
         PageUtil<ProductCategoryVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(parentId, homeStatus, naviStatus,
-                deleteStatus, pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(categoryList)) {
-            return pageUtil;
-        }
-
-        Long total = productCategoryMapper.countByParam(parentId, homeStatus, naviStatus, deleteStatus);
         pageUtil.setTotal(total);
-        pageUtil.setList(categoryList.stream().map(e -> productConvert.category2CategoryVO(e)).collect(Collectors.toList()));
+        pageUtil.setList(categoryList.stream().map(c -> productConvert.category2CategoryVO(c)).collect(Collectors.toList()));
         return pageUtil;
     }
 

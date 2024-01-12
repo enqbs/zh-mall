@@ -9,9 +9,9 @@ public interface MemberService {
     /*
      * 会员列表
      * */
-    PageUtil<MemberVO> getMemberVOList(Integer id, Long uid, String identifier,
-                                       Integer status, Integer deleteStatus, SortEnum sort,
-                                       Integer pageNum, Integer pageSize);
+    PageUtil<MemberVO> memberVOListPage(Integer id, Long uid, String identifier,
+                                        Integer status, Integer deleteStatus, SortEnum sort,
+                                        Integer pageNum, Integer pageSize);
 
     /*
      * 会员信息

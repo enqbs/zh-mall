@@ -29,7 +29,7 @@ public class SpuController {
     private SpuService spuService;
 
     @GetMapping("/list")
-    public R<PageUtil<ProductVO>> productList(@RequestParam(required = false) Integer categoryId,
+    public R<PageUtil<ProductVO>> productPage(@RequestParam(required = false) Integer categoryId,
                                               @RequestParam(required = false) Integer saleableStatus,
                                               @RequestParam(required = false) Integer newStatus,
                                               @RequestParam(required = false) Integer recommendStatus,
@@ -37,9 +37,9 @@ public class SpuController {
                                               @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductVO> pageProductList = spuService.getProductVOList(categoryId, saleableStatus, newStatus,
+        PageUtil<ProductVO> productVOListPage = spuService.productVOListPage(categoryId, saleableStatus, newStatus,
                 recommendStatus, deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageProductList);
+        return R.ok(productVOListPage);
     }
 
     @GetMapping("/{productId}")
@@ -83,7 +83,7 @@ public class SpuController {
 
         return R.ok("商品删除成功");
     }
-    
+
     @PutMapping("/shelves/{productId}")
     @PreAuthorize("hasAuthority('PRODUCT:UPDATE')")
     public R<Void> productOnAndOffTheShelves(@PathVariable Integer productId) {

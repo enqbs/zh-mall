@@ -46,8 +46,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             return new ProductCategoryVO();
         }
 
-        ProductCategoryVO categoryVO = productConvert.category2CategoryVO(category);
         List<ProductVO> productVOList = spuService.getProductVOList(categoryId, null);
+        ProductCategoryVO categoryVO = productConvert.category2CategoryVO(category);
         categoryVO.setProductList(productVOList);
         return categoryVO;
     }
@@ -101,17 +101,15 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         String redisStr2 = redisUtil.getString(key);
         /* double check,缓存确实为空再查询数据库 */
         if (StringUtils.isEmpty(redisStr2)) {
-            List<ProductCategory> categoryList = productCategoryMapper
-                    .selectListByParam(null, homeStatus, naviStatus,
-                            Constants.IS_NOT_DELETE, null, null);
+            List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(null, homeStatus, naviStatus,
+                    Constants.IS_NOT_DELETE, null, null);
             List<ProductCategoryVO> categoryVOList = categoryList.stream()
-                    .filter(category -> category.getParentId().equals(0))
-                    .map(category -> productConvert.category2CategoryVO(category))
-                    .collect(Collectors.toList());
+                    .filter(c -> c.getParentId().equals(0))
+                    .map(c -> productConvert.category2CategoryVO(c)).collect(Collectors.toList());
             findSubProductCategoryVOList(categoryList, categoryVOList);
-            categoryVOList.forEach(categoryVO -> {
-                        List<ProductVO> productVOList = spuService.getProductVOList(categoryVO.getId(), limit);
-                        categoryVO.setProductList(productVOList);
+            categoryVOList.forEach(cvo -> {
+                        List<ProductVO> productVOList = spuService.getProductVOList(cvo.getId(), limit);
+                        cvo.setProductList(productVOList);
                     }
             );
             long cacheTimeout;
@@ -127,12 +125,11 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     private void findSubProductCategoryVOList(List<ProductCategory> categoryList, List<ProductCategoryVO> categoryVOList) {
-        categoryVOList.forEach(categoryVO -> {
+        categoryVOList.forEach(cvo -> {
                     List<ProductCategoryVO> subCategoryVOList = categoryList.stream()
-                            .filter(category -> categoryVO.getId().equals(category.getParentId()))
-                            .map(category -> productConvert.category2CategoryVO(category))
-                            .collect(Collectors.toList());
-                    categoryVO.setCategoryList(subCategoryVOList);
+                            .filter(c -> cvo.getId().equals(c.getParentId()))
+                            .map(c -> productConvert.category2CategoryVO(c)).collect(Collectors.toList());
+                    cvo.setCategoryList(subCategoryVOList);
                     findSubProductCategoryVOList(categoryList, subCategoryVOList);
                 }
         );

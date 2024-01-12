@@ -44,6 +44,22 @@ public class UserCouponServiceImpl implements UserCouponService {
     private UserConvert userConvert;
 
     @Override
+    public PageUtil<UserCouponVO> userCouponVOListPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize) {
+        UserInfoVO userInfoVO = userService.getUserInfoVO();
+        Long total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
+        List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE,
+                sort.getSortType(), pageNum, pageSize);
+        List<UserCouponVO> userCouponVOList = userCouponList.stream().map(u -> userConvert.userCoupon2UserCouponVO(u)).collect(Collectors.toList());
+        handleUserCouponVO(userCouponVOList);
+        PageUtil<UserCouponVO> pageUtil = new PageUtil<>();
+        pageUtil.setNum(pageNum);
+        pageUtil.setSize(pageSize);
+        pageUtil.setTotal(total);
+        pageUtil.setList(userCouponVOList);
+        return pageUtil;
+    }
+
+    @Override
     public List<UserCouponVO> getUserCouponVOList() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), Constants.COUPON_UNUSED,
@@ -54,31 +70,9 @@ public class UserCouponServiceImpl implements UserCouponService {
         }
 
         List<UserCouponVO> userCouponVOList = userCouponList.stream()
-                .map(e -> userConvert.userCoupon2UserCouponVO(e)).collect(Collectors.toList());
+                .map(u -> userConvert.userCoupon2UserCouponVO(u)).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
         return userCouponVOList;
-    }
-
-    @Override
-    public PageUtil<UserCouponVO> getUserCouponVOList(Integer status, SortEnum sort, Integer pageNum, Integer pageSize) {
-        PageUtil<UserCouponVO> pageUtil = new PageUtil<>();
-        pageUtil.setNum(pageNum);
-        pageUtil.setSize(pageSize);
-        UserInfoVO userInfoVO = userService.getUserInfoVO();
-        List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE,
-                sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(userCouponList)) {
-            return pageUtil;
-        }
-
-        Long total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
-        List<UserCouponVO> userCouponVOList = userCouponList.stream()
-                .map(e -> userConvert.userCoupon2UserCouponVO(e)).collect(Collectors.toList());
-        handleUserCouponVO(userCouponVOList);
-        pageUtil.setTotal(total);
-        pageUtil.setList(userCouponVOList);
-        return pageUtil;
     }
 
     @Override

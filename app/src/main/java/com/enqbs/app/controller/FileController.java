@@ -33,7 +33,7 @@ public class FileController {
     @PostMapping("/comment-img")
     public R<Map<String, List<String>>> uploadCommentImg(@RequestParam List<MultipartFile> files) {
         List<String> fileURLList = files.stream()
-                .map(e -> fileService.getFileURL(e, DirEnum.COMMENT_IMG)).collect(Collectors.toList());
+                .map(f -> fileService.getFileURL(f, DirEnum.COMMENT_IMG)).collect(Collectors.toList());
         Map<String, List<String>> resultMap = new HashMap<>();
         resultMap.put("commentImg", fileURLList);
         return R.ok(resultMap);

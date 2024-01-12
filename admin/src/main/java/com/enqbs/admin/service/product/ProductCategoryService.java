@@ -9,8 +9,8 @@ public interface ProductCategoryService {
     /*
      * 商品分类列表
      * */
-    PageUtil<ProductCategoryVO> getCategoryVOList(Integer parentId, Integer homeStatus, Integer naviStatus,
-                                                  Integer deleteStatus, Integer pageNum, Integer pageSize);
+    PageUtil<ProductCategoryVO> categoryVOListPage(Integer parentId, Integer homeStatus, Integer naviStatus,
+                                                   Integer deleteStatus, Integer pageNum, Integer pageSize);
 
     /*
      * 商品分类信息

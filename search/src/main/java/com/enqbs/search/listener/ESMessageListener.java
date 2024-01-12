@@ -39,8 +39,8 @@ public class ESMessageListener {
                     if (StringUtils.isNotEmpty(e.getAsString())) {
                         esProductService.delete(e.getAsString());
                     }
-                })
-        );
+                }
+        ));
 
         jsonObject.getAsJsonArray("data").forEach(e ->
                 esProductService.update(GsonUtil.json2Obj(e.getAsJsonObject().getAsString(), ESProduct.class))

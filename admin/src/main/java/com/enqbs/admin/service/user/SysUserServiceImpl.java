@@ -22,7 +22,6 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -48,20 +47,15 @@ public class SysUserServiceImpl implements SysUserService {
     private ThreadPoolTaskExecutor executor;
 
     @Override
-    public PageUtil<SysUserInfoVO> getSysUserInfoVOList(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysUserInfoVO> sysUserInfoVOListPage(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+        Long total = sysUserMapper.countByParam(deleteStatus);
+        List<SysUser> sysUserList = sysUserMapper.selectListByParam(deleteStatus, sort.getSortType(), pageNum, pageSize);
         PageUtil<SysUserInfoVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<SysUser> sysUserList = sysUserMapper.selectListByParam(deleteStatus, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(sysUserList)) {
-            return pageUtil;
-        }
-
-        Long total = sysUserMapper.countByParam(deleteStatus);
         pageUtil.setTotal(total);
         pageUtil.setList(sysUserList.stream()
-                .map(e -> sysUserConvert.sysUserInfo2SysUserInfoVO(e)).collect(Collectors.toList())
+                .map(u -> sysUserConvert.sysUserInfo2SysUserInfoVO(u)).collect(Collectors.toList())
         );
         return pageUtil;
     }

@@ -31,7 +31,7 @@ public class PayController {
     public ModelAndView aliPayPage(@PathVariable Long orderNo) {
         PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PC_PAGE);
         String body = payService.createPay(PayTypeEnum.ALIPAY_PC_PAGE, orderNo, payInfoService.getPayAmount(orderNo));
-        return new ModelAndView("alipayPage").addObject("body", body);
+        return new ModelAndView("alipay-page").addObject("body", body);
     }
 
     @PostMapping("/async-notify")
@@ -42,8 +42,8 @@ public class PayController {
         boolean result = payService.asyncNotify(request, response);
 
         if (result) {
-            payInfoService.update(PayTypeEnum.ALIPAY_PC_PAGE, PayStatusEnum.PAY_SUCCESS, orderNo, platformNo);
             payService.closePay(orderNo, platformNo);       // 关闭支付
+            payInfoService.update(PayTypeEnum.ALIPAY_PC_PAGE, PayStatusEnum.PAY_SUCCESS, orderNo, platformNo);
         } else {
             throw new ServiceException("订单号:" + orderNo + ",支付平台流水号:" + platformNo + ",支付回调通知异常");
         }

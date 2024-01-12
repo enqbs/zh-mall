@@ -9,7 +9,6 @@ import com.enqbs.generator.dao.PayInfoMapper;
 import com.enqbs.generator.pojo.PayInfo;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -30,29 +29,24 @@ public class PayInfoServiceImpl implements PayInfoService {
     private PayConvert payConvert;
 
     @Override
-    public PageUtil<PayInfoVO> getPayInfoVOList(Long orderNo, Integer userId, String payType,
-                                                String platform, String platformNumber, Integer status,
-                                                Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
-        PageUtil<PayInfoVO> pageUtil = new PageUtil<>();
-        pageUtil.setNum(pageNum);
-        pageUtil.setSize(pageSize);
+    public PageUtil<PayInfoVO> payInfoVOListPage(Long orderNo, Integer userId, String payType,
+                                                 String platform, String platformNumber, Integer status,
+                                                 Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+        Long total = payInfoMapper.countByParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus);
         List<PayInfo> payInfoList = payInfoMapper.selectListParam(orderNo, userId, payType, platform, platformNumber,
                 status, deleteStatus, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(payInfoList)) {
-            return pageUtil;
-        }
-
-        Long total = payInfoMapper.countByParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus);
         Set<Long> payInfoIdSet = payInfoList.stream().map(PayInfo::getId).collect(Collectors.toSet());
         Map<Long, PayPlatformVO> platformVOMap = payPlatformService.getPayPlatformVOList(payInfoIdSet).stream()
                 .collect(Collectors.toMap(PayPlatformVO::getPayInfoId, v -> v));
-        List<PayInfoVO> payInfoVOList = payInfoList.stream().map(e -> {
-                    PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(e);
+        List<PayInfoVO> payInfoVOList = payInfoList.stream().map(p -> {
+                    PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(p);
                     payInfoVO.setPayPlatform(platformVOMap.get(payInfoVO.getId()));
                     return payInfoVO;
                 }
         ).collect(Collectors.toList());
+        PageUtil<PayInfoVO> pageUtil = new PageUtil<>();
+        pageUtil.setNum(pageNum);
+        pageUtil.setSize(pageSize);
         pageUtil.setTotal(total);
         pageUtil.setList(payInfoVOList);
         return pageUtil;
@@ -66,8 +60,8 @@ public class PayInfoServiceImpl implements PayInfoService {
             return new PayInfoVO();
         }
 
-        PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(payInfo);
         PayPlatformVO payPlatformVO = payPlatformService.getPayPlatformVO(id);
+        PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(payInfo);
         payInfoVO.setPayPlatform(payPlatformVO);
         return payInfoVO;
     }

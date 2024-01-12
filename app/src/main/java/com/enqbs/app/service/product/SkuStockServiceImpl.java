@@ -36,7 +36,7 @@ public class SkuStockServiceImpl implements SkuStockService {
     public void lockSkuStock(Long orderNo, List<SkuStockDTO> skuStockDTOList) {
         List<SkuStock> skuStockList = skuStockDTOList.stream().map(this::skuStockDTO2SkuStock).collect(Collectors.toList());
         List<SkuStockLock> skuStockLockList = skuStockDTOList.stream()
-                .map(e -> skuStockDTO2SkuStockLock(orderNo, e)).collect(Collectors.toList());
+                .map(s -> skuStockDTO2SkuStockLock(orderNo, s)).collect(Collectors.toList());
         skuStockLockService.batchInsert(orderNo, skuStockLockList);
         batchLockSkuStock(orderNo, skuStockList);
         log.info("订单号:'{}',库存锁定成功.", orderNo);

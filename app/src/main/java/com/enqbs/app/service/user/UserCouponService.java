@@ -9,14 +9,14 @@ import java.util.List;
 public interface UserCouponService {
 
     /*
+     * 用户优惠券列表
+     * */
+    PageUtil<UserCouponVO> userCouponVOListPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
+
+    /*
      * 用户有效优惠券列表
      * */
     List<UserCouponVO> getUserCouponVOList();
-
-    /*
-     * 用户优惠券列表
-     * */
-    PageUtil<UserCouponVO> getUserCouponVOList(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 用户优惠券详情

@@ -160,8 +160,7 @@ public class AliPayServiceImpl implements PayService {
             if (response.isSuccess()) {
                 log.info("订单号:'{}',支付平台流水号:'{}',关闭支付成功.", response.getOutTradeNo(), response.getTradeNo());
             } else {
-                throw new ServiceException("订单号:" + response.getOutTradeNo() +
-                        ",支付平台流水号:" + response.getTradeNo() + ",关闭支付失败");
+                throw new ServiceException("订单号:" + response.getOutTradeNo() + ",支付平台流水号:" + response.getTradeNo() + ",关闭支付失败");
             }
         } catch (AlipayApiException e) {
             throw new RuntimeException(e);

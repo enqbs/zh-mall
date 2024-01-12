@@ -9,7 +9,6 @@ import com.enqbs.generator.dao.CouponMapper;
 import com.enqbs.generator.pojo.Coupon;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -26,27 +25,22 @@ public class CouponServiceImpl implements CouponService {
     private CouponConvert couponConvert;
 
     @Override
-    public List<CouponVO> getCouponVOList(Set<Integer> couponIdSet) {
-        return couponMapper.selectListByCouponIdSet(couponIdSet).stream()
-                .map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList());
-    }
-
-    @Override
-    public PageUtil<CouponVO> getCouponVOList(SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<CouponVO> couponVOListPage(SortEnum sort, Integer pageNum, Integer pageSize) {
+        Long total = couponMapper.countByParam(null, null, null, null, Constants.IS_NOT_DELETE);
+        List<Coupon> couponList = couponMapper.selectListByParam(null, null, null, null,
+                Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
         PageUtil<CouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<Coupon> couponList = couponMapper.selectListByParam(null, null, null, null,
-                Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(couponList)) {
-            return pageUtil;
-        }
-
-        Long total = couponMapper.countByParam(null, null, null, null, Constants.IS_NOT_DELETE);
         pageUtil.setTotal(total);
-        pageUtil.setList(couponList.stream().map(e -> couponConvert.coupon2CouponVO(e)).collect(Collectors.toList()));
+        pageUtil.setList(couponList.stream().map(c -> couponConvert.coupon2CouponVO(c)).collect(Collectors.toList()));
         return pageUtil;
+    }
+
+    @Override
+    public List<CouponVO> getCouponVOList(Set<Integer> couponIdSet) {
+        return couponMapper.selectListByCouponIdSet(couponIdSet).stream()
+                .map(c -> couponConvert.coupon2CouponVO(c)).collect(Collectors.toList());
     }
 
     @Override

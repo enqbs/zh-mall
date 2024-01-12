@@ -23,13 +23,13 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public List<OrderItemVO> getOrderItemVOList(Long orderNo) {
         List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(orderNo);
-        return orderItemList.stream().map(e -> orderConvert.orderItem2OrderItemVO(e)).collect(Collectors.toList());
+        return orderItemList.stream().map(o -> orderConvert.orderItem2OrderItemVO(o)).collect(Collectors.toList());
     }
 
     @Override
     public List<OrderItemVO> getOrderItemVOList(Set<Long> orderNoSet) {
         List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNoSet(orderNoSet);
-        return orderItemList.stream().map(e -> orderConvert.orderItem2OrderItemVO(e)).collect(Collectors.toList());
+        return orderItemList.stream().map(o -> orderConvert.orderItem2OrderItemVO(o)).collect(Collectors.toList());
     }
 
 }

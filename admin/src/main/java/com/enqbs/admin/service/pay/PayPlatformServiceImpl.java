@@ -23,7 +23,7 @@ public class PayPlatformServiceImpl implements PayPlatformService {
     @Override
     public List<PayPlatformVO> getPayPlatformVOList(Set<Long> payInfoIdSet) {
         List<PayPlatform> payPlatformList = payPlatformMapper.selectListByPayInfoIdSet(payInfoIdSet);
-        return payPlatformList.stream().map(e -> payConvert.payPlatform2PayPlatformVO(e)).collect(Collectors.toList());
+        return payPlatformList.stream().map(p -> payConvert.payPlatform2PayPlatformVO(p)).collect(Collectors.toList());
     }
 
     @Override

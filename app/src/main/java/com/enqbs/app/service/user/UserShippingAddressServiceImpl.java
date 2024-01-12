@@ -82,7 +82,7 @@ public class UserShippingAddressServiceImpl implements UserShippingAddressServic
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         List<UserShippingAddress> userShippingAddressList = userShippingAddressMapper.selectListByUserId(userInfoVO.getUserId());
         return userShippingAddressList.stream()
-                .map(e -> userConvert.userShippingAddress2UserShippingAddressVO(e)).collect(Collectors.toList());
+                .map(u -> userConvert.userShippingAddress2UserShippingAddressVO(u)).collect(Collectors.toList());
     }
 
 }

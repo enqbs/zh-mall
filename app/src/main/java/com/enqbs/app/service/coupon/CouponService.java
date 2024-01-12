@@ -12,12 +12,12 @@ public interface CouponService {
     /*
      * 优惠券列表
      * */
-    List<CouponVO> getCouponVOList(Set<Integer> couponIdSet);
+    PageUtil<CouponVO> couponVOListPage(SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
-    * 优惠券列表
-    * */
-    PageUtil<CouponVO> getCouponVOList(SortEnum sort, Integer pageNum, Integer pageSize);
+     * 优惠券列表
+     * */
+    List<CouponVO> getCouponVOList(Set<Integer> couponIdSet);
 
     /*
      * 优惠券详情

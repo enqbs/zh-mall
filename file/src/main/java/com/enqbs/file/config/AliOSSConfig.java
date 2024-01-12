@@ -27,7 +27,7 @@ public class AliOSSConfig {
 
     private String bucket;
 
-    @Bean
+    @Bean(name = "ossClient")
     public OSS ossClient() {
         return new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     }

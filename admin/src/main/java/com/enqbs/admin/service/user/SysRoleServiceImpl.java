@@ -9,7 +9,6 @@ import com.enqbs.generator.dao.SysRoleMapper;
 import com.enqbs.generator.pojo.SysRole;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,19 +24,14 @@ public class SysRoleServiceImpl implements SysRoleService {
     private SysUserConvert sysUserConvert;
 
     @Override
-    public PageUtil<SysRoleVO> getSysRoleVOList(Integer deleteStatus, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysRoleVO> sysRoleVOListPage(Integer deleteStatus, Integer pageNum, Integer pageSize) {
+        Long total = sysRoleMapper.countByParam(deleteStatus);
+        List<SysRole> sysRoleList = sysRoleMapper.selectListByParam(deleteStatus, pageNum, pageSize);
         PageUtil<SysRoleVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<SysRole> sysRoleList = sysRoleMapper.selectListByParam(deleteStatus, pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(sysRoleList)) {
-            return pageUtil;
-        }
-
-        Long total = sysRoleMapper.countByParam(deleteStatus);
         pageUtil.setTotal(total);
-        pageUtil.setList(sysRoleList.stream().map(e -> sysUserConvert.sysRole2SysRoleVO(e)).collect(Collectors.toList()));
+        pageUtil.setList(sysRoleList.stream().map(r -> sysUserConvert.sysRole2SysRoleVO(r)).collect(Collectors.toList()));
         return pageUtil;
     }
 

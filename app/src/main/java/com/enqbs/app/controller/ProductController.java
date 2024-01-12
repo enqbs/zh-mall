@@ -86,15 +86,15 @@ public class ProductController {
 
     @GetMapping("/category/list")
     public R<List<ProductCategoryVO>> productCategoryList() {
-        List<ProductCategoryVO> categoryList = productCategoryService
-                .getCategoryVOList(PRODUCT_CATEGORY_LIST, PRODUCT_CATEGORY_LIST_LOCK, null, null, null);
+        List<ProductCategoryVO> categoryList = productCategoryService.getCategoryVOList(PRODUCT_CATEGORY_LIST, PRODUCT_CATEGORY_LIST_LOCK,
+                null, null, null);
         return R.ok(categoryList);
     }
 
     @GetMapping("/category/{categoryId}")
     public R<ProductCategoryVO> productCategory(@PathVariable Integer categoryId) {
-        ProductCategoryVO category = productCategoryService.getCategoryVO(categoryId);
-        return R.ok(category);
+        ProductCategoryVO categoryInfo = productCategoryService.getCategoryVO(categoryId);
+        return R.ok(categoryInfo);
     }
 
     @GetMapping("/detail/{productId}")
@@ -120,13 +120,13 @@ public class ProductController {
     }
 
     @GetMapping("/comment/list")
-    public R<PageUtil<ProductCommentVO>> productCommentList(@RequestParam Integer productId,
+    public R<PageUtil<ProductCommentVO>> productCommentPage(@RequestParam Integer productId,
                                                             @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                                             @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                             @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductCommentVO> pageProductCommentList = productCommentService.getProductCommentVOList(productId, sort,
+        PageUtil<ProductCommentVO> productCommentVOListPage = productCommentService.productCommentVOListPage(productId, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageProductCommentList);
+        return R.ok(productCommentVOListPage);
     }
 
     @GetMapping("/comment/{commentId}")
@@ -136,13 +136,13 @@ public class ProductController {
     }
 
     @GetMapping("/comment/reply/list")
-    public R<PageUtil<ProductCommentReplyVO>> productCommentReplyList(@RequestParam Integer commentId,
+    public R<PageUtil<ProductCommentReplyVO>> productCommentReplyPage(@RequestParam Integer commentId,
                                                                       @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                                                       @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                                       @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductCommentReplyVO> pageProductCommentReplyList = productCommentReplyService
-                .getProductCommentReplyVOList(commentId, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageProductCommentReplyList);
+        PageUtil<ProductCommentReplyVO> productCommentReplyVOListPage = productCommentReplyService.productCommentReplyVOListPage(commentId, sort,
+                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
+        return R.ok(productCommentReplyVOListPage);
     }
 
 }

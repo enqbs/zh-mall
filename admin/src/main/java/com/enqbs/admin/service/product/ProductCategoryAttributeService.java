@@ -6,8 +6,8 @@ import com.enqbs.common.util.PageUtil;
 
 public interface ProductCategoryAttributeService {
 
-    PageUtil<ProductCategoryAttributeVO> getAttributeVOList(Integer categoryId, Integer deleteStatus,
-                                                            Integer pageNum, Integer pageSize);
+    PageUtil<ProductCategoryAttributeVO> attributeVOListPage(Integer categoryId, Integer deleteStatus,
+                                                             Integer pageNum, Integer pageSize);
 
     ProductCategoryAttributeVO getAttributeVO(Integer attributeId);
 

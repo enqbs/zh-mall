@@ -23,7 +23,7 @@ public class MemberLevelServiceImpl implements MemberLevelService {
     @Override
     public List<MemberLevelVO> getMemberLevelVOList(Set<Integer> userLevelIdSet) {
         List<UserLevel> userLevelList = userLevelMapper.selectListByIdSet(userLevelIdSet);
-        return userLevelList.stream().map(e -> memberConvert.userLevel2MemberLevelVO(e)).collect(Collectors.toList());
+        return userLevelList.stream().map(u -> memberConvert.userLevel2MemberLevelVO(u)).collect(Collectors.toList());
     }
 
     @Override

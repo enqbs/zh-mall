@@ -18,27 +18,26 @@
     </properties>
 
     <dependencies>
-        <!-- 公共模块 -->
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>common</artifactId>
         </dependency>
-        <!-- MyBatis 生成代码 -->
+
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>generator</artifactId>
         </dependency>
-        <!-- 认证、授权模块 -->
+
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>security</artifactId>
         </dependency>
-        <!-- 支付模块 -->
+
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>pay</artifactId>
         </dependency>
-        <!-- 文件上传模块 -->
+
         <dependency>
             <groupId>com.enqbs</groupId>
             <artifactId>file</artifactId>

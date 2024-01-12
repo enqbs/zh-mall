@@ -34,10 +34,10 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public List<SkuVO> getSkuVOList(Set<Integer> spuIdSet) {
         List<Sku> skuList = skuMapper.selectListBySpuIdSet(spuIdSet);
-        return skuList.stream().map(e -> {
-                    SkuVO skuVO = productConvert.sku2SkuVO(e);
-                    skuVO.setParams(StringUtils.isEmpty(e.getParams()) ?
-                            Collections.emptyList() : GsonUtil.json2ArrayList(e.getParams(), SkuParamVO[].class)
+        return skuList.stream().map(s -> {
+                    SkuVO skuVO = productConvert.sku2SkuVO(s);
+                    skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?
+                            Collections.emptyList() : GsonUtil.json2ArrayList(s.getParams(), SkuParamVO[].class)
                     );
                     return skuVO;
                 }
@@ -47,10 +47,10 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public List<SkuVO> getSkuVOList(Integer spuId) {
         List<Sku> skuList = skuMapper.selectListBySpuId(spuId);
-        return skuList.stream().map(e -> {
-            SkuVO skuVO = productConvert.sku2SkuVO(e);
-            skuVO.setParams(StringUtils.isEmpty(e.getParams()) ?
-                    Collections.emptyList() : GsonUtil.json2ArrayList(e.getParams(), SkuParamVO[].class)
+        return skuList.stream().map(s -> {
+            SkuVO skuVO = productConvert.sku2SkuVO(s);
+            skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?
+                    Collections.emptyList() : GsonUtil.json2ArrayList(s.getParams(), SkuParamVO[].class)
             );
             return skuVO;
         }).collect(Collectors.toList());

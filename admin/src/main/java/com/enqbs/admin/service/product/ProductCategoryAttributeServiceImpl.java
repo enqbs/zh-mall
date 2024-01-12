@@ -9,7 +9,6 @@ import com.enqbs.generator.dao.ProductCategoryAttributeMapper;
 import com.enqbs.generator.pojo.ProductCategoryAttribute;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -25,22 +24,16 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCategoryAttributeVO> getAttributeVOList(Integer categoryId, Integer deleteStatus,
-                                                                   Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCategoryAttributeVO> attributeVOListPage(Integer categoryId, Integer deleteStatus,
+                                                                    Integer pageNum, Integer pageSize) {
+        Long total = productCategoryAttributeMapper.countByParam(null, deleteStatus);
+        List<ProductCategoryAttribute> attributeList = productCategoryAttributeMapper.selectListByParam(categoryId, deleteStatus, pageNum, pageSize);
         PageUtil<ProductCategoryAttributeVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCategoryAttribute> attributeList = productCategoryAttributeMapper
-                .selectListByParam(categoryId, deleteStatus, pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(attributeList)) {
-            return pageUtil;
-        }
-
-        Long total = productCategoryAttributeMapper.countByParam(null, deleteStatus);
         pageUtil.setTotal(total);
         pageUtil.setList(attributeList.stream()
-                .map(e -> productConvert.attribute2AttributeVO(e)).collect(Collectors.toList())
+                .map(a -> productConvert.attribute2AttributeVO(a)).collect(Collectors.toList())
         );
         return pageUtil;
     }

@@ -38,25 +38,20 @@ public class ProductCommentServiceImpl implements ProductCommentService {
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCommentVO> getProductCommentVOList(Integer spuId, SortEnum sort, Integer pageNum, Integer pageSize) {
-        PageUtil<ProductCommentVO> pageUtil = new PageUtil<>();
-        pageUtil.setNum(pageNum);
-        pageUtil.setSize(pageSize);
-        List<ProductComment> productCommentList = productCommentMapper.selectListByParam(spuId, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(productCommentList)) {
-            return pageUtil;
-        }
-
+    public PageUtil<ProductCommentVO> productCommentVOListPage(Integer spuId, SortEnum sort, Integer pageNum, Integer pageSize) {
         Long total = productCommentMapper.countBySpuId(spuId);
-        List<ProductCommentVO> productCommentVOList = productCommentList.stream().map(e -> {
-                    ProductCommentVO productCommentVO = productConvert.productComment2ProductCommentVO(e);
-                    productCommentVO.setPictures(StringUtils.isEmpty(e.getPictures()) ?
-                            Collections.emptyList() : GsonUtil.json2ArrayList(e.getPictures(), String[].class)
+        List<ProductComment> productCommentList = productCommentMapper.selectListByParam(spuId, sort.getSortType(), pageNum, pageSize);
+        List<ProductCommentVO> productCommentVOList = productCommentList.stream().map(p -> {
+                    ProductCommentVO productCommentVO = productConvert.productComment2ProductCommentVO(p);
+                    productCommentVO.setPictures(StringUtils.isEmpty(p.getPictures()) ?
+                            Collections.emptyList() : GsonUtil.json2ArrayList(p.getPictures(), String[].class)
                     );
                     return productCommentVO;
                 }
         ).collect(Collectors.toList());
+        PageUtil<ProductCommentVO> pageUtil = new PageUtil<>();
+        pageUtil.setNum(pageNum);
+        pageUtil.setSize(pageSize);
         pageUtil.setTotal(total);
         pageUtil.setList(productCommentVOList);
         return pageUtil;

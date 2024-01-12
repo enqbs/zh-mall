@@ -25,7 +25,7 @@ public class OrderLogisticsInfoServiceImpl implements OrderLogisticsInfoService 
     public List<OrderLogisticsInfoVO> getOrderLogisticsInfoVOList(Set<Long> orderNoSet) {
         List<OrderLogisticsInfo> orderLogisticsInfoList = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
         return orderLogisticsInfoList.stream()
-                .map(e -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(e)).collect(Collectors.toList());
+                .map(o -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(o)).collect(Collectors.toList());
     }
 
     @Override

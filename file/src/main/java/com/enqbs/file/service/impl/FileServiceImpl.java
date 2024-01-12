@@ -19,6 +19,9 @@ public class FileServiceImpl implements FileService {
     @Resource
     private AliOSSConfig aliOSSConfig;
 
+    @Resource
+    private OSS ossClient;
+
     @Override
     public String getFileURL(MultipartFile file, DirEnum dir) {
         String filename = file.getOriginalFilename();
@@ -30,8 +33,6 @@ public class FileServiceImpl implements FileService {
         String uuid = IDUtil.getUUID();
         String filetype = filename.substring(filename.lastIndexOf("."));
         String objectName = dir.getDesc() + uuid + filetype;
-
-        OSS ossClient = aliOSSConfig.ossClient();
 
         try {
             ossClient.putObject(aliOSSConfig.getBucket(), objectName, file.getInputStream());

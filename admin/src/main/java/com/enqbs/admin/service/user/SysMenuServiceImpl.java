@@ -9,13 +9,12 @@ import com.enqbs.generator.dao.SysMenuMapper;
 import com.enqbs.generator.pojo.SysMenu;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -36,24 +35,19 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public List<SysMenuVO> getSysMenuVOList() {
         List<SysMenu> sysMenuList = sysMenuMapper.selectListByRoot();
-        return sysMenuList.stream().map(e -> sysUserConvert.sysMenu2SysMenuVO(e)).collect(Collectors.toList());
+        return sysMenuList.stream().map(m -> sysUserConvert.sysMenu2SysMenuVO(m)).collect(Collectors.toList());
     }
 
     @Override
-    public PageUtil<SysMenuVO> getSysMenuVOList(Integer parentId, Integer roleId,
-                                                Integer deleteStatus, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysMenuVO> sysMenuVOListPage(Integer parentId, Integer roleId,
+                                                 Integer deleteStatus, Integer pageNum, Integer pageSize) {
+        Long total = sysMenuMapper.countByParam(parentId, roleId, deleteStatus);
+        List<SysMenu> sysMenuList = sysMenuMapper.selectListByParam(parentId, roleId, deleteStatus, pageNum, pageSize);
         PageUtil<SysMenuVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<SysMenu> sysMenuList = sysMenuMapper.selectListByParam(parentId, roleId, deleteStatus, pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(sysMenuList)) {
-            return pageUtil;
-        }
-
-        Long total = sysMenuMapper.countByParam(parentId, roleId, deleteStatus);
         pageUtil.setTotal(total);
-        pageUtil.setList(sysMenuList.stream().map(e -> sysUserConvert.sysMenu2SysMenuVO(e)).collect(Collectors.toList()));
+        pageUtil.setList(sysMenuList.stream().map(m -> sysUserConvert.sysMenu2SysMenuVO(m)).collect(Collectors.toList()));
         return pageUtil;
     }
 
@@ -61,8 +55,8 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Async("threadPoolTaskExecutor")
     public Future<List<SysMenuVO>> getSysMenuVOList(Integer roleId) {
         List<SysMenu> sysMenuList = sysMenuMapper.selectListByRoleId(roleId);
-        return new AsyncResult<>(sysMenuList.stream()
-                .map(e -> sysUserConvert.sysMenu2SysMenuVO(e)).collect(Collectors.toList())
+        return CompletableFuture.completedFuture(sysMenuList.stream()
+                .map(m -> sysUserConvert.sysMenu2SysMenuVO(m)).collect(Collectors.toList())
         );
     }
 

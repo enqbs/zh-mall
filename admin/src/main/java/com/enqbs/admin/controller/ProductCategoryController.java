@@ -39,15 +39,15 @@ public class ProductCategoryController {
     private ProductCategoryAttributeRelationService productCategoryAttributeRelationService;
 
     @GetMapping("/category/list")
-    public R<PageUtil<ProductCategoryVO>> categoryList(@RequestParam(required = false) Integer parentId,
+    public R<PageUtil<ProductCategoryVO>> categoryPage(@RequestParam(required = false) Integer parentId,
                                                        @RequestParam(required = false) Integer homeStatus,
                                                        @RequestParam(required = false) Integer naviStatus,
                                                        @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                                        @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                        @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductCategoryVO> pageCategoryList = productCategoryService.getCategoryVOList(parentId, homeStatus, naviStatus,
+        PageUtil<ProductCategoryVO> categoryVOListPage = productCategoryService.categoryVOListPage(parentId, homeStatus, naviStatus,
                 deleteStatus, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageCategoryList);
+        return R.ok(categoryVOListPage);
     }
 
     @GetMapping("/category/{categoryId}")
@@ -117,13 +117,13 @@ public class ProductCategoryController {
     }
 
     @GetMapping("/category/attribute/list")
-    public R<PageUtil<ProductCategoryAttributeVO>> attributeList(@RequestParam(required = false) Integer categoryId,
+    public R<PageUtil<ProductCategoryAttributeVO>> attributePage(@RequestParam(required = false) Integer categoryId,
                                                                  @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                                                  @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                                  @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductCategoryAttributeVO> pageAttributeList = productCategoryAttributeService
-                .getAttributeVOList(categoryId, deleteStatus, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageAttributeList);
+        PageUtil<ProductCategoryAttributeVO> attributeVOListPage = productCategoryAttributeService.attributeVOListPage(categoryId, deleteStatus,
+                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
+        return R.ok(attributeVOListPage);
     }
 
     @GetMapping("/category/attribute/{attributeId}")

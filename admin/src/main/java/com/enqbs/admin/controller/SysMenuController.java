@@ -35,14 +35,14 @@ public class SysMenuController {
     }
 
     @GetMapping("/list")
-    public R<PageUtil<SysMenuVO>> menuList(@RequestParam(required = false) Integer parentId,
+    public R<PageUtil<SysMenuVO>> menuPage(@RequestParam(required = false) Integer parentId,
                                            @RequestParam(required = false) Integer roleId,
                                            @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
                                            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                            @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<SysMenuVO> pageSysMenuList = sysMenuService.getSysMenuVOList(parentId, roleId, deleteStatus,
+        PageUtil<SysMenuVO> sysMenuVOListPage = sysMenuService.sysMenuVOListPage(parentId, roleId, deleteStatus,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageSysMenuList);
+        return R.ok(sysMenuVOListPage);
     }
 
     @GetMapping("/{menuId}")

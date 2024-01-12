@@ -56,13 +56,12 @@ public class OrderController {
     }
 
     @GetMapping("/list")
-    public R<PageUtil<OrderVO>> orderList(@RequestParam(required = false) Integer status,
+    public R<PageUtil<OrderVO>> orderPage(@RequestParam(required = false) Integer status,
                                           @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                           @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        PageUtil<OrderVO> pageOrderList = orderService.getOrderVOList(status, sort,
-                pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 5 : pageSize);
-        return R.ok(pageOrderList);
+        PageUtil<OrderVO> orderVOListPage = orderService.orderVOListPage(status, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 5 : pageSize);
+        return R.ok(orderVOListPage);
     }
 
     @PutMapping("/receipt/{orderNo}")

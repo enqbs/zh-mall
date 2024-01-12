@@ -24,8 +24,8 @@ public interface SysMenuService {
     /*
      * 权限列表
      * */
-    PageUtil<SysMenuVO> getSysMenuVOList(Integer parentId, Integer roleId,
-                                         Integer deleteStatus, Integer pageNum, Integer pageSize);
+    PageUtil<SysMenuVO> sysMenuVOListPage(Integer parentId, Integer roleId,
+                                          Integer deleteStatus, Integer pageNum, Integer pageSize);
 
     /*
      * 角色 ID 获取权限列表

@@ -20,7 +20,6 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,27 +48,16 @@ public class CartServiceImpl implements CartService {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         String redisKey = String.format(Constants.USER_CART_REDIS_KEY, userInfoVO.getUserId());
         Map<String, String> redisMap = redisUtil.getRedisMap(redisKey);
-        /* 获取购物车中的 productId 集合 */
-        Set<Integer> productIdSet = new HashSet<>();
+        List<Cart> cartList = redisMap.values().stream().map(v -> GsonUtil.json2Obj(v, Cart.class)).collect(Collectors.toList());
+        Set<Integer> spuIdSet = cartList.stream().map(Cart::getSpuId).collect(Collectors.toSet());
 
-        for (Map.Entry<String, String> entry : redisMap.entrySet()) {
-            Cart cart = GsonUtil.json2Obj(entry.getValue(), Cart.class);
-            productIdSet.add(cart.getSpuId());
-        }
-
-        if (CollectionUtils.isEmpty(productIdSet)) {
-            cartVO.setProductList(cartProductVOList);
-            cartVO.setSelectedAll(false);
-            cartVO.setTotalQuantity(totalQuantity);
-            cartVO.setTotalPrice(totalPrice);
+        if (CollectionUtils.isEmpty(spuIdSet)) {
             return cartVO;
         }
         /* 批量获取商品 */
-        Map<Integer, ProductVO> productVOMap = spuService.getProductVOList(productIdSet).stream()
-                .collect(Collectors.toMap(ProductVO::getId, v -> v));
+        Map<Integer, ProductVO> productVOMap = spuService.getProductVOList(spuIdSet).stream().collect(Collectors.toMap(ProductVO::getId, v -> v));
 
-        for (Map.Entry<String, String> entry : redisMap.entrySet()) {
-            Cart cart = GsonUtil.json2Obj(entry.getValue(), Cart.class);
+        for (Cart cart : cartList) {
             ProductVO productVO = productVOMap.get(cart.getSpuId());
             SkuVO skuVO = productVO.getSkuList().stream().collect(Collectors.toMap(SkuVO::getId, v -> v)).get(cart.getSkuId());
             CartProductVO cartProductVO = buildCartProductVO(cart, productVO, skuVO);

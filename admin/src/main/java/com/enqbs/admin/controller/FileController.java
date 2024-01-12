@@ -33,7 +33,7 @@ public class FileController {
     @PostMapping("/spu-slider")
     public R<Map<String, List<String>>> uploadSpuSlider(@RequestParam List<MultipartFile> files) {
         List<String> fileURLList = files.stream()
-                .map(e -> fileService.getFileURL(e, DirEnum.SPU_SLIDER)).collect(Collectors.toList());
+                .map(f -> fileService.getFileURL(f, DirEnum.SPU_SLIDER)).collect(Collectors.toList());
         Map<String, List<String>> resultMap = new HashMap<>();
         resultMap.put("spuSlider", fileURLList);
         return R.ok(resultMap);
@@ -42,7 +42,7 @@ public class FileController {
     @PostMapping("/spu-overview")
     public R<Map<String, List<String>>> uploadSpuOverview(@RequestParam List<MultipartFile> files) {
         List<String> fileURLList = files.stream()
-                .map(e -> fileService.getFileURL(e, DirEnum.SPU_OVERVIEW)).collect(Collectors.toList());
+                .map(f -> fileService.getFileURL(f, DirEnum.SPU_OVERVIEW)).collect(Collectors.toList());
         Map<String, List<String>> resultMap = new HashMap<>();
         resultMap.put("spuOverview", fileURLList);
         return R.ok(resultMap);
@@ -51,7 +51,7 @@ public class FileController {
     @PostMapping("/spu-spec")
     public R<Map<String, List<String>>> uploadSpuSpec(@RequestParam List<MultipartFile> files) {
         List<String> fileURLList = files.stream()
-                .map(e -> fileService.getFileURL(e, DirEnum.SPU_SPEC)).collect(Collectors.toList());
+                .map(f -> fileService.getFileURL(f, DirEnum.SPU_SPEC)).collect(Collectors.toList());
         Map<String, List<String>> resultMap = new HashMap<>();
         resultMap.put("spuSpec", fileURLList);
         return R.ok(resultMap);

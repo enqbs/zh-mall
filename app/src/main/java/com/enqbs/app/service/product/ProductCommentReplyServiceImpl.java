@@ -13,7 +13,6 @@ import com.enqbs.generator.dao.ProductCommentReplyMapper;
 import com.enqbs.generator.pojo.ProductCommentReply;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -32,22 +31,16 @@ public class ProductCommentReplyServiceImpl implements ProductCommentReplyServic
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCommentReplyVO> getProductCommentReplyVOList(Integer commentId, SortEnum sort,
-                                                                        Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCommentReplyVO> productCommentReplyVOListPage(Integer commentId, SortEnum sort,
+                                                                         Integer pageNum, Integer pageSize) {
+        Long total = productCommentReplyMapper.countByCommentId(commentId);
+        List<ProductCommentReply> productCommentReplyList = productCommentReplyMapper.selectListByParam(commentId, sort.getSortType(), pageNum, pageSize);
         PageUtil<ProductCommentReplyVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCommentReply> productCommentReplyList = productCommentReplyMapper
-                .selectListByParam(commentId, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(productCommentReplyList)) {
-            return pageUtil;
-        }
-
-        Long total = productCommentReplyMapper.countByCommentId(commentId);
         pageUtil.setTotal(total);
         pageUtil.setList(productCommentReplyList.stream()
-                .map(e -> productConvert.productCommentReply2ProductCommentReplyVO(e)).collect(Collectors.toList())
+                .map(p -> productConvert.productCommentReply2ProductCommentReplyVO(p)).collect(Collectors.toList())
         );
         return pageUtil;
     }
@@ -56,7 +49,7 @@ public class ProductCommentReplyServiceImpl implements ProductCommentReplyServic
     public List<ProductCommentReplyVO> getProductCommentReplyVOList(Integer commentId) {
         List<ProductCommentReply> productCommentReplyList = productCommentReplyMapper.selectListByCommentId(commentId);
         return productCommentReplyList.stream()
-                .map(e -> productConvert.productCommentReply2ProductCommentReplyVO(e)).collect(Collectors.toList());
+                .map(p -> productConvert.productCommentReply2ProductCommentReplyVO(p)).collect(Collectors.toList());
     }
 
     @Override

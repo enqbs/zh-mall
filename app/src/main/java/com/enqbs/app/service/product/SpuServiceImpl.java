@@ -53,7 +53,7 @@ public class SpuServiceImpl implements SpuService {
     @Override
     public List<ProductVO> getProductVOList(Integer categoryId, Integer limit) {
         List<Spu> spuList = spuMapper.selectListByCategoryIdAndLimit(categoryId, limit);
-        return spuList.stream().map(e -> productConvert.spu2ProductVO(e)).collect(Collectors.toList());
+        return spuList.stream().map(s -> productConvert.spu2ProductVO(s)).collect(Collectors.toList());
     }
 
     @Override
@@ -66,8 +66,8 @@ public class SpuServiceImpl implements SpuService {
 
         Map<Integer, List<SkuVO>> skuVOListMap = skuService.getSkuVOList(Collections.emptySet(), spuIdSet).stream()
                 .collect(Collectors.groupingBy(SkuVO::getSpuId));
-        return spuList.stream().map(e -> {
-                    ProductVO productVO = productConvert.spu2ProductVO(e);
+        return spuList.stream().map(s -> {
+                    ProductVO productVO = productConvert.spu2ProductVO(s);
                     productVO.setSkuList(skuVOListMap.get(productVO.getId()));
                     return productVO;
                 }
@@ -82,10 +82,11 @@ public class SpuServiceImpl implements SpuService {
         executor.execute(() -> {
                     List<String> oldIds = new ArrayList<>();
                     jsonObject.getAsJsonArray("old").forEach(e -> {
-                        if (ObjectUtils.isNotEmpty(e.getAsJsonObject().get("id"))) {
-                            oldIds.add(e.getAsJsonObject().get("id").getAsString());
-                        }
-                    });
+                                if (ObjectUtils.isNotEmpty(e.getAsJsonObject().get("id"))) {
+                                    oldIds.add(e.getAsJsonObject().get("id").getAsString());
+                                }
+                            }
+                    );
                     syncProducts.setOldIds(oldIds);
                 }
         );

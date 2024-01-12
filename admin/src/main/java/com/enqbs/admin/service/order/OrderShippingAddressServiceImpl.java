@@ -24,7 +24,7 @@ public class OrderShippingAddressServiceImpl implements OrderShippingAddressServ
     public List<OrderShippingAddressVO> getOrderShippingAddressVOList(Set<Long> orderNoSet) {
         List<OrderShippingAddress> orderShippingAddressList = orderShippingAddressMapper.selectListByOrderNoSet(orderNoSet);
         return orderShippingAddressList.stream()
-                .map(e -> orderConvert.orderShippingAddress2OrderShippingAddressVO(e)).collect(Collectors.toList());
+                .map(o -> orderConvert.orderShippingAddress2OrderShippingAddressVO(o)).collect(Collectors.toList());
     }
 
     @Override

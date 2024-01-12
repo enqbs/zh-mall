@@ -12,7 +12,6 @@ import com.enqbs.generator.dao.SpuMapper;
 import com.enqbs.generator.pojo.Spu;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -35,31 +34,26 @@ public class SpuServiceImpl implements SpuService {
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductVO> getProductVOList(Integer categoryId, Integer saleableStatus, Integer newStatus,
-                                                Integer recommendStatus, Integer deleteStatus, SortEnum sort,
-                                                Integer pageNum, Integer pageSize) {
-        PageUtil<ProductVO> pageUtil = new PageUtil<>();
-        pageUtil.setNum(pageNum);
-        pageUtil.setSize(pageSize);
-        List<Spu> spuList = spuMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus,
-                deleteStatus, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(spuList)) {
-            return pageUtil;
-        }
+    public PageUtil<ProductVO> productVOListPage(Integer categoryId, Integer saleableStatus, Integer newStatus,
+                                                 Integer recommendStatus, Integer deleteStatus, SortEnum sort,
+                                                 Integer pageNum, Integer pageSize) {
 
         Long total = spuMapper.countByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus);
-        Set<Integer> productIdSet = spuList.stream().map(Spu::getId).collect(Collectors.toSet());
-        List<SkuVO> skuVOList = skuService.getSkuVOList(productIdSet);
+        List<Spu> spuList = spuMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sort.getSortType(), pageNum, pageSize);
+        Set<Integer> spuIdSet = spuList.stream().map(Spu::getId).collect(Collectors.toSet());
+        List<SkuVO> skuVOList = skuService.getSkuVOList(spuIdSet);
         handleSkuVOListAndSkuStockVO(skuVOList);
         Map<Integer, List<SkuVO>> skuVOListMap = skuVOList.stream().collect(Collectors.groupingBy(SkuVO::getSpuId));
-        List<ProductVO> productVOList = spuList.stream().map(e -> {
-                    ProductVO productVO = productConvert.spu2ProductVO(e);
+        List<ProductVO> productVOList = spuList.stream().map(s -> {
+                    ProductVO productVO = productConvert.spu2ProductVO(s);
                     productVO.setSlide(spuSlideService.getSpuSlideList(productVO.getId()));
                     productVO.setSkuList(skuVOListMap.get(productVO.getId()));
                     return productVO;
                 }
         ).collect(Collectors.toList());
+        PageUtil<ProductVO> pageUtil = new PageUtil<>();
+        pageUtil.setNum(pageNum);
+        pageUtil.setSize(pageSize);
         pageUtil.setTotal(total);
         pageUtil.setList(productVOList);
         return pageUtil;

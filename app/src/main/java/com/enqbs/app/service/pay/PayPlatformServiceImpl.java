@@ -3,12 +3,10 @@ package com.enqbs.app.service.pay;
 import com.enqbs.generator.dao.PayPlatformMapper;
 import com.enqbs.generator.pojo.PayPlatform;
 import com.enqbs.pay.enums.PayTypeEnum;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-@Slf4j
 @Service
 public class PayPlatformServiceImpl implements PayPlatformService {
 

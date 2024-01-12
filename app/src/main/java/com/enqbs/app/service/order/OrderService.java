@@ -37,13 +37,13 @@ public interface OrderService {
     /*
      * 顶顶那列表
      * */
-    PageUtil<OrderVO> getOrderVOList(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<OrderVO> orderVOListPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 保存订单信息
      * */
     void insert(Long orderNo, Integer userId, Integer couponId, List<OrderItem> orderItemList,
-                OrderShippingAddress address, List<SkuStockDTO> stockList, OrderConfirmVO orderConfirm);
+                OrderShippingAddress orderShippingAddress, List<SkuStockDTO> stockList, OrderConfirmVO orderConfirmVO);
 
     /*
      * 签收订单

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 @Slf4j
@@ -47,8 +48,7 @@ public class TokenServiceImpl implements TokenService {
         long expireTime = JwtUtil.getExpire(token);                 // JWT 过期时间
         long currentTime = System.currentTimeMillis() / 1000;       // 当前时间
         long oneHour = 3600L;                                       // 一小时 3600 秒
-        /* 如果 jwt 过期时间小于1小时,返回新 token */
-        return new AsyncResult<>(expireTime - currentTime <= oneHour ? getNewToken(token) : token);
+        return CompletableFuture.completedFuture(expireTime - currentTime <= oneHour ? getNewToken(token) : token);     // 过期时间小于1小时,返回新 token
     }
 
     @Override

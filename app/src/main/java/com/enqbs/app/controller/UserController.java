@@ -156,13 +156,13 @@ public class UserController {
     }
 
     @GetMapping("/coupon/list")
-    public R<PageUtil<UserCouponVO>> userCouponList(@RequestParam(required = false) Integer status,
+    public R<PageUtil<UserCouponVO>> userCouponPage(@RequestParam(required = false) Integer status,
                                                     @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                                     @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                     @RequestParam(required = false, defaultValue = "5") Integer pageSize) {
-        PageUtil<UserCouponVO> pageUserCouponList = userCouponService.getUserCouponVOList(status, sort,
+        PageUtil<UserCouponVO> userCouponVOListPage = userCouponService.userCouponVOListPage(status, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 5 : pageSize);
-        return R.ok(pageUserCouponList);
+        return R.ok(userCouponVOListPage);
     }
 
     @GetMapping("/coupon/{couponId}")

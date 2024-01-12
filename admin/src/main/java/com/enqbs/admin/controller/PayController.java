@@ -21,7 +21,7 @@ public class PayController {
     private PayInfoService payInfoService;
 
     @GetMapping("/list")
-    public R<PageUtil<PayInfoVO>> payInfoList(@RequestParam(required = false) Long orderNo,
+    public R<PageUtil<PayInfoVO>> payInfoPage(@RequestParam(required = false) Long orderNo,
                                               @RequestParam(required = false) Integer userId,
                                               @RequestParam(required = false) String payType,
                                               @RequestParam(required = false) String platform,
@@ -31,9 +31,9 @@ public class PayController {
                                               @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<PayInfoVO> pagePayInfoList = payInfoService.getPayInfoVOList(orderNo, userId, payType, platform,
+        PageUtil<PayInfoVO> payInfoVOListPage = payInfoService.payInfoVOListPage(orderNo, userId, payType, platform,
                 platformNumber, status, deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pagePayInfoList);
+        return R.ok(payInfoVOListPage);
     }
 
     @GetMapping("/info/{payInfoId}")

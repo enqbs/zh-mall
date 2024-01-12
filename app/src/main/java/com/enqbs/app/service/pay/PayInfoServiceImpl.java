@@ -13,7 +13,6 @@ import com.enqbs.generator.dao.PayInfoMapper;
 import com.enqbs.generator.pojo.PayInfo;
 import com.enqbs.pay.enums.PayStatusEnum;
 import com.enqbs.pay.enums.PayTypeEnum;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 
-@Slf4j
 @Service
 public class PayInfoServiceImpl implements PayInfoService {
 
@@ -41,7 +39,8 @@ public class PayInfoServiceImpl implements PayInfoService {
         OrderVO orderVO = orderService.getOrderVO(orderNo);
         PayInfo payInfo = payInfoMapper.selectByOrderNoOrStatusOrDeleteStatus(orderNo, PayStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
-        if (ObjectUtils.isNotEmpty(payInfo) && !PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())
+        if (ObjectUtils.isNotEmpty(payInfo)
+                && !PayStatusEnum.NOT_PAY.getCode().equals(payInfo.getStatus())
                 && !OrderStatusEnum.NOT_PAY.getCode().equals(orderVO.getStatus())) {
             throw new ServiceException("订单号:" + orderNo + ",订单已关闭支付");
         }
@@ -57,8 +56,6 @@ public class PayInfoServiceImpl implements PayInfoService {
             if (row <= 0) {
                 throw new ServiceException("订单号:" + orderNo + ",支付信息保存失败");
             }
-
-            log.info("订单号:'{}',支付信息保存成功.", orderNo);
         }
 
         return orderVO.getActualAmount();
@@ -94,7 +91,6 @@ public class PayInfoServiceImpl implements PayInfoService {
         }
 
         rabbitMQService.send(QueueEnum.PAY_SUCCESS_QUEUE, orderNo);
-        log.info("订单号:'{}',支付平台流水号:'{}',支付信息更新成功.", orderNo, platformNo);
     }
 
 }

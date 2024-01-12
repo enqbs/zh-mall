@@ -5,19 +5,20 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
 @Setter
 public class CartVO implements Serializable {
 
-    private List<CartProductVO> productList;
+    private List<CartProductVO> productList = Collections.emptyList();
 
-    private Boolean selectedAll;
+    private Boolean selectedAll = false;
 
-    private Integer totalQuantity;
+    private Integer totalQuantity = 0;
 
-    private BigDecimal totalPrice;
+    private BigDecimal totalPrice = BigDecimal.ZERO;
 
     @Override
     public String toString() {

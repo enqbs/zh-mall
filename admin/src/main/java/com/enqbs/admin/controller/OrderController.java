@@ -34,7 +34,7 @@ public class OrderController {
     private OrderLogisticsInfoService orderLogisticsInfoService;
 
     @GetMapping("/list")
-    public R<PageUtil<OrderVO>> orderList(@RequestParam(required = false) Long orderNo,
+    public R<PageUtil<OrderVO>> orderPage(@RequestParam(required = false) Long orderNo,
                                           @RequestParam(required = false) String orderSc,
                                           @RequestParam(required = false) Integer userId,
                                           @RequestParam(required = false) Integer paymentType,
@@ -43,9 +43,9 @@ public class OrderController {
                                           @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                           @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<OrderVO> pageOrderList = orderService.getOrderVOList(orderNo, orderSc, userId, paymentType, status,
+        PageUtil<OrderVO> orderVOListPage = orderService.orderVOListPage(orderNo, orderSc, userId, paymentType, status,
                 deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(pageOrderList);
+        return R.ok(orderVOListPage);
     }
 
     @GetMapping("/{orderNo}")
