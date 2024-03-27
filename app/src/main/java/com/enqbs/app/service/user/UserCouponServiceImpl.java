@@ -47,8 +47,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     public PageUtil<UserCouponVO> userCouponVOListPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         Long total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
-        List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE,
-                sort.getSortType(), pageNum, pageSize);
+        List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
         List<UserCouponVO> userCouponVOList = userCouponList.stream().map(u -> userConvert.userCoupon2UserCouponVO(u)).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
         PageUtil<UserCouponVO> pageUtil = new PageUtil<>();
@@ -62,15 +61,13 @@ public class UserCouponServiceImpl implements UserCouponService {
     @Override
     public List<UserCouponVO> getUserCouponVOList() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), Constants.COUPON_UNUSED,
-                Constants.IS_NOT_DELETE, SortEnum.DESC.getSortType(), null, null);
+        List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), Constants.COUPON_UNUSED, Constants.IS_NOT_DELETE, SortEnum.DESC.getSortType(), null, null);
 
         if (CollectionUtils.isEmpty(userCouponList)) {
             return Collections.emptyList();
         }
 
-        List<UserCouponVO> userCouponVOList = userCouponList.stream()
-                .map(u -> userConvert.userCoupon2UserCouponVO(u)).collect(Collectors.toList());
+        List<UserCouponVO> userCouponVOList = userCouponList.stream().map(u -> userConvert.userCoupon2UserCouponVO(u)).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
         return userCouponVOList;
     }
@@ -180,8 +177,7 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     private void handleUserCouponVO(List<UserCouponVO> userCouponVOList) {
         Set<Integer> couponIdSet = userCouponVOList.stream().map(UserCouponVO::getCouponId).collect(Collectors.toSet());
-        Map<Integer, CouponVO> couponVOMap = couponService.getCouponVOList(couponIdSet).stream()
-                .collect(Collectors.toMap(CouponVO::getId, v -> v));
+        Map<Integer, CouponVO> couponVOMap = couponService.getCouponVOList(couponIdSet).stream().collect(Collectors.toMap(CouponVO::getId, v -> v));
         userCouponVOList.forEach(userCouponVO -> userCouponVO.setCoupon(couponVOMap.get(userCouponVO.getCouponId())));
     }
 

@@ -5,7 +5,6 @@ import com.enqbs.admin.form.LogisticsInfoForm;
 import com.enqbs.admin.vo.OrderLogisticsInfoVO;
 import com.enqbs.generator.dao.OrderLogisticsInfoMapper;
 import com.enqbs.generator.pojo.OrderLogisticsInfo;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,19 +25,19 @@ public class OrderLogisticsInfoServiceImpl implements OrderLogisticsInfoService 
 
     @Override
     public List<OrderLogisticsInfoVO> getOrderLogisticsInfoVOList(Set<Long> orderNoSet) {
-        if (CollectionUtils.isEmpty(orderNoSet)) {
+        List<OrderLogisticsInfo> orderLogisticsInfoList = CollectionUtils.isEmpty(orderNoSet) ? Collections.emptyList() : orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
+
+        if (CollectionUtils.isEmpty(orderLogisticsInfoList)) {
             return Collections.emptyList();
         }
 
-        List<OrderLogisticsInfo> orderLogisticsInfoList = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
-        return CollectionUtils.isEmpty(orderLogisticsInfoList) ?
-                Collections.emptyList() : orderLogisticsInfoList.stream().map(o -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(o)).collect(Collectors.toList());
+        return orderLogisticsInfoList.stream().map(o -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(o)).collect(Collectors.toList());
     }
 
     @Override
     public OrderLogisticsInfoVO getOrderLogisticsInfoVO(Long orderNo) {
         OrderLogisticsInfo orderLogisticsInfo = orderLogisticsInfoMapper.selectByOrderNo(orderNo);
-        return ObjectUtils.isEmpty(orderLogisticsInfo) ? null : orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(orderLogisticsInfo);
+        return orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(orderLogisticsInfo);
     }
 
     @Override

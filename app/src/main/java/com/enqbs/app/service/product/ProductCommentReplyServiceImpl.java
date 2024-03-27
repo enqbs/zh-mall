@@ -48,8 +48,7 @@ public class ProductCommentReplyServiceImpl implements ProductCommentReplyServic
     @Override
     public List<ProductCommentReplyVO> getProductCommentReplyVOList(Integer commentId) {
         List<ProductCommentReply> productCommentReplyList = productCommentReplyMapper.selectListByCommentId(commentId);
-        return productCommentReplyList.stream()
-                .map(p -> productConvert.productCommentReply2ProductCommentReplyVO(p)).collect(Collectors.toList());
+        return productCommentReplyList.stream().map(p -> productConvert.productCommentReply2ProductCommentReplyVO(p)).collect(Collectors.toList());
     }
 
     @Override

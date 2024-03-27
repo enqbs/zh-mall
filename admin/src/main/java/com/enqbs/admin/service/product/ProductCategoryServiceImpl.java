@@ -8,7 +8,6 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductCategoryMapper;
 import com.enqbs.generator.pojo.ProductCategory;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -40,7 +39,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public ProductCategoryVO getCategoryVO(Integer categoryId) {
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
-        return ObjectUtils.isEmpty(category) ? null : productConvert.category2CategoryVO(category);
+        return productConvert.category2CategoryVO(category);
     }
 
     @Override

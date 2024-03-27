@@ -4,7 +4,6 @@ import com.enqbs.admin.convert.MemberConvert;
 import com.enqbs.admin.vo.MemberLevelVO;
 import com.enqbs.generator.dao.UserLevelMapper;
 import com.enqbs.generator.pojo.UserLevel;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -25,18 +24,19 @@ public class MemberLevelServiceImpl implements MemberLevelService {
 
     @Override
     public List<MemberLevelVO> getMemberLevelVOList(Set<Integer> userLevelIdSet) {
-        if (CollectionUtils.isEmpty(userLevelIdSet)) {
+        List<UserLevel> userLevelList = CollectionUtils.isEmpty(userLevelIdSet) ? Collections.emptyList() : userLevelMapper.selectListByIdSet(userLevelIdSet);
+
+        if (CollectionUtils.isEmpty(userLevelList)) {
             return Collections.emptyList();
         }
 
-        List<UserLevel> userLevelList = userLevelMapper.selectListByIdSet(userLevelIdSet);
-        return CollectionUtils.isEmpty(userLevelList) ? Collections.emptyList() : userLevelList.stream().map(u -> memberConvert.userLevel2MemberLevelVO(u)).collect(Collectors.toList());
+        return userLevelList.stream().map(u -> memberConvert.userLevel2MemberLevelVO(u)).collect(Collectors.toList());
     }
 
     @Override
     public MemberLevelVO getMemberLevelVO(Integer userLevelId) {
         UserLevel userLevel = userLevelMapper.selectByPrimaryKey(userLevelId);
-        return ObjectUtils.isEmpty(userLevel) ? null : memberConvert.userLevel2MemberLevelVO(userLevel);
+        return memberConvert.userLevel2MemberLevelVO(userLevel);
     }
 
 }

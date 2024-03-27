@@ -7,7 +7,6 @@ import com.enqbs.common.constant.Constants;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductCategoryAttributeMapper;
 import com.enqbs.generator.pojo.ProductCategoryAttribute;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -41,7 +40,7 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
     @Override
     public ProductCategoryAttributeVO getAttributeVO(Integer attributeId) {
         ProductCategoryAttribute attribute = productCategoryAttributeMapper.selectByPrimaryKey(attributeId);
-        return ObjectUtils.isEmpty(attribute) ? null : productConvert.attribute2AttributeVO(attribute);
+        return productConvert.attribute2AttributeVO(attribute);
     }
 
     @Override

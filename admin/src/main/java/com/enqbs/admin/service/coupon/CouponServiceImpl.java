@@ -8,7 +8,6 @@ import com.enqbs.common.constant.Constants;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.CouponMapper;
 import com.enqbs.generator.pojo.Coupon;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -41,7 +40,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponVO getCouponVO(Integer couponId) {
         Coupon coupon = couponMapper.selectByPrimaryKey(couponId);
-        return ObjectUtils.isEmpty(coupon) ? null : couponConvert.coupon2CouponVO(coupon);
+        return couponConvert.coupon2CouponVO(coupon);
     }
 
     @Override

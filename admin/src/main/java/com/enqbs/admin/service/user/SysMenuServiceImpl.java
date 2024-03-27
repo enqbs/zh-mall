@@ -10,10 +10,8 @@ import com.enqbs.generator.pojo.SysMenu;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -37,8 +35,7 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public List<SysMenuVO> getSysMenuVOList() {
         List<SysMenu> sysMenuList = sysMenuMapper.selectListByRoot();
-        return CollectionUtils.isEmpty(sysMenuList) ?
-                Collections.emptyList() : sysMenuList.stream().map(m -> sysUserConvert.sysMenu2SysMenuVO(m)).collect(Collectors.toList());
+        return sysMenuList.stream().map(m -> sysUserConvert.sysMenu2SysMenuVO(m)).collect(Collectors.toList());
     }
 
     @Override
