@@ -1,6 +1,6 @@
 # 项目简介
 
-zh-mall 是本人曾经的毕业设计加以优化、改进而来的电商类项目，包含了商城、搜索、后台管理系统。现如今作为本人的开源项目长期维护、升级。经过不断打磨，项目核心功能完善。
+zh-mall 是本人曾经的毕业设计加以优化、改进而来的电商类项目，包含了商城、搜索、后台管理系统。现如今作为个人开源项目长期维护、升级。经过不断打磨，项目核心功能完善。
 
 doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有接口。前端写的不好暂不开源。
 
@@ -16,7 +16,7 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 - 单点登录、无感知刷新 Token
 - 接口幂等性、高并发数据原子性
 - Elasticsearch 全文检索
-- 分布式日志收集
+- Elasticsearch 分布式日志收集
 
 项目业务包括
 - 用户管理
@@ -38,43 +38,45 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 
 | 项目分支                                             | JDK 版本  | Spring Boot 版本 |
 |--------------------------------------------------|---------|----------------|
-| main                                             | JDK 21  | 3.1.7          |
+| main                                             | JDK 21  | 3.2.4          |
 | [2.x](https://github.com/enqbs/zh-mall/tree/2.x) | JDK 1.8 | 2.7.18         |
 
 # 技术选择
 
-| 技术                  | 说明             | 版本                |
-|---------------------|----------------|-------------------|
-| Spring Boot         | 容器管理、MVC       | 3.1.7             |
-| Spring Security     | 认证、授权          | 6.1.6             |
-| MyBatis             | ORM            | 3.5.14            |
-| MyBatis-Generator   | 代码生成插件         | 1.3.7             |
-| MySQL               | 数据库            | 8.0.31            |
-| Redis               | 缓存             | 6.2               |
-| RabbitMQ            | 消息队列           | 3.12.7-management |
-| Canal               | 数据库增量日志解析工具    | deployer-1.1.7    |
-| ShardingSphere-JDBC | 读写分离、数据分片      | 5.3.1             |
-| AliPay-SDK-V2       | 支付宝开源开发工具      | 4.38.170.ALL      |
-| AliPay-SDK-V3       | 支付宝开源开发工具      | 2.8.0.ALL         |
-| AliYun-OSS          | 阿里云对象存储        | 3.17.4            |
-| JWT                 | Json Web Token | -                 |
-| Elasticsearch       | 全文检索           | 8.7.1             |
-| Logstash            | 日志收集插件         | 8.7.1             |
-| Kibana              | ES 可视化工具       | 8.7.1             |
+| 技术                      | 说明             | 版本                |
+|-------------------------|----------------|-------------------|
+| Spring Boot             | 容器管理、MVC       | 3.2.4             |
+| Spring Security         | 认证、授权          | 6.2.3             |
+| MyBatis                 | ORM            | 3.5.14            |
+| MyBatis-Generator       | 代码生成插件         | 1.3.7             |
+| MySQL                   | 数据库            | 8.0.31            |
+| Redis                   | 缓存             | 6.2               |
+| RabbitMQ                | 消息队列           | 3.12.7-management |
+| Canal                   | 数据库增量日志解析工具    | deployer-1.1.7    |
+| ~~ShardingSphere-JDBC~~ | ~~读写分离、数据分片~~  | ~~5.3.1~~         |
+| AliPay-SDK-V2           | 支付宝开源开发工具      | 4.39.2.ALL        |
+| ~~AliPay-SDK-V3~~       | ~~支付宝开源开发工具~~  | ~~2.8.0.ALL~~     |
+| AliYun-OSS              | 阿里云对象存储        | 3.17.4            |
+| JWT                     | Json Web Token | -                 |
+| Elasticsearch           | 全文检索、日志收集      | 8.10.4            |
+| Logstash                | 日志收集插件         | 8.10.4            |
+| Kibana                  | ES 可视化工具       | 8.10.4            |
+
+PS：目前 ShardingSphere-JDBC 最新版本与项目 Spring Boot 版本不兼容。暂时舍弃该项技术，等 ShardingSphere 后续更新。
 
 # 运行时持久层、中间件选择
 
-| 技术            | 说明                             | 是否必选*  |
-|---------------|--------------------------------|--------|
-| MySQL         | 数据库                            | *      |
-| Redis         | 缓存                             | *      |
-| RabbitMQ      | 消息队列                           | *      |
-| Canal         | MySQL、Redis、Elasticsearch 数据同步 | -      |
-| Elasticsearch | 全文检索、日志收集                      | -      |
-| Logstash      | 日志收集插件                         | -      |
-| Kibana        | ES 可视化工具                       | -      |
+| 技术            | 说明                               | 是否必选(*) |
+|---------------|----------------------------------|---------|
+| MySQL         | 数据库                              | *       |
+| Redis         | 缓存                               | *       |
+| RabbitMQ      | 消息队列                             | *       |
+| Canal         | MySQL、Redis、Elasticsearch 数据同步工具 | -       |
+| Elasticsearch | 全文检索、日志收集                        | -       |
+| Logstash      | 日志收集插件                           | -       |
+| Kibana        | ES 可视化工具                         | -       |
 
-PS：如无需读写分离，注释 ShardingSphere-JDBC 依赖，修改配置文件为单数据源。
+~~PS：如无需读写分离，注释 ShardingSphere-JDBC 依赖，修改配置文件为单数据源。~~
 
 # 目录结构
 
@@ -84,10 +86,10 @@ zh-mall
 ├─app           // 商城系统
 ├─common        // 公共模块
 ├─doc
-│  ├─Canal      // Canal 配置文件
-│  ├─Logstash   // Logstash 配置文件
-│  ├─MySQL      // SQL 文件
-│  └─Postman    // 测试接口
+│  ├─Canal          // Canal 配置文件
+│  ├─Logstash       // Logstash 配置文件
+│  ├─MySQL          // SQL 文件
+│  └─Postman        // 测试接口
 ├─file          // 文件上传模块、阿里云 OSS 配置
 ├─generator     // MyBatis-Generator 插件生成的代码
 ├─pay           // 支付模块
