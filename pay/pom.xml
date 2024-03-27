@@ -22,15 +22,11 @@
             <groupId>com.enqbs</groupId>
             <artifactId>common</artifactId>
         </dependency>
+
         <!-- v2 -->
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-        </dependency>
-        <!-- v3 -->
-        <dependency>
-            <groupId>com.alipay.sdk</groupId>
-            <artifactId>alipay-sdk-java-v3</artifactId>
         </dependency>
     </dependencies>
 

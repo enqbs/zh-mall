@@ -10,7 +10,9 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +30,7 @@ public class SkuStockServiceImpl implements SkuStockService {
 
     @Override
     public List<SkuStock> getStockList(Set<Integer> skuIdSet) {
-        return skuStockMapper.selectListBySkuIdSet(skuIdSet);
+        return CollectionUtils.isEmpty(skuIdSet) ? Collections.emptyList() : skuStockMapper.selectListBySkuIdSet(skuIdSet);
     }
 
     @Override

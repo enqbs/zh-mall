@@ -7,6 +7,7 @@ import com.enqbs.common.util.GsonUtil;
 import com.enqbs.generator.dao.SpuSpecMapper;
 import com.enqbs.generator.pojo.SpuSpec;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +26,11 @@ public class SpuSpecServiceImpl implements SpuSpecService {
     @Override
     public SpuSpecVO getSpecVO(Integer spuId) {
         SpuSpec spec = spuSpecMapper.selectByPrimaryKey(spuId);
+
+        if (ObjectUtils.isEmpty(spec)) {
+            return null;
+        }
+
         SpuSpecVO specVO = productConvert.spec2SpecVO(spec);
         specVO.setPictures(StringUtils.isEmpty(spec.getPictures()) ?
                 Collections.emptyList() : GsonUtil.json2ArrayList(spec.getPictures(), String[].class)

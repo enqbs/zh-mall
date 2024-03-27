@@ -20,19 +20,19 @@ public class PayController {
     private PayInfoService payInfoService;
 
     @GetMapping("/list")
-    public R<PageUtil<PayInfoVO>> payInfoPage(@RequestParam(required = false) Long orderNo,
-                                              @RequestParam(required = false) Integer userId,
-                                              @RequestParam(required = false) String payType,
-                                              @RequestParam(required = false) String platform,
-                                              @RequestParam(required = false) String platformNumber,
-                                              @RequestParam(required = false) Integer status,
-                                              @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                              @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                              @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                              @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<PayInfoVO> payInfoVOPage = payInfoService.payInfoVOPage(orderNo, userId, payType, platform, platformNumber,
+    public R<PageUtil<PayInfoVO>> payInfoListPage(@RequestParam(required = false) Long orderNo,
+                                                  @RequestParam(required = false) Integer userId,
+                                                  @RequestParam(required = false) String payType,
+                                                  @RequestParam(required = false) String platform,
+                                                  @RequestParam(required = false) String platformNumber,
+                                                  @RequestParam(required = false) Integer status,
+                                                  @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                                  @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                                  @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                  @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<PayInfoVO> payInfoVOListPage = payInfoService.payInfoVOListPage(orderNo, userId, payType, platform, platformNumber,
                 status, deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(payInfoVOPage);
+        return R.ok(payInfoVOListPage);
     }
 
     @GetMapping("/info/{payInfoId}")

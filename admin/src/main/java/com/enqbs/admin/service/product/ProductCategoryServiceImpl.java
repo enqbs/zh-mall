@@ -9,9 +9,7 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductCategoryMapper;
 import com.enqbs.generator.pojo.ProductCategory;
 import jakarta.annotation.Resource;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -25,18 +23,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCategoryVO> categoryVOPage(Integer parentId, Integer homeStatus, Integer naviStatus,
-                                                      Integer deleteStatus, Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCategoryVO> categoryVOListPage(Integer parentId, Integer homeStatus, Integer naviStatus,
+                                                          Integer deleteStatus, Integer pageNum, Integer pageSize) {
+        Long total = productCategoryMapper.countByParam(parentId, homeStatus, naviStatus, deleteStatus);
+        List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(parentId, homeStatus, naviStatus, deleteStatus, pageNum, pageSize);
         PageUtil<ProductCategoryVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(parentId, homeStatus, naviStatus, deleteStatus, pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(categoryList)) {
-            return pageUtil;
-        }
-
-        Long total = productCategoryMapper.countByParam(parentId, homeStatus, naviStatus, deleteStatus);
         pageUtil.setTotal(total);
         pageUtil.setList(categoryList.stream().map(c -> productConvert.category2CategoryVO(c)).toList());
         return pageUtil;
@@ -45,7 +38,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public ProductCategoryVO getCategoryVO(Integer categoryId) {
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
-        return ObjectUtils.isEmpty(category) ? new ProductCategoryVO() : productConvert.category2CategoryVO(category);
+        return productConvert.category2CategoryVO(category);
     }
 
     @Override

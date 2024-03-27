@@ -39,11 +39,11 @@ public class SysRoleController {
     private RoleMenuService roleMenuService;
 
     @GetMapping("/list")
-    public R<PageUtil<SysRoleVO>> rolePage(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                           @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<SysRoleVO> roleVOPage = roleService.roleVOPage(deleteStatus, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(roleVOPage);
+    public R<PageUtil<SysRoleVO>> roleListPage(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<SysRoleVO> roleVOListPage = roleService.roleVOListPage(deleteStatus, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
+        return R.ok(roleVOListPage);
     }
 
     @GetMapping("/{roleId}")

@@ -7,6 +7,7 @@ import com.enqbs.common.util.GsonUtil;
 import com.enqbs.generator.dao.SpuOverviewMapper;
 import com.enqbs.generator.pojo.SpuOverview;
 import jakarta.annotation.Resource;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -25,6 +26,11 @@ public class SpuOverviewServiceImpl implements SpuOverviewService {
     @Override
     public SpuOverviewVO getOverviewVO(Integer spuId) {
         SpuOverview overview = spuOverviewMapper.selectByPrimaryKey(spuId);
+
+        if (ObjectUtils.isEmpty(overview)) {
+            return null;
+        }
+
         SpuOverviewVO overviewVO = productConvert.overview2OverviewVO(overview);
         overviewVO.setPictures(StringUtils.isEmpty(overview.getPictures()) ?
                 Collections.emptyList() : GsonUtil.json2ArrayList(overview.getPictures(), String[].class)

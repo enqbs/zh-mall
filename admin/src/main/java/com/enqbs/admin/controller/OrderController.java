@@ -34,18 +34,18 @@ public class OrderController {
     private OrderLogisticsInfoService orderLogisticsInfoService;
 
     @GetMapping("/list")
-    public R<PageUtil<OrderVO>> orderPage(@RequestParam(required = false) Long orderNo,
-                                          @RequestParam(required = false) String orderSc,
-                                          @RequestParam(required = false) Integer userId,
-                                          @RequestParam(required = false) Integer paymentType,
-                                          @RequestParam(required = false) Integer status,
-                                          @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                          @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                          @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                          @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<OrderVO> orderVOPage = orderService.orderVOPage(orderNo, orderSc, userId, paymentType, status,
+    public R<PageUtil<OrderVO>> orderListPage(@RequestParam(required = false) Long orderNo,
+                                              @RequestParam(required = false) String orderSc,
+                                              @RequestParam(required = false) Integer userId,
+                                              @RequestParam(required = false) Integer paymentType,
+                                              @RequestParam(required = false) Integer status,
+                                              @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                              @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                              @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                              @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<OrderVO> orderVOListPage = orderService.orderVOListPage(orderNo, orderSc, userId, paymentType, status,
                 deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(orderVOPage);
+        return R.ok(orderVOListPage);
     }
 
     @GetMapping("/{orderNo}")

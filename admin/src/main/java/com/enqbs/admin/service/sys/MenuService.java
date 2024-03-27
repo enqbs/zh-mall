@@ -13,7 +13,7 @@ public interface MenuService {
     /*
      * 权限列表
      * */
-    PageUtil<SysMenuVO> menuVOPage(Integer parentId, Integer roleId, Integer deleteStatus, Integer pageNum, Integer pageSize);
+    PageUtil<SysMenuVO> menuVOListPage(Integer parentId, Integer roleId, Integer deleteStatus, Integer pageNum, Integer pageSize);
 
     /*
      * 获取权限列表

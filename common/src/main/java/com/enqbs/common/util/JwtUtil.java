@@ -14,10 +14,8 @@ public class JwtUtil {
     * 创建 token
     * */
     public static String createToken(String key, String value, Integer expire, String secret) {
-        /* 获取日期偏移量，1天后的时间 */
-        DateTime expireDate = DateUtil.offset(new Date(), DateField.DAY_OF_YEAR, expire);
-        Algorithm algorithm = Algorithm.HMAC256(secret);
-        return JWT.create().withClaim(key, value).withExpiresAt(expireDate).sign(algorithm);
+        DateTime expireDate = DateUtil.offset(new Date(), DateField.DAY_OF_YEAR, expire);   // 获取日期偏移量，1天后的时间
+        return JWT.create().withClaim(key, value).withExpiresAt(expireDate).sign(Algorithm.HMAC256(secret));
     }
 
     /*
@@ -38,8 +36,7 @@ public class JwtUtil {
     * 验证 token 有效性
     * */
     public static void verifierToken(String token, String secret) {
-        Algorithm algorithm = Algorithm.HMAC256(secret);
-        JWT.require(algorithm).build().verify(token);
+        JWT.require(Algorithm.HMAC256(secret)).build().verify(token);
     }
 
 }

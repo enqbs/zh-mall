@@ -8,9 +8,7 @@ import com.enqbs.common.util.PageUtil;
 import com.enqbs.generator.dao.ProductCategoryAttributeMapper;
 import com.enqbs.generator.pojo.ProductCategoryAttribute;
 import jakarta.annotation.Resource;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -24,18 +22,13 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCategoryAttributeVO> attributeVOPage(Integer categoryId, Integer deleteStatus,
-                                                                Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCategoryAttributeVO> attributeVOListPage(Integer categoryId, Integer deleteStatus,
+                                                                    Integer pageNum, Integer pageSize) {
+        Long total = productCategoryAttributeMapper.countByParam(null, deleteStatus);
+        List<ProductCategoryAttribute> attributeList = productCategoryAttributeMapper.selectListByParam(categoryId, deleteStatus, pageNum, pageSize);
         PageUtil<ProductCategoryAttributeVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCategoryAttribute> attributeList = productCategoryAttributeMapper.selectListByParam(categoryId, deleteStatus, pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(attributeList)) {
-            return pageUtil;
-        }
-
-        Long total = productCategoryAttributeMapper.countByParam(null, deleteStatus);
         pageUtil.setTotal(total);
         pageUtil.setList(attributeList.stream().map(a -> productConvert.attribute2AttributeVO(a)).toList());
         return pageUtil;
@@ -44,7 +37,7 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
     @Override
     public ProductCategoryAttributeVO getAttributeVO(Integer attributeId) {
         ProductCategoryAttribute attribute = productCategoryAttributeMapper.selectByPrimaryKey(attributeId);
-        return ObjectUtils.isEmpty(attribute) ? new ProductCategoryAttributeVO() : productConvert.attribute2AttributeVO(attribute);
+        return productConvert.attribute2AttributeVO(attribute);
     }
 
     @Override

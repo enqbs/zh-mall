@@ -4,10 +4,8 @@ import com.enqbs.generator.dao.PayPlatformMapper;
 import com.enqbs.generator.pojo.PayPlatform;
 import com.enqbs.pay.enums.PayTypeEnum;
 import jakarta.annotation.Resource;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class PayPlatformServiceImpl implements PayPlatformService {
 

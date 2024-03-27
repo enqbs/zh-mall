@@ -34,14 +34,14 @@ public class SysMenuController {
     }
 
     @GetMapping("/list")
-    public R<PageUtil<SysMenuVO>> menuPage(@RequestParam(required = false) Integer parentId,
-                                           @RequestParam(required = false) Integer roleId,
-                                           @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                           @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                           @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<SysMenuVO> menuVOPage = menuService.menuVOPage(parentId, roleId, deleteStatus,
+    public R<PageUtil<SysMenuVO>> menuListPage(@RequestParam(required = false) Integer parentId,
+                                               @RequestParam(required = false) Integer roleId,
+                                               @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<SysMenuVO> menuVOListPage = menuService.menuVOListPage(parentId, roleId, deleteStatus,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(menuVOPage);
+        return R.ok(menuVOListPage);
     }
 
     @GetMapping("/{menuId}")

@@ -10,8 +10,8 @@ public interface OrderService {
     /*
      * 订单列表
      * */
-    PageUtil<OrderVO> orderVOPage(Long orderNo, String orderSc, Integer userId, Integer paymentType, Integer status,
-                                  Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<OrderVO> orderVOListPage(Long orderNo, String orderSc, Integer userId, Integer paymentType, Integer status,
+                                      Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 订单详情

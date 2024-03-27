@@ -9,8 +9,8 @@ public interface PayInfoService {
     /*
      * 支付信息列表
      * */
-    PageUtil<PayInfoVO> payInfoVOPage(Long orderNo, Integer userId, String payType, String platform, String platformNumber,
-                                      Integer status, Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<PayInfoVO> payInfoVOListPage(Long orderNo, Integer userId, String payType, String platform, String platformNumber,
+                                          Integer status, Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 支付信息

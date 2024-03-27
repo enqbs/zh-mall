@@ -12,7 +12,7 @@ public interface CouponService {
     /*
      * 优惠券分页
      * */
-    PageUtil<CouponVO> couponVOPage(SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<CouponVO> couponVOListPage(SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 优惠券列表

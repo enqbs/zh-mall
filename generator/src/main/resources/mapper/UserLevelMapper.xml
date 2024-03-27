@@ -17,7 +17,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_user_level
     where id = #{id,jdbcType=INTEGER}
@@ -29,12 +29,12 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.UserLevel">
-    insert into tb_user_level (id, level, title, 
-      experience, discount, delete_status, 
-      create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, 
-      #{experience,jdbcType=INTEGER}, #{discount,jdbcType=DECIMAL}, #{deleteStatus,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into tb_user_level (id, level, title,
+                               experience, discount, delete_status,
+                               create_time, update_time)
+    values (#{id,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR},
+            #{experience,jdbcType=INTEGER}, #{discount,jdbcType=DECIMAL}, #{deleteStatus,jdbcType=INTEGER},
+            #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.UserLevel">
@@ -124,12 +124,12 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.UserLevel">
     update tb_user_level
     set level = #{level,jdbcType=INTEGER},
-      title = #{title,jdbcType=VARCHAR},
-      experience = #{experience,jdbcType=INTEGER},
-      discount = #{discount,jdbcType=DECIMAL},
-      delete_status = #{deleteStatus,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+        title = #{title,jdbcType=VARCHAR},
+        experience = #{experience,jdbcType=INTEGER},
+        discount = #{discount,jdbcType=DECIMAL},
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -137,9 +137,9 @@
     select
     <include refid="Base_Column_List" />
     from tb_user_level
-    where
-    <foreach collection="idSet" item="item" index="index" separator="or">
-      id = #{item,jdbcType=INTEGER}
+    where id in
+    <foreach collection="idSet" item="item" index="index" open="(" close=")" separator="or">
+      #{item,jdbcType=INTEGER}
     </foreach>
   </select>
 </mapper>

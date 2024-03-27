@@ -21,8 +21,8 @@ public class ESProductController {
     public R<PageUtil<ESProduct>> productSearch(@RequestParam String searchText,
                                                 @RequestParam(required = false, defaultValue = "1") Integer pageNum,
                                                 @RequestParam(required = false, defaultValue = "20") Integer pageSize) {
-        PageUtil<ESProduct> productPage = esProductService.search(searchText, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 20 : pageSize);
-        return R.ok(productPage);
+        PageUtil<ESProduct> productListPage = esProductService.search(searchText, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 20 : pageSize);
+        return R.ok(productListPage);
     }
 
 }

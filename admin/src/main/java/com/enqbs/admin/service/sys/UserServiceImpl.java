@@ -22,7 +22,6 @@ import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -44,17 +43,12 @@ public class UserServiceImpl implements UserService {
     private SysConvert sysConvert;
 
     @Override
-    public PageUtil<SysUserInfoVO> userInfoVOPage(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysUserInfoVO> userInfoVOListPage(Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
+        Long total = sysUserMapper.countByParam(deleteStatus);
+        List<SysUser> userList = sysUserMapper.selectListByParam(deleteStatus, sort.getSortType(), pageNum, pageSize);
         PageUtil<SysUserInfoVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<SysUser> userList = sysUserMapper.selectListByParam(deleteStatus, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(userList)) {
-            return pageUtil;
-        }
-
-        Long total = sysUserMapper.countByParam(deleteStatus);
         pageUtil.setTotal(total);
         pageUtil.setList(userList.stream().map(u -> sysConvert.user2UserInfoVO(u)).toList());
         return pageUtil;

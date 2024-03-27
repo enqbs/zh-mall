@@ -10,7 +10,6 @@ import com.enqbs.generator.pojo.SysRole;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -24,17 +23,12 @@ public class RoleServiceImpl implements RoleService {
     private SysConvert sysConvert;
 
     @Override
-    public PageUtil<SysRoleVO> roleVOPage(Integer deleteStatus, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysRoleVO> roleVOListPage(Integer deleteStatus, Integer pageNum, Integer pageSize) {
+        Long total = sysRoleMapper.countByParam(deleteStatus);
+        List<SysRole> roleList = sysRoleMapper.selectListByParam(deleteStatus, pageNum, pageSize);
         PageUtil<SysRoleVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<SysRole> roleList = sysRoleMapper.selectListByParam(deleteStatus, pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(roleList)) {
-            return pageUtil;
-        }
-
-        Long total = sysRoleMapper.countByParam(deleteStatus);
         pageUtil.setTotal(total);
         pageUtil.setList(roleList.stream().map(r -> sysConvert.role2RoleVO(r)).toList());
         return pageUtil;
@@ -43,8 +37,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public SysRoleVO getRoleVO(Integer id) {
         SysRole role = sysRoleMapper.selectByPrimaryKey(id);
-        return ObjectUtils.isEmpty(role) || Constants.IS_DELETE.equals(role.getDeleteStatus()) ?
-                new SysRoleVO() : sysConvert.role2RoleVO(role);
+        return ObjectUtils.isEmpty(role) || Constants.IS_DELETE.equals(role.getDeleteStatus()) ? null : sysConvert.role2RoleVO(role);
     }
 
     @Override

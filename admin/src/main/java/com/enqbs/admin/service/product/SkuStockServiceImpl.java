@@ -7,7 +7,9 @@ import com.enqbs.generator.dao.SkuStockMapper;
 import com.enqbs.generator.pojo.SkuStock;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +24,12 @@ public class SkuStockServiceImpl implements SkuStockService {
 
     @Override
     public List<SkuStockVO> getStockVOList(Set<Integer> skuIdSet) {
-        List<SkuStock> stockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
+        List<SkuStock> stockList = CollectionUtils.isEmpty(skuIdSet) ? Collections.emptyList() : skuStockMapper.selectListBySkuIdSet(skuIdSet);
+
+        if (CollectionUtils.isEmpty(stockList)) {
+            return Collections.emptyList();
+        }
+
         return stockList.stream().map(s -> productConvert.stock2StockVO(s)).toList();
     }
 

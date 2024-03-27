@@ -14,7 +14,6 @@ import com.enqbs.generator.pojo.ProductCommentReply;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -31,17 +30,12 @@ public class ProductCommentReplyServiceImpl implements ProductCommentReplyServic
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCommentReplyVO> commentReplyVOPage(Integer commentId, SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<ProductCommentReplyVO> commentReplyVOListPage(Integer commentId, SortEnum sort, Integer pageNum, Integer pageSize) {
+        Long total = productCommentReplyMapper.countByCommentId(commentId);
+        List<ProductCommentReply> commentReplyList = productCommentReplyMapper.selectListByParam(commentId, sort.getSortType(), pageNum, pageSize);
         PageUtil<ProductCommentReplyVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<ProductCommentReply> commentReplyList = productCommentReplyMapper.selectListByParam(commentId, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(commentReplyList)) {
-            return pageUtil;
-        }
-
-        Long total = productCommentReplyMapper.countByCommentId(commentId);
         pageUtil.setTotal(total);
         pageUtil.setList(commentReplyList.stream().map(c -> productConvert.commentReply2CommentReplyVO(c)).toList());
         return pageUtil;

@@ -37,7 +37,7 @@ public interface OrderService {
     /*
      * 顶顶那列表
      * */
-    PageUtil<OrderVO> orderVOPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<OrderVO> orderVOListPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 保存订单信息

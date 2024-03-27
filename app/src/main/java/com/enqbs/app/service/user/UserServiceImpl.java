@@ -252,7 +252,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setUid(uid);
         user.setNickName("用户:" + uid);
-        user.setPhoto("https://zh-product.oss-cn-shenzhen.aliyuncs.com/user-photo/photo.png");
+        user.setPhoto("用户默认头像URL");
         return user;
     }
 

@@ -20,17 +20,17 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("/list")
-    public R<PageUtil<MemberVO>> memberPage(@RequestParam(required = false) Integer id,
-                                            @RequestParam(required = false) Long uid,
-                                            @RequestParam(required = false) String identifier,
-                                            @RequestParam(required = false) Integer status,
-                                            @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                            @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                            @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<MemberVO> memberVOPage = memberService.memberVOPage(id, uid, identifier, status, deleteStatus, sort,
+    public R<PageUtil<MemberVO>> memberListPage(@RequestParam(required = false) Integer id,
+                                                @RequestParam(required = false) Long uid,
+                                                @RequestParam(required = false) String identifier,
+                                                @RequestParam(required = false) Integer status,
+                                                @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                                @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                                @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<MemberVO> memberVOListPage = memberService.memberVOListPage(id, uid, identifier, status, deleteStatus, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(memberVOPage);
+        return R.ok(memberVOListPage);
     }
 
     @GetMapping("/{id}")

@@ -10,8 +10,8 @@ public interface SpuService {
     /*
      * 商品列表
      * */
-    PageUtil<ProductVO> productVOPage(Integer categoryId, Integer saleableStatus, Integer newStatus, Integer recommendStatus,
-                                      Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<ProductVO> productVOListPage(Integer categoryId, Integer saleableStatus, Integer newStatus, Integer recommendStatus,
+                                          Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 商品详情

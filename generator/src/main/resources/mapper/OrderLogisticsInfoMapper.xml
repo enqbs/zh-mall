@@ -105,9 +105,9 @@
     select
     <include refid="Base_Column_List" />
     from tb_order_logistics_info
-    where
-    <foreach collection="orderNoSet" item="item" index="index" separator="or">
-      order_no = #{item,jdbcType=BIGINT}
+    where order_no in
+    <foreach collection="orderNoSet" item="item" index="index" open="(" close=")" separator="or">
+      #{item,jdbcType=BIGINT}
     </foreach>
   </select>
 </mapper>

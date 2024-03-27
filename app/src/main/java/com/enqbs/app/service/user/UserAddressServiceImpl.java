@@ -66,8 +66,7 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     public UserAddressVO getAddressVO(Integer addressId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        UserShippingAddress address = userShippingAddressMapper.selectByPrimaryKeyOrUserIdOrDeleteStatus(addressId,
-                userInfoVO.getUserId(), Constants.IS_NOT_DELETE);
+        UserShippingAddress address = userShippingAddressMapper.selectByPrimaryKeyOrUserIdOrDeleteStatus(addressId, userInfoVO.getUserId(), Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(address)) {
             throw new ServiceException("收货地址不存在");

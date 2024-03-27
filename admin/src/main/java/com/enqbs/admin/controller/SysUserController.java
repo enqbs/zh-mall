@@ -39,13 +39,13 @@ public class SysUserController {
     private TokenService tokenService;
 
     @GetMapping("/list")
-    public R<PageUtil<SysUserInfoVO>> userPage(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                               @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<SysUserInfoVO> userInfoVOPage = userService.userInfoVOPage(deleteStatus, sort,
+    public R<PageUtil<SysUserInfoVO>> userListPage(@RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                                   @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                                   @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                   @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<SysUserInfoVO> userInfoVOListPage = userService.userInfoVOListPage(deleteStatus, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(userInfoVOPage);
+        return R.ok(userInfoVOListPage);
     }
 
     @GetMapping("/info")

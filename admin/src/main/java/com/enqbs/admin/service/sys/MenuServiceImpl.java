@@ -10,7 +10,6 @@ import com.enqbs.generator.pojo.SysMenu;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -25,17 +24,12 @@ public class MenuServiceImpl implements MenuService {
     private SysConvert sysConvert;
 
     @Override
-    public PageUtil<SysMenuVO> menuVOPage(Integer parentId, Integer roleId, Integer deleteStatus, Integer pageNum, Integer pageSize) {
+    public PageUtil<SysMenuVO> menuVOListPage(Integer parentId, Integer roleId, Integer deleteStatus, Integer pageNum, Integer pageSize) {
+        Long total = sysMenuMapper.countByParam(parentId, roleId, deleteStatus);
+        List<SysMenu> menuList = sysMenuMapper.selectListByParam(parentId, roleId, deleteStatus, pageNum, pageSize);
         PageUtil<SysMenuVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        List<SysMenu> menuList = sysMenuMapper.selectListByParam(parentId, roleId, deleteStatus, pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(menuList)) {
-            return pageUtil;
-        }
-
-        Long total = sysMenuMapper.countByParam(parentId, roleId, deleteStatus);
         pageUtil.setTotal(total);
         pageUtil.setList(menuList.stream().map(m -> sysConvert.menu2MenuVO(m)).toList());
         return pageUtil;
@@ -61,8 +55,7 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public SysMenuVO getMenuVO(Integer id) {
         SysMenu menu = sysMenuMapper.selectByPrimaryKey(id);
-        return ObjectUtils.isEmpty(menu) || Constants.IS_DELETE.equals(menu.getDeleteStatus()) ?
-                new SysMenuVO() : sysConvert.menu2MenuVO(menu);
+        return ObjectUtils.isEmpty(menu) || Constants.IS_DELETE.equals(menu.getDeleteStatus()) ? null : sysConvert.menu2MenuVO(menu);
     }
 
     @Override

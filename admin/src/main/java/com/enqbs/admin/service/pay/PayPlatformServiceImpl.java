@@ -6,7 +6,9 @@ import com.enqbs.generator.dao.PayPlatformMapper;
 import com.enqbs.generator.pojo.PayPlatform;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +23,12 @@ public class PayPlatformServiceImpl implements PayPlatformService {
 
     @Override
     public List<PayPlatformVO> getPayPlatformVOList(Set<Long> payInfoIdSet) {
-        List<PayPlatform> payPlatformList = payPlatformMapper.selectListByPayInfoIdSet(payInfoIdSet);
+        List<PayPlatform> payPlatformList = CollectionUtils.isEmpty(payInfoIdSet) ? Collections.emptyList() : payPlatformMapper.selectListByPayInfoIdSet(payInfoIdSet);
+
+        if (CollectionUtils.isEmpty(payPlatformList)) {
+            return Collections.emptyList();
+        }
+
         return payPlatformList.stream().map(p -> payConvert.payPlatform2PayPlatformVO(p)).toList();
     }
 

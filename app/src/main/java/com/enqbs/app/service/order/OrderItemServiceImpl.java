@@ -9,7 +9,9 @@ import com.enqbs.generator.dao.OrderItemMapper;
 import com.enqbs.generator.pojo.OrderItem;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +37,12 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public List<OrderItemVO> getOrderItemVOList(Set<Long> orderNoSet) {
-        List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNoSet(orderNoSet);
+        List<OrderItem> orderItemList = CollectionUtils.isEmpty(orderNoSet) ? Collections.emptyList() : orderItemMapper.selectListByOrderNoSet(orderNoSet);
+
+        if (CollectionUtils.isEmpty(orderItemList)) {
+            return Collections.emptyList();
+        }
+
         return orderItemList.stream().map(o -> {
                     OrderItemVO orderItemVO = orderConvert.orderItem2OrderItemVO(o);
                     orderItemVO.setSkuParams(GsonUtil.json2ArrayList(o.getSkuParams(), SkuParamVO[].class));

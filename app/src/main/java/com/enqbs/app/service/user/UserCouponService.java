@@ -11,7 +11,7 @@ public interface UserCouponService {
     /*
      * 用户优惠券列表
      * */
-    PageUtil<UserCouponVO> couponVOPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<UserCouponVO> couponVOListPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 用户有效优惠券列表

@@ -44,21 +44,15 @@ public class UserCouponServiceImpl implements UserCouponService {
     private UserConvert userConvert;
 
     @Override
-    public PageUtil<UserCouponVO> couponVOPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize) {
+    public PageUtil<UserCouponVO> couponVOListPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize) {
+        UserInfoVO userInfoVO = userService.getUserInfoVO();
+        Long total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
+        List<UserCoupon> couponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
+        List<UserCouponVO> couponVOList = couponList.stream().map(c -> userConvert.coupon2CouponVO(c)).toList();
+        handleUserCouponVO(couponVOList);
         PageUtil<UserCouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
-        UserInfoVO userInfoVO = userService.getUserInfoVO();
-        List<UserCoupon> couponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), status,
-                Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(couponList)) {
-            return pageUtil;
-        }
-
-        Long total = userCouponMapper.countByParam(userInfoVO.getUserId(), status, Constants.IS_NOT_DELETE);
-        List<UserCouponVO> couponVOList = couponList.stream().map(c -> userConvert.coupon2CouponVO(c)).toList();
-        handleUserCouponVO(couponVOList);
         pageUtil.setTotal(total);
         pageUtil.setList(couponVOList);
         return pageUtil;
@@ -67,8 +61,7 @@ public class UserCouponServiceImpl implements UserCouponService {
     @Override
     public List<UserCouponVO> getCouponVOList() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        List<UserCoupon> couponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), Constants.COUPON_UNUSED,
-                Constants.IS_NOT_DELETE, SortEnum.DESC.getSortType(), null, null);
+        List<UserCoupon> couponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), Constants.COUPON_UNUSED, Constants.IS_NOT_DELETE, SortEnum.DESC.getSortType(), null, null);
 
         if (CollectionUtils.isEmpty(couponList)) {
             return Collections.emptyList();
@@ -97,6 +90,10 @@ public class UserCouponServiceImpl implements UserCouponService {
     public void add(Integer couponId) {
         int quantity = 1;
         CouponVO couponVO = couponService.getCouponVO(couponId);
+
+        if (ObjectUtils.isEmpty(couponVO)) {
+            throw new ServiceException("优惠券不存在");
+        }
 
         if (new Date().compareTo(couponVO.getEndDate()) > 0) {
             throw new ServiceException("优惠券活动已结束");
@@ -179,8 +176,7 @@ public class UserCouponServiceImpl implements UserCouponService {
 
     private void handleUserCouponVO(List<UserCouponVO> couponVOList) {
         Set<Integer> couponIdSet = couponVOList.stream().map(UserCouponVO::getCouponId).collect(Collectors.toSet());
-        Map<Integer, CouponVO> couponVOMap = couponService.getCouponVOList(couponIdSet).stream()
-                .collect(Collectors.toMap(CouponVO::getId, v -> v));
+        Map<Integer, CouponVO> couponVOMap = couponService.getCouponVOList(couponIdSet).stream().collect(Collectors.toMap(CouponVO::getId, v -> v));
         couponVOList.forEach(cvo -> cvo.setCoupon(couponVOMap.get(cvo.getCouponId())));
     }
 

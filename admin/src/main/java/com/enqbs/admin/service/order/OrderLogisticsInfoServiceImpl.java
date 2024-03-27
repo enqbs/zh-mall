@@ -7,7 +7,9 @@ import com.enqbs.generator.dao.OrderLogisticsInfoMapper;
 import com.enqbs.generator.pojo.OrderLogisticsInfo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +24,12 @@ public class OrderLogisticsInfoServiceImpl implements OrderLogisticsInfoService 
 
     @Override
     public List<OrderLogisticsInfoVO> getOrderLogisticsInfoVOList(Set<Long> orderNoSet) {
-        List<OrderLogisticsInfo> orderLogisticsInfoList = orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
+        List<OrderLogisticsInfo> orderLogisticsInfoList = CollectionUtils.isEmpty(orderNoSet) ? Collections.emptyList() : orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
+
+        if (CollectionUtils.isEmpty(orderLogisticsInfoList)) {
+            return Collections.emptyList();
+        }
+
         return orderLogisticsInfoList.stream().map(o -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(o)).toList();
     }
 

@@ -10,7 +10,7 @@ public interface ProductCommentService {
     /*
      * 商品评价列表
      * */
-    PageUtil<ProductCommentVO> commentVOPage(Integer spuId, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<ProductCommentVO> commentVOListPage(Integer spuId, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 商品评价详情

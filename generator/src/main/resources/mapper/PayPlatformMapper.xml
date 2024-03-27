@@ -122,9 +122,9 @@
     select
     <include refid="Base_Column_List" />
     from tb_pay_platform
-    where
-    <foreach collection="payInfoIdSet" item="item" index="index" separator="or">
-      pay_info_id = #{item,jdbcType=BIGINT}
+    where pay_info_id in
+    <foreach collection="payInfoIdSet" item="item" index="index" open="(" close=")" separator=",">
+      #{item,jdbcType=BIGINT}
     </foreach>
   </select>
 </mapper>

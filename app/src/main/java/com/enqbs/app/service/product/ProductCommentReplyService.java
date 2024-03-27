@@ -12,7 +12,7 @@ public interface ProductCommentReplyService {
     /*
      * 评论回复列表
      * */
-    PageUtil<ProductCommentReplyVO> commentReplyVOPage(Integer commentId, SortEnum sort, Integer pageNum, Integer pageSize);
+    PageUtil<ProductCommentReplyVO> commentReplyVOListPage(Integer commentId, SortEnum sort, Integer pageNum, Integer pageSize);
 
     /*
      * 评论回复列表

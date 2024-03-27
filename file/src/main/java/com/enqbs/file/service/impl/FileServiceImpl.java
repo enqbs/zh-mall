@@ -18,6 +18,9 @@ public class FileServiceImpl implements FileService {
     @Resource
     private AliOSSConfig aliOSSConfig;
 
+    @Resource
+    private OSS ossClient;
+
     @Override
     public String getFileURL(MultipartFile file, DirEnum dir) {
         String filename = file.getOriginalFilename();
@@ -26,11 +29,8 @@ public class FileServiceImpl implements FileService {
             throw new ServiceException("文件名不能为空");
         }
 
-        String uuid = IDUtil.getUUID();
         String filetype = filename.substring(filename.lastIndexOf("."));
-        String objectName = dir.getDesc() + uuid + filetype;
-
-        OSS ossClient = aliOSSConfig.ossClient();
+        String objectName = dir.getDesc() + IDUtil.getUUID() + filetype;
 
         try {
             ossClient.putObject(aliOSSConfig.getBucket(), objectName, file.getInputStream());

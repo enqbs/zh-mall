@@ -86,7 +86,7 @@ public class CartServiceImpl implements CartService {
             throw new ServiceException("商品不存在");
         }
 
-        SkuVO skuVO = productVO.getSkuList().stream().filter(s -> form.getSkuId().equals(s.getId())).toList().getFirst();
+        SkuVO skuVO = productVO.getSkuList().stream().collect(Collectors.toMap(SkuVO::getId, v -> v)).get(form.getSkuId());
 
         if (Constants.PRODUCT_NOT_SHELVES.equals(productVO.getSaleableStatus()) || ObjectUtils.isEmpty(skuVO)) {
             throw new ServiceException("商品下架或删除");

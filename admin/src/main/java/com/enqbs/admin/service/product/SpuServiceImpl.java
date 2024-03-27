@@ -13,7 +13,6 @@ import com.enqbs.generator.pojo.Spu;
 import jakarta.annotation.Resource;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -35,19 +34,10 @@ public class SpuServiceImpl implements SpuService {
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductVO> productVOPage(Integer categoryId, Integer saleableStatus, Integer newStatus, Integer recommendStatus,
-                                             Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
-        PageUtil<ProductVO> pageUtil = new PageUtil<>();
-        pageUtil.setNum(pageNum);
-        pageUtil.setSize(pageSize);
-        List<Spu> spuList = spuMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus,
-                deleteStatus, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(spuList)) {
-            return pageUtil;
-        }
-
+    public PageUtil<ProductVO> productVOListPage(Integer categoryId, Integer saleableStatus, Integer newStatus, Integer recommendStatus,
+                                                 Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         Long total = spuMapper.countByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus);
+        List<Spu> spuList = spuMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sort.getSortType(), pageNum, pageSize);
         Set<Integer> spuIdSet = spuList.stream().map(Spu::getId).collect(Collectors.toSet());
         List<SkuVO> skuVOList = skuService.getSkuVOList(spuIdSet);
         handleSkuVOListAndStockVO(skuVOList);
@@ -59,6 +49,9 @@ public class SpuServiceImpl implements SpuService {
                     return productVO;
                 }
         ).toList();
+        PageUtil<ProductVO> pageUtil = new PageUtil<>();
+        pageUtil.setNum(pageNum);
+        pageUtil.setSize(pageSize);
         pageUtil.setTotal(total);
         pageUtil.setList(productVOList);
         return pageUtil;
@@ -69,7 +62,7 @@ public class SpuServiceImpl implements SpuService {
         Spu spu = spuMapper.selectByPrimaryKey(spuId);
 
         if (ObjectUtils.isEmpty(spu)) {
-            return new ProductVO();
+            return null;
         }
 
         List<SkuVO> skuVOList = skuService.getSkuVOList(spuId);
@@ -112,8 +105,7 @@ public class SpuServiceImpl implements SpuService {
 
     private void handleSkuVOListAndStockVO(List<SkuVO> skuVOList) {
         Set<Integer> skuIdSet = skuVOList.stream().map(SkuVO::getId).collect(Collectors.toSet());
-        Map<Integer, SkuStockVO> stockVOMap = skuStockService.getStockVOList(skuIdSet).stream()
-                .collect(Collectors.toMap(SkuStockVO::getSkuId, v -> v));
+        Map<Integer, SkuStockVO> stockVOMap = skuStockService.getStockVOList(skuIdSet).stream().collect(Collectors.toMap(SkuStockVO::getSkuId, v -> v));
         skuVOList.forEach(svo -> svo.setStock(stockVOMap.get(svo.getId())));
     }
 

@@ -37,17 +37,9 @@ public class ProductCommentServiceImpl implements ProductCommentService {
     private ProductConvert productConvert;
 
     @Override
-    public PageUtil<ProductCommentVO> commentVOPage(Integer spuId, SortEnum sort, Integer pageNum, Integer pageSize) {
-        PageUtil<ProductCommentVO> pageUtil = new PageUtil<>();
-        pageUtil.setNum(pageNum);
-        pageUtil.setSize(pageSize);
-        List<ProductComment> commentList = productCommentMapper.selectListByParam(spuId, sort.getSortType(), pageNum, pageSize);
-
-        if (CollectionUtils.isEmpty(commentList)) {
-            return pageUtil;
-        }
-
+    public PageUtil<ProductCommentVO> commentVOListPage(Integer spuId, SortEnum sort, Integer pageNum, Integer pageSize) {
         Long total = productCommentMapper.countBySpuId(spuId);
+        List<ProductComment> commentList = productCommentMapper.selectListByParam(spuId, sort.getSortType(), pageNum, pageSize);
         List<ProductCommentVO> commentVOList = commentList.stream().map(c -> {
                     ProductCommentVO commentVO = productConvert.comment2CommentVO(c);
                     commentVO.setPictures(StringUtils.isEmpty(c.getPictures()) ?
@@ -56,6 +48,9 @@ public class ProductCommentServiceImpl implements ProductCommentService {
                     return commentVO;
                 }
         ).toList();
+        PageUtil<ProductCommentVO> pageUtil = new PageUtil<>();
+        pageUtil.setNum(pageNum);
+        pageUtil.setSize(pageSize);
         pageUtil.setTotal(total);
         pageUtil.setList(commentVOList);
         return pageUtil;
@@ -66,7 +61,7 @@ public class ProductCommentServiceImpl implements ProductCommentService {
         ProductComment comment = productCommentMapper.selectByPrimaryKey(commentId);
 
         if (ObjectUtils.isEmpty(comment) || Constants.IS_DELETE.equals(comment.getDeleteStatus())) {
-            return new ProductCommentVO();
+            return null;
         }
 
         ProductCommentVO commentVO = productConvert.comment2CommentVO(comment);

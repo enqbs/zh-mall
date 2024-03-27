@@ -17,16 +17,16 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    order_no, sku_id, spu_id, sku_title, sku_params, sku_picture, num, price, discount_price, 
+    order_no, sku_id, spu_id, sku_title, sku_params, sku_picture, num, price, discount_price,
     actual_price, total_price, sharding
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_order_item
     where order_no = #{orderNo,jdbcType=BIGINT}
-      and sku_id = #{skuId,jdbcType=INTEGER}
+    and sku_id = #{skuId,jdbcType=INTEGER}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="map">
@@ -36,16 +36,16 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.OrderItem">
-    insert into tb_order_item (order_no, sku_id, spu_id, 
-      sku_title, sku_params, sku_picture, 
-      num, price, discount_price, 
-      actual_price, total_price, sharding
-      )
-    values (#{orderNo,jdbcType=BIGINT}, #{skuId,jdbcType=INTEGER}, #{spuId,jdbcType=INTEGER}, 
-      #{skuTitle,jdbcType=VARCHAR}, #{skuParams,jdbcType=VARCHAR}, #{skuPicture,jdbcType=VARCHAR}, 
-      #{num,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{discountPrice,jdbcType=DECIMAL}, 
-      #{actualPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, #{sharding,jdbcType=INTEGER}
-      )
+    insert into tb_order_item (order_no, sku_id, spu_id,
+                               sku_title, sku_params, sku_picture,
+                               num, price, discount_price,
+                               actual_price, total_price, sharding
+    )
+    values (#{orderNo,jdbcType=BIGINT}, #{skuId,jdbcType=INTEGER}, #{spuId,jdbcType=INTEGER},
+            #{skuTitle,jdbcType=VARCHAR}, #{skuParams,jdbcType=VARCHAR}, #{skuPicture,jdbcType=VARCHAR},
+            #{num,jdbcType=INTEGER}, #{price,jdbcType=DECIMAL}, #{discountPrice,jdbcType=DECIMAL},
+            #{actualPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, #{sharding,jdbcType=INTEGER}
+           )
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.OrderItem">
@@ -163,21 +163,21 @@
       </if>
     </set>
     where order_no = #{orderNo,jdbcType=BIGINT}
-      and sku_id = #{skuId,jdbcType=INTEGER}
+    and sku_id = #{skuId,jdbcType=INTEGER}
   </update>
 
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.OrderItem">
     update tb_order_item
     set spu_id = #{spuId,jdbcType=INTEGER},
-      sku_title = #{skuTitle,jdbcType=VARCHAR},
-      sku_params = #{skuParams,jdbcType=VARCHAR},
-      sku_picture = #{skuPicture,jdbcType=VARCHAR},
-      num = #{num,jdbcType=INTEGER},
-      price = #{price,jdbcType=DECIMAL},
-      discount_price = #{discountPrice,jdbcType=DECIMAL},
-      actual_price = #{actualPrice,jdbcType=DECIMAL},
-      total_price = #{totalPrice,jdbcType=DECIMAL},
-      sharding = #{sharding,jdbcType=INTEGER}
+        sku_title = #{skuTitle,jdbcType=VARCHAR},
+        sku_params = #{skuParams,jdbcType=VARCHAR},
+        sku_picture = #{skuPicture,jdbcType=VARCHAR},
+        num = #{num,jdbcType=INTEGER},
+        price = #{price,jdbcType=DECIMAL},
+        discount_price = #{discountPrice,jdbcType=DECIMAL},
+        actual_price = #{actualPrice,jdbcType=DECIMAL},
+        total_price = #{totalPrice,jdbcType=DECIMAL},
+        sharding = #{sharding,jdbcType=INTEGER}
     where order_no = #{orderNo,jdbcType=BIGINT}
       and sku_id = #{skuId,jdbcType=INTEGER}
   </update>
@@ -209,9 +209,9 @@
     select
     <include refid="Base_Column_List" />
     from tb_order_item
-    where
-    <foreach collection="orderNoSet" item="item" index="index" separator="or">
-      order_no = #{item,jdbcType=BIGINT}
+    where order_no in
+    <foreach collection="orderNoSet" item="item" index="index" open="(" close=")" separator=",">
+      #{item,jdbcType=BIGINT}
     </foreach>
   </select>
 </mapper>

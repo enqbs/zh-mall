@@ -28,17 +28,17 @@ public class SpuController {
     private SpuService spuService;
 
     @GetMapping("/list")
-    public R<PageUtil<ProductVO>> productPage(@RequestParam(required = false) Integer categoryId,
-                                              @RequestParam(required = false) Integer saleableStatus,
-                                              @RequestParam(required = false) Integer newStatus,
-                                              @RequestParam(required = false) Integer recommendStatus,
-                                              @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                              @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                              @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                              @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductVO> productVOPage = spuService.productVOPage(categoryId, saleableStatus, newStatus, recommendStatus,
+    public R<PageUtil<ProductVO>> productListPage(@RequestParam(required = false) Integer categoryId,
+                                                  @RequestParam(required = false) Integer saleableStatus,
+                                                  @RequestParam(required = false) Integer newStatus,
+                                                  @RequestParam(required = false) Integer recommendStatus,
+                                                  @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                                  @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                                  @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                  @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<ProductVO> productVOListPage = spuService.productVOListPage(categoryId, saleableStatus, newStatus, recommendStatus,
                 deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(productVOPage);
+        return R.ok(productVOListPage);
     }
 
     @GetMapping("/{productId}")

@@ -22,7 +22,7 @@ public class AliAuthConfig {
 
     private String alipayPublicKey;
 
-    @Bean
+    @Bean(name = "aliAuthClient")
     public AlipayClient aliAuthClient() {
         return new DefaultAlipayClient(gateway, appId, appPrivateKey, "json", "utf-8", alipayPublicKey, "RSA2");
     }

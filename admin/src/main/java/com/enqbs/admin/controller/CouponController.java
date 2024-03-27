@@ -30,17 +30,17 @@ public class CouponController {
     private CouponService couponService;
 
     @GetMapping("/list")
-    public R<PageUtil<CouponVO>> couponPage(@RequestParam(required = false) Integer productId,
-                                            @RequestParam(required = false) Date startDate,
-                                            @RequestParam(required = false) Date endDate,
-                                            @RequestParam(required = false) Integer status,
-                                            @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
-                                            @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                            @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                            @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<CouponVO> couponVOPage = couponService.couponVOPage(productId, startDate, endDate, status,
+    public R<PageUtil<CouponVO>> couponListPage(@RequestParam(required = false) Integer productId,
+                                                @RequestParam(required = false) Date startDate,
+                                                @RequestParam(required = false) Date endDate,
+                                                @RequestParam(required = false) Integer status,
+                                                @RequestParam(required = false, defaultValue = "0") Integer deleteStatus,
+                                                @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                                @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<CouponVO> couponVOListPage = couponService.couponVOListPage(productId, startDate, endDate, status,
                 deleteStatus, sort, pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(couponVOPage);
+        return R.ok(couponVOListPage);
     }
 
     @GetMapping("/{couponId}")

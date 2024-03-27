@@ -39,11 +39,11 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
 
         if (ObjectUtils.isEmpty(category) || Constants.IS_DELETE.equals(category.getDeleteStatus())) {
-            return new ProductCategoryVO();
+            return null;
         }
 
-        ProductCategoryVO categoryVO = productConvert.category2CategoryVO(category);
         List<ProductVO> productVOList = spuService.getProductVOList(categoryId, null);
+        ProductCategoryVO categoryVO = productConvert.category2CategoryVO(category);
         categoryVO.setProductList(productVOList);
         return categoryVO;
     }
@@ -98,11 +98,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         /* double check,缓存确实为空再查询数据库 */
         if (StringUtils.isEmpty(redisStr)) {
             /* DBSource */
-            List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(null, homeStatus, naviStatus,
-                    Constants.IS_NOT_DELETE, null, null);
-            List<ProductCategoryVO> categoryVOList = categoryList.stream()
-                    .filter(c -> c.getParentId().equals(0))
-                    .map(c -> productConvert.category2CategoryVO(c)).toList();
+            List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(null, homeStatus, naviStatus, Constants.IS_NOT_DELETE, null, null);
+            List<ProductCategoryVO> categoryVOList = categoryList.stream().filter(c -> c.getParentId().equals(0)).map(c -> productConvert.category2CategoryVO(c)).toList();
             findSubCategoryVOList(categoryList, categoryVOList);
             categoryVOList.forEach(cvo -> cvo.setProductList(spuService.getProductVOList(cvo.getId(), limit)));
             long cacheTimeout;

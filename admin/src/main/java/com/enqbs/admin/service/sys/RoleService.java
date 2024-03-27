@@ -9,7 +9,7 @@ public interface RoleService {
     /*
      * 角色列表
      * */
-    PageUtil<SysRoleVO> roleVOPage(Integer deleteStatus, Integer pageNum, Integer pageSize);
+    PageUtil<SysRoleVO> roleVOListPage(Integer deleteStatus, Integer pageNum, Integer pageSize);
 
     /*
      * 角色详情

@@ -129,13 +129,13 @@ public class ProductController {
     }
 
     @GetMapping("/comment/list")
-    public R<PageUtil<ProductCommentVO>> commentPage(@RequestParam Integer productId,
-                                                     @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                                     @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                                     @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductCommentVO> commentVOPage = productCommentService.commentVOPage(productId, sort,
+    public R<PageUtil<ProductCommentVO>> commentListPage(@RequestParam Integer productId,
+                                                         @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                                         @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                         @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<ProductCommentVO> commentVOListPage = productCommentService.commentVOListPage(productId, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(commentVOPage);
+        return R.ok(commentVOListPage);
     }
 
     @GetMapping("/comment/{commentId}")
@@ -145,13 +145,13 @@ public class ProductController {
     }
 
     @GetMapping("/comment/reply/list")
-    public R<PageUtil<ProductCommentReplyVO>> commentReplyPage(@RequestParam Integer commentId,
-                                                               @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
-                                                               @RequestParam(required = false, defaultValue = "1") Integer pageNum,
-                                                               @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
-        PageUtil<ProductCommentReplyVO> commentReplyVOPage = productCommentReplyService.commentReplyVOPage(commentId, sort,
+    public R<PageUtil<ProductCommentReplyVO>> commentReplyListPage(@RequestParam Integer commentId,
+                                                                   @RequestParam(required = false, defaultValue = "DESC") SortEnum sort,
+                                                                   @RequestParam(required = false, defaultValue = "1") Integer pageNum,
+                                                                   @RequestParam(required = false, defaultValue = "10") Integer pageSize) {
+        PageUtil<ProductCommentReplyVO> commentReplyVOListPage = productCommentReplyService.commentReplyVOListPage(commentId, sort,
                 pageNum <= 0 ? 1 : pageNum, pageSize <= 0 ? 10 : pageSize);
-        return R.ok(commentReplyVOPage);
+        return R.ok(commentReplyVOListPage);
     }
 
 }
