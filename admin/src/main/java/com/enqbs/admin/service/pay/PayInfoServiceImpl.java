@@ -33,11 +33,9 @@ public class PayInfoServiceImpl implements PayInfoService {
                                                  String platform, String platformNumber, Integer status,
                                                  Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         Long total = payInfoMapper.countByParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus);
-        List<PayInfo> payInfoList = payInfoMapper.selectListParam(orderNo, userId, payType, platform, platformNumber,
-                status, deleteStatus, sort.getSortType(), pageNum, pageSize);
+        List<PayInfo> payInfoList = payInfoMapper.selectListParam(orderNo, userId, payType, platform, platformNumber, status, deleteStatus, sort.getSortType(), pageNum, pageSize);
         Set<Long> payInfoIdSet = payInfoList.stream().map(PayInfo::getId).collect(Collectors.toSet());
-        Map<Long, PayPlatformVO> platformVOMap = payPlatformService.getPayPlatformVOList(payInfoIdSet).stream()
-                .collect(Collectors.toMap(PayPlatformVO::getPayInfoId, v -> v));
+        Map<Long, PayPlatformVO> platformVOMap = payPlatformService.getPayPlatformVOList(payInfoIdSet).stream().collect(Collectors.toMap(PayPlatformVO::getPayInfoId, v -> v));
         List<PayInfoVO> payInfoVOList = payInfoList.stream().map(p -> {
                     PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(p);
                     payInfoVO.setPayPlatform(platformVOMap.get(payInfoVO.getId()));
@@ -57,7 +55,7 @@ public class PayInfoServiceImpl implements PayInfoService {
         PayInfo payInfo = payInfoMapper.selectByPrimaryKey(id);
 
         if (ObjectUtils.isEmpty(payInfo)) {
-            return new PayInfoVO();
+            return null;
         }
 
         PayPlatformVO payPlatformVO = payPlatformService.getPayPlatformVO(id);

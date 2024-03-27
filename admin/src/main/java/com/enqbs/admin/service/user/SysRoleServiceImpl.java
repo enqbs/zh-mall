@@ -38,8 +38,7 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public SysRoleVO getSysRoleVO(Integer id) {
         SysRole sysRole = sysRoleMapper.selectByPrimaryKey(id);
-        return ObjectUtils.isEmpty(sysRole) || Constants.IS_DELETE.equals(sysRole.getDeleteStatus()) ?
-                new SysRoleVO() : sysUserConvert.sysRole2SysRoleVO(sysRole);
+        return ObjectUtils.isEmpty(sysRole) || Constants.IS_DELETE.equals(sysRole.getDeleteStatus()) ? null : sysUserConvert.sysRole2SysRoleVO(sysRole);
     }
 
     @Override

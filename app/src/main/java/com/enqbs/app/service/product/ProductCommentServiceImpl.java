@@ -62,7 +62,7 @@ public class ProductCommentServiceImpl implements ProductCommentService {
         ProductComment productComment = productCommentMapper.selectByPrimaryKey(commentId);
 
         if (ObjectUtils.isEmpty(productComment) || Constants.IS_DELETE.equals(productComment.getDeleteStatus())) {
-            return new ProductCommentVO();
+            return null;
         }
 
         ProductCommentVO productCommentVO = productConvert.productComment2ProductCommentVO(productComment);

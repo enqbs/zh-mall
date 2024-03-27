@@ -86,11 +86,7 @@ public class UserCouponServiceImpl implements UserCouponService {
 
         CouponVO couponVO = couponService.getCouponVO(userCoupon.getCouponId());
         UserCouponVO userCouponVO = userConvert.userCoupon2UserCouponVO(userCoupon);
-
-        if (ObjectUtils.isNotEmpty(couponVO)) {
-            userCouponVO.setCoupon(couponVO);
-        }
-
+        userCouponVO.setCoupon(couponVO);
         return userCouponVO;
     }
 
@@ -98,6 +94,10 @@ public class UserCouponServiceImpl implements UserCouponService {
     public void add(Integer couponId) {
         int quantity = 1;
         CouponVO couponVO = couponService.getCouponVO(couponId);
+
+        if (ObjectUtils.isEmpty(couponVO)) {
+            throw new ServiceException("优惠券不存在");
+        }
 
         if (new Date().compareTo(couponVO.getEndDate()) > 0) {
             throw new ServiceException("优惠券活动已结束");

@@ -40,6 +40,10 @@ public class SkuServiceImpl implements SkuService {
 
     @Override
     public List<SkuVO> getSkuVOList(Set<Integer> skuIdSet, Set<Integer> spuIdSet) {
+        if (CollectionUtils.isEmpty(skuIdSet) && CollectionUtils.isEmpty(spuIdSet)) {
+            return Collections.emptyList();
+        }
+
         List<Sku> skuList = CollectionUtils.isEmpty(skuIdSet) ?
                 skuMapper.selectListBySpuIdSet(spuIdSet) : skuMapper.selectListByIdSet(skuIdSet);
         return skuList.stream().map(s -> {

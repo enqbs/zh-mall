@@ -41,8 +41,7 @@ public class ProductCategoryAttributeServiceImpl implements ProductCategoryAttri
     @Override
     public ProductCategoryAttributeVO getAttributeVO(Integer attributeId) {
         ProductCategoryAttribute attribute = productCategoryAttributeMapper.selectByPrimaryKey(attributeId);
-        return ObjectUtils.isEmpty(attribute) ?
-                new ProductCategoryAttributeVO() : productConvert.attribute2AttributeVO(attribute);
+        return ObjectUtils.isEmpty(attribute) ? null : productConvert.attribute2AttributeVO(attribute);
     }
 
     @Override

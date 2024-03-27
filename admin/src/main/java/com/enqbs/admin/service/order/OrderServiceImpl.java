@@ -74,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null, null, Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(order)) {
-            return new OrderVO();
+            return null;
         }
 
         List<OrderItemVO> orderItemVOList = orderItemService.getOrderItemVOList(orderNo);

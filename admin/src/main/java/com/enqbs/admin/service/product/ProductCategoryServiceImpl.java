@@ -40,7 +40,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public ProductCategoryVO getCategoryVO(Integer categoryId) {
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
-        return ObjectUtils.isEmpty(category) ? new ProductCategoryVO() : productConvert.category2CategoryVO(category);
+        return ObjectUtils.isEmpty(category) ? null : productConvert.category2CategoryVO(category);
     }
 
     @Override

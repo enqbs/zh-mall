@@ -15,7 +15,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from tb_order_shipping_address
     where order_no = #{orderNo,jdbcType=BIGINT}
@@ -27,12 +27,12 @@
   </delete>
 
   <insert id="insert" parameterType="com.enqbs.generator.pojo.OrderShippingAddress">
-    insert into tb_order_shipping_address (order_no, name, tel_no, 
-      address, detail_address, sharding
-      )
-    values (#{orderNo,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{telNo,jdbcType=VARCHAR}, 
-      #{address,jdbcType=VARCHAR}, #{detailAddress,jdbcType=VARCHAR}, #{sharding,jdbcType=INTEGER}
-      )
+    insert into tb_order_shipping_address (order_no, name, tel_no,
+                                           address, detail_address, sharding
+    )
+    values (#{orderNo,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{telNo,jdbcType=VARCHAR},
+            #{address,jdbcType=VARCHAR}, #{detailAddress,jdbcType=VARCHAR}, #{sharding,jdbcType=INTEGER}
+           )
   </insert>
 
   <insert id="insertSelective" parameterType="com.enqbs.generator.pojo.OrderShippingAddress">
@@ -104,10 +104,10 @@
   <update id="updateByPrimaryKey" parameterType="com.enqbs.generator.pojo.OrderShippingAddress">
     update tb_order_shipping_address
     set name = #{name,jdbcType=VARCHAR},
-      tel_no = #{telNo,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      detail_address = #{detailAddress,jdbcType=VARCHAR},
-      sharding = #{sharding,jdbcType=INTEGER}
+        tel_no = #{telNo,jdbcType=VARCHAR},
+        address = #{address,jdbcType=VARCHAR},
+        detail_address = #{detailAddress,jdbcType=VARCHAR},
+        sharding = #{sharding,jdbcType=INTEGER}
     where order_no = #{orderNo,jdbcType=BIGINT}
   </update>
 
@@ -115,9 +115,9 @@
     select
     <include refid="Base_Column_List" />
     from tb_order_shipping_address
-    where
-    <foreach collection="orderNoSet" item="item" index="index" separator="or">
-      order_no = #{item,jdbcType=BIGINT}
+    where order_no in
+    <foreach collection="orderNoSet" item="item" index="index" open="(" close=")" separator="or">
+      #{item,jdbcType=BIGINT}
     </foreach>
   </select>
 </mapper>

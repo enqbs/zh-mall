@@ -4,9 +4,12 @@ import com.enqbs.admin.convert.PayConvert;
 import com.enqbs.admin.vo.PayPlatformVO;
 import com.enqbs.generator.dao.PayPlatformMapper;
 import com.enqbs.generator.pojo.PayPlatform;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,14 +25,18 @@ public class PayPlatformServiceImpl implements PayPlatformService {
 
     @Override
     public List<PayPlatformVO> getPayPlatformVOList(Set<Long> payInfoIdSet) {
+        if (CollectionUtils.isEmpty(payInfoIdSet)) {
+            return Collections.emptyList();
+        }
+
         List<PayPlatform> payPlatformList = payPlatformMapper.selectListByPayInfoIdSet(payInfoIdSet);
-        return payPlatformList.stream().map(p -> payConvert.payPlatform2PayPlatformVO(p)).collect(Collectors.toList());
+        return CollectionUtils.isEmpty(payPlatformList) ? Collections.emptyList() : payPlatformList.stream().map(p -> payConvert.payPlatform2PayPlatformVO(p)).collect(Collectors.toList());
     }
 
     @Override
     public PayPlatformVO getPayPlatformVO(Long payInfoId) {
         PayPlatform payPlatform = payPlatformMapper.selectByPayInfoId(payInfoId);
-        return payConvert.payPlatform2PayPlatformVO(payPlatform);
+        return ObjectUtils.isEmpty(payPlatform) ? null : payConvert.payPlatform2PayPlatformVO(payPlatform);
     }
 
 }

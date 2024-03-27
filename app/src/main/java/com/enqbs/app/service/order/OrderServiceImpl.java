@@ -240,11 +240,9 @@ public class OrderServiceImpl implements OrderService {
     public PageUtil<OrderVO> orderVOListPage(Integer status, SortEnum sort, Integer pageNum, Integer pageSize) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         Long total = orderMapper.countByParam(null, null, userInfoVO.getUserId(), null, status, Constants.IS_NOT_DELETE);
-        List<Order> orderList = orderMapper.selectListByParam(null, null, userInfoVO.getUserId(), null,
-                status, Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
+        List<Order> orderList = orderMapper.selectListByParam(null, null, userInfoVO.getUserId(), null, status, Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
-        Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemService.getOrderItemVOList(orderNoSet).stream()
-                .collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
+        Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemService.getOrderItemVOList(orderNoSet).stream().collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
         List<OrderVO> orderVOList = orderList.stream().map(o -> {
                     OrderVO orderVO = orderConvert.order2OrderVO(o);
                     orderVO.setOrderItemList(orderItemVOListMap.get(orderVO.getOrderNo()));
@@ -294,8 +292,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public void sign(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(),
-                OrderStatusEnum.NOT_RECEIPT.getCode(), Constants.IS_NOT_DELETE);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(), OrderStatusEnum.NOT_RECEIPT.getCode(), Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(order)) {
             throw new ServiceException("订单号:" + orderNo + ",无法签收该订单");
@@ -314,8 +311,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public void cancel(Long orderNo) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(),
-                OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, userInfoVO.getUserId(), OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isEmpty(order)) {
             throw new ServiceException("订单号:" + orderNo + ",无法取消该订单");
@@ -338,8 +334,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void handleTimeoutOrder(Long orderNo) {
-        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null,
-                OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null, OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isNotEmpty(order) && ObjectUtils.isEmpty(order.getConsumeVersion())) {
             skuStockService.unLockSkuStock(order.getOrderNo(), OrderStatusEnum.TIMEOUT);
@@ -362,8 +357,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void handlePaySuccessOrder(Long orderNo) {
-        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null,
-                OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
+        Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null, OrderStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 
         if (ObjectUtils.isNotEmpty(order) && ObjectUtils.isEmpty(order.getConsumeVersion())) {
             skuStockService.unLockSkuStock(orderNo, OrderStatusEnum.PAY_SUCCESS);

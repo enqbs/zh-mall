@@ -29,8 +29,7 @@ public class CouponServiceImpl implements CouponService {
     public PageUtil<CouponVO> couponVOListPage(Integer productId, Date startDate, Date endDate, Integer status,
                                                Integer deleteStatus, SortEnum sort, Integer pageNum, Integer pageSize) {
         Long total = couponMapper.countByParam(productId, startDate, endDate, status, deleteStatus);
-        List<Coupon> couponList = couponMapper.selectListByParam(productId, startDate, endDate, status,
-                deleteStatus, sort.getSortType(), pageNum, pageSize);
+        List<Coupon> couponList = couponMapper.selectListByParam(productId, startDate, endDate, status, deleteStatus, sort.getSortType(), pageNum, pageSize);
         PageUtil<CouponVO> pageUtil = new PageUtil<>();
         pageUtil.setNum(pageNum);
         pageUtil.setSize(pageSize);
@@ -42,7 +41,7 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public CouponVO getCouponVO(Integer couponId) {
         Coupon coupon = couponMapper.selectByPrimaryKey(couponId);
-        return ObjectUtils.isEmpty(coupon) ? new CouponVO() : couponConvert.coupon2CouponVO(coupon);
+        return ObjectUtils.isEmpty(coupon) ? null : couponConvert.coupon2CouponVO(coupon);
     }
 
     @Override

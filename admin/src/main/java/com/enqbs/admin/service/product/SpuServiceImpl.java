@@ -64,7 +64,7 @@ public class SpuServiceImpl implements SpuService {
         Spu spu = spuMapper.selectByPrimaryKey(spuId);
 
         if (ObjectUtils.isEmpty(spu)) {
-            return new ProductVO();
+            return null;
         }
 
         List<SkuVO> skuVOList = skuService.getSkuVOList(spuId);

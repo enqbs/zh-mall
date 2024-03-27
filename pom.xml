@@ -33,11 +33,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <enqbs.version>0.0.1</enqbs.version>
         <mybatis-spring-boot-starter.version>2.3.1</mybatis-spring-boot-starter.version>
-        <hutool-all.version>5.8.24</hutool-all.version>
+        <hutool-all.version>5.8.26</hutool-all.version>
         <java-jwt.version>4.4.0</java-jwt.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <redisson.version>3.19.1</redisson.version>
-        <ali-pay.version>4.38.105.ALL</ali-pay.version>
+        <ali-pay.version>4.39.2.ALL</ali-pay.version>
         <ali-oss.version>3.17.2</ali-oss.version>
         <shardingsphere-jdbc-core-spring-boot-starter.version>5.2.0</shardingsphere-jdbc-core-spring-boot-starter.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>

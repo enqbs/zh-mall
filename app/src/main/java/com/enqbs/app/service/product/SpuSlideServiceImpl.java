@@ -3,6 +3,7 @@ package com.enqbs.app.service.product;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.generator.dao.SpuSlideMapper;
 import com.enqbs.generator.pojo.SpuSlide;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,8 @@ public class SpuSlideServiceImpl implements SpuSlideService {
     @Override
     public List<String> getSpuSlideList(Integer spuId) {
         SpuSlide spuSlide = spuSlideMapper.selectByPrimaryKey(spuId);
-        return StringUtils.isEmpty(spuSlide.getPictures()) ?
-                Collections.emptyList() :
-                GsonUtil.json2ArrayList(spuSlide.getPictures(), String[].class);
+        return ObjectUtils.isEmpty(spuSlide) || StringUtils.isEmpty(spuSlide.getPictures()) ?
+                Collections.emptyList() : GsonUtil.json2ArrayList(spuSlide.getPictures(), String[].class);
     }
 
 }

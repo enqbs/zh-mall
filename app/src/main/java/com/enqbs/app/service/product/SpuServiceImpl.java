@@ -41,7 +41,7 @@ public class SpuServiceImpl implements SpuService {
         Spu spu = spuMapper.selectByPrimaryKey(spuId);
 
         if (ObjectUtils.isEmpty(spu) || Constants.IS_DELETE.equals(spu.getDeleteStatus())) {
-            return new ProductVO();
+            return null;
         }
 
         ProductVO productVO = productConvert.spu2ProductVO(spu);
@@ -58,15 +58,13 @@ public class SpuServiceImpl implements SpuService {
 
     @Override
     public List<ProductVO> getProductVOList(Set<Integer> spuIdSet) {
-        List<Spu> spuList = spuMapper.selectListByIdSet(spuIdSet);
-
-        if (CollectionUtils.isEmpty(spuList)) {
+        if (CollectionUtils.isEmpty(spuIdSet)) {
             return Collections.emptyList();
         }
 
-        Map<Integer, List<SkuVO>> skuVOListMap = skuService.getSkuVOList(Collections.emptySet(), spuIdSet).stream()
-                .collect(Collectors.groupingBy(SkuVO::getSpuId));
-        return spuList.stream().map(s -> {
+        List<Spu> spuList = spuMapper.selectListByIdSet(spuIdSet);
+        Map<Integer, List<SkuVO>> skuVOListMap = skuService.getSkuVOList(Collections.emptySet(), spuIdSet).stream().collect(Collectors.groupingBy(SkuVO::getSpuId));
+        return CollectionUtils.isEmpty(spuList) ? Collections.emptyList() : spuList.stream().map(s -> {
                     ProductVO productVO = productConvert.spu2ProductVO(s);
                     productVO.setSkuList(skuVOListMap.get(productVO.getId()));
                     return productVO;

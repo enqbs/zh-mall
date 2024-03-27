@@ -5,6 +5,7 @@ import com.enqbs.app.pojo.vo.OrderShippingAddressVO;
 import com.enqbs.common.exception.ServiceException;
 import com.enqbs.generator.dao.OrderShippingAddressMapper;
 import com.enqbs.generator.pojo.OrderShippingAddress;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -21,7 +22,7 @@ public class OrderShippingAddressServiceImpl implements OrderShippingAddressServ
     @Override
     public OrderShippingAddressVO getOrderShippingAddressVO(Long orderNo) {
         OrderShippingAddress orderShippingAddress = orderShippingAddressMapper.selectByPrimaryKey(orderNo);
-        return orderConvert.orderShippingAddress2OrderShippingAddressVO(orderShippingAddress);
+        return ObjectUtils.isEmpty(orderShippingAddress) ? null : orderConvert.orderShippingAddress2OrderShippingAddressVO(orderShippingAddress);
     }
 
     @Override

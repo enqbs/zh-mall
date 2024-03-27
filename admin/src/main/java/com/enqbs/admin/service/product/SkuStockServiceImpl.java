@@ -6,8 +6,10 @@ import com.enqbs.common.constant.Constants;
 import com.enqbs.generator.dao.SkuStockMapper;
 import com.enqbs.generator.pojo.SkuStock;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,6 +25,10 @@ public class SkuStockServiceImpl implements SkuStockService {
 
     @Override
     public List<SkuStockVO> getSkuStockVOList(Set<Integer> skuIdSet) {
+        if (CollectionUtils.isEmpty(skuIdSet)) {
+            return Collections.emptyList();
+        }
+
         List<SkuStock> skuStockList = skuStockMapper.selectListBySkuIdSet(skuIdSet);
         return skuStockList.stream().map(s -> productConvert.skuStock2SkuStockVO(s)).collect(Collectors.toList());
     }

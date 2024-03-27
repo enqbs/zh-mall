@@ -5,8 +5,10 @@ import com.enqbs.admin.vo.OrderItemVO;
 import com.enqbs.generator.dao.OrderItemMapper;
 import com.enqbs.generator.pojo.OrderItem;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,13 +25,17 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public List<OrderItemVO> getOrderItemVOList(Long orderNo) {
         List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(orderNo);
-        return orderItemList.stream().map(o -> orderConvert.orderItem2OrderItemVO(o)).collect(Collectors.toList());
+        return CollectionUtils.isEmpty(orderItemList) ? Collections.emptyList() : orderItemList.stream().map(o -> orderConvert.orderItem2OrderItemVO(o)).collect(Collectors.toList());
     }
 
     @Override
     public List<OrderItemVO> getOrderItemVOList(Set<Long> orderNoSet) {
+        if (CollectionUtils.isEmpty(orderNoSet)) {
+            return Collections.emptyList();
+        }
+
         List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNoSet(orderNoSet);
-        return orderItemList.stream().map(o -> orderConvert.orderItem2OrderItemVO(o)).collect(Collectors.toList());
+        return CollectionUtils.isEmpty(orderItemList) ? Collections.emptyList() : orderItemList.stream().map(o -> orderConvert.orderItem2OrderItemVO(o)).collect(Collectors.toList());
     }
 
 }

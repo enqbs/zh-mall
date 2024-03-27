@@ -4,9 +4,12 @@ import com.enqbs.admin.convert.OrderConvert;
 import com.enqbs.admin.vo.OrderShippingAddressVO;
 import com.enqbs.generator.dao.OrderShippingAddressMapper;
 import com.enqbs.generator.pojo.OrderShippingAddress;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,15 +25,19 @@ public class OrderShippingAddressServiceImpl implements OrderShippingAddressServ
 
     @Override
     public List<OrderShippingAddressVO> getOrderShippingAddressVOList(Set<Long> orderNoSet) {
+        if (CollectionUtils.isEmpty(orderNoSet)) {
+            return Collections.emptyList();
+        }
+
         List<OrderShippingAddress> orderShippingAddressList = orderShippingAddressMapper.selectListByOrderNoSet(orderNoSet);
-        return orderShippingAddressList.stream()
-                .map(o -> orderConvert.orderShippingAddress2OrderShippingAddressVO(o)).collect(Collectors.toList());
+        return CollectionUtils.isEmpty(orderShippingAddressList) ?
+                Collections.emptyList() : orderShippingAddressList.stream().map(o -> orderConvert.orderShippingAddress2OrderShippingAddressVO(o)).collect(Collectors.toList());
     }
 
     @Override
     public OrderShippingAddressVO getOrderShippingAddressVO(Long orderNo) {
         OrderShippingAddress orderShippingAddress = orderShippingAddressMapper.selectByPrimaryKey(orderNo);
-        return orderConvert.orderShippingAddress2OrderShippingAddressVO(orderShippingAddress);
+        return ObjectUtils.isEmpty(orderShippingAddress) ? null : orderConvert.orderShippingAddress2OrderShippingAddressVO(orderShippingAddress);
     }
 
 }

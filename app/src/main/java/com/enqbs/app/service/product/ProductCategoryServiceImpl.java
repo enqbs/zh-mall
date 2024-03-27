@@ -43,7 +43,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
 
         if (ObjectUtils.isEmpty(category) || Constants.IS_DELETE.equals(category.getDeleteStatus())) {
-            return new ProductCategoryVO();
+            return null;
         }
 
         List<ProductVO> productVOList = spuService.getProductVOList(categoryId, null);
@@ -101,8 +101,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         String redisStr2 = redisUtil.getString(key);
         /* double check,缓存确实为空再查询数据库 */
         if (StringUtils.isEmpty(redisStr2)) {
-            List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(null, homeStatus, naviStatus,
-                    Constants.IS_NOT_DELETE, null, null);
+            List<ProductCategory> categoryList = productCategoryMapper.selectListByParam(null, homeStatus, naviStatus, Constants.IS_NOT_DELETE, null, null);
             List<ProductCategoryVO> categoryVOList = categoryList.stream()
                     .filter(c -> c.getParentId().equals(0))
                     .map(c -> productConvert.category2CategoryVO(c)).collect(Collectors.toList());
