@@ -25,11 +25,6 @@ public class MemberLevelServiceImpl implements MemberLevelService {
     @Override
     public List<MemberLevelVO> getMemberLevelVOList(Set<Integer> userLevelIdSet) {
         List<UserLevel> userLevelList = CollectionUtils.isEmpty(userLevelIdSet) ? Collections.emptyList() : userLevelMapper.selectListByIdSet(userLevelIdSet);
-
-        if (CollectionUtils.isEmpty(userLevelList)) {
-            return Collections.emptyList();
-        }
-
         return userLevelList.stream().map(u -> memberConvert.userLevel2MemberLevelVO(u)).collect(Collectors.toList());
     }
 

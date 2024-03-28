@@ -35,11 +35,6 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public List<SkuVO> getSkuVOList(Set<Integer> spuIdSet) {
         List<Sku> skuList = CollectionUtils.isEmpty(spuIdSet) ? Collections.emptyList() : skuMapper.selectListBySpuIdSet(spuIdSet);
-
-        if (CollectionUtils.isEmpty(skuList)) {
-            return Collections.emptyList();
-        }
-
         return skuList.stream().map(s -> {
                     SkuVO skuVO = productConvert.sku2SkuVO(s);
                     skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?

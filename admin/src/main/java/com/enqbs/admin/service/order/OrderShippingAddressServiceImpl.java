@@ -25,11 +25,6 @@ public class OrderShippingAddressServiceImpl implements OrderShippingAddressServ
     @Override
     public List<OrderShippingAddressVO> getOrderShippingAddressVOList(Set<Long> orderNoSet) {
         List<OrderShippingAddress> orderShippingAddressList = CollectionUtils.isEmpty(orderNoSet) ? Collections.emptyList() : orderShippingAddressMapper.selectListByOrderNoSet(orderNoSet);
-
-        if (CollectionUtils.isEmpty(orderShippingAddressList)) {
-            return Collections.emptyList();
-        }
-
         return orderShippingAddressList.stream().map(o -> orderConvert.orderShippingAddress2OrderShippingAddressVO(o)).collect(Collectors.toList());
     }
 

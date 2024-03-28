@@ -39,11 +39,6 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public List<OrderItemVO> getOrderItemVOList(Set<Long> orderNoSet) {
         List<OrderItem> orderItemList = CollectionUtils.isEmpty(orderNoSet) ? Collections.emptyList() : orderItemMapper.selectListByOrderNoSet(orderNoSet);
-
-        if (CollectionUtils.isEmpty(orderItemList)) {
-            return Collections.emptyList();
-        }
-
         return orderItemList.stream().map(o -> {
                     OrderItemVO orderItemVO = orderConvert.orderItem2OrderItemVO(o);
                     orderItemVO.setSkuParams(GsonUtil.json2ArrayList(o.getSkuParams(), SkuParamVO[].class));

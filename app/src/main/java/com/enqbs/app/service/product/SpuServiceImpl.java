@@ -59,11 +59,6 @@ public class SpuServiceImpl implements SpuService {
     @Override
     public List<ProductVO> getProductVOList(Set<Integer> spuIdSet) {
         List<Spu> spuList = CollectionUtils.isEmpty(spuIdSet) ? Collections.emptyList() : spuMapper.selectListByIdSet(spuIdSet);
-
-        if (CollectionUtils.isEmpty(spuList)) {
-            return Collections.emptyList();
-        }
-
         Map<Integer, List<SkuVO>> skuVOListMap = skuService.getSkuVOList(Collections.emptySet(), spuIdSet).stream().collect(Collectors.groupingBy(SkuVO::getSpuId));
         return spuList.stream().map(s -> {
                     ProductVO productVO = productConvert.spu2ProductVO(s);

@@ -25,11 +25,6 @@ public class PayPlatformServiceImpl implements PayPlatformService {
     @Override
     public List<PayPlatformVO> getPayPlatformVOList(Set<Long> payInfoIdSet) {
         List<PayPlatform> payPlatformList = CollectionUtils.isEmpty(payInfoIdSet) ? Collections.emptyList() : payPlatformMapper.selectListByPayInfoIdSet(payInfoIdSet);
-
-        if (CollectionUtils.isEmpty(payPlatformList)) {
-            return Collections.emptyList();
-        }
-
         return payPlatformList.stream().map(p -> payConvert.payPlatform2PayPlatformVO(p)).collect(Collectors.toList());
     }
 
