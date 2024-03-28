@@ -57,8 +57,8 @@ public class MemberServiceImpl implements MemberService {
             return null;
         }
 
-        MemberVO memberVO = memberConvert.user2MemberVO(user);
         MemberLevelVO memberLevelVO = memberLevelService.getMemberLevelVO(user.getLevelId());
+        MemberVO memberVO = memberConvert.user2MemberVO(user);
         memberVO.setLevelInfo(memberLevelVO);
         return memberVO;
     }

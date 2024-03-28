@@ -52,7 +52,7 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public List<SkuVO> getSkuVOList(Integer spuId) {
         List<Sku> skuList = skuMapper.selectListBySpuId(spuId);
-        return CollectionUtils.isEmpty(skuList) ? Collections.emptyList() : skuList.stream().map(s -> {
+        return skuList.stream().map(s -> {
                     SkuVO skuVO = productConvert.sku2SkuVO(s);
                     skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?
                             Collections.emptyList() : GsonUtil.json2ArrayList(s.getParams(), SkuParamVO[].class)

@@ -86,8 +86,7 @@ public class SpuServiceImpl implements SpuService {
                 }
         );
 
-        Set<Integer> spuIdSet = jsonObject.getAsJsonArray("data").asList().stream()
-                .map(e -> e.getAsJsonObject().get("id").getAsInt()).collect(Collectors.toSet());
+        Set<Integer> spuIdSet = jsonObject.getAsJsonArray("data").asList().stream().map(e -> e.getAsJsonObject().get("id").getAsInt()).collect(Collectors.toSet());
         syncProducts.setData(spuMapper.selectListByIdSet(spuIdSet));
         rabbitMQService.send(QueueEnum.ES_SYNC_PRODUCTS_QUEUE, syncProducts);
     }

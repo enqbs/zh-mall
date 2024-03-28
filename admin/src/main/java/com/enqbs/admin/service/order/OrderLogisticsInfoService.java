@@ -8,8 +8,14 @@ import java.util.Set;
 
 public interface OrderLogisticsInfoService {
 
+    /*
+    * 订单快递信息列表
+    * */
     List<OrderLogisticsInfoVO> getOrderLogisticsInfoVOList(Set<Long> orderNoSet);
 
+    /*
+    * 订单快递信息
+    * */
     OrderLogisticsInfoVO getOrderLogisticsInfoVO(Long orderNo);
 
     int insert(Long orderNo, LogisticsInfoForm form);

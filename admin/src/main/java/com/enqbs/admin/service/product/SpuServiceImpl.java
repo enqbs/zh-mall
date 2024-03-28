@@ -65,10 +65,11 @@ public class SpuServiceImpl implements SpuService {
             return null;
         }
 
+        List<String> slideList = spuSlideService.getSlideList(spuId);
         List<SkuVO> skuVOList = skuService.getSkuVOList(spuId);
         handleSkuVOListAndStockVO(skuVOList);
         ProductVO productVO = productConvert.spu2ProductVO(spu);
-        productVO.setSlide(spuSlideService.getSlideList(spuId));
+        productVO.setSlide(slideList);
         productVO.setSkuList(skuVOList);
         return productVO;
     }
