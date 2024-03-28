@@ -161,14 +161,12 @@ public class OrderServiceImpl implements OrderService {
         if (result == 0) {
             throw new ServiceException("订单凭证失效,请刷新页面");
         }
-        /* 缓存获取预生成的订单信息 */
-        String orderConfirmVOKey = String.format(Constants.ORDER_CONFIRM_REDIS_KEY, userInfoVO.getUserId());
-        OrderConfirmVO orderConfirmVO = GsonUtil.json2Obj(redisUtil.getString(orderConfirmVOKey), OrderConfirmVO.class);
-        Thread.ofVirtual().name("orderSubmit-deleteOrderConfirm").start(() -> redisUtil.deleteKey(orderConfirmVOKey));
 
+        String orderConfirmVOKey = String.format(Constants.ORDER_CONFIRM_REDIS_KEY, userInfoVO.getUserId());
+        OrderConfirmVO orderConfirmVO = GsonUtil.json2Obj(redisUtil.getString(orderConfirmVOKey), OrderConfirmVO.class);    // 缓存获取预生成的订单信息
+        Thread.ofVirtual().name("orderSubmit-deleteOrderConfirm").start(() -> redisUtil.deleteKey(orderConfirmVOKey));      // 清楚缓存信息
         long orderNo = IDUtil.getId();                                              // 订单号
         List<SkuStockDTO> stockList = new ArrayList<>();                            // 锁定商品库存列表
-        List<OrderItem> orderItemList = new ArrayList<>();                          // 订单项
         List<OrderItemVO> orderItemVOList = orderConfirmVO.getOrderItemList();      // 获取预生成的订单项信息
         Set<Integer> spuIdSet = orderItemVOList.stream().map(OrderItemVO::getSpuId).collect(Collectors.toSet());
         Set<Integer> skuIdSet = orderItemVOList.stream().map(OrderItemVO::getSkuId).collect(Collectors.toSet());
@@ -176,28 +174,26 @@ public class OrderServiceImpl implements OrderService {
         Map<Integer, ProductVO> productVOMap = spuService.getProductVOList(spuIdSet).stream().collect(Collectors.toMap(ProductVO::getId, v -> v));
         Map<Integer, SkuVO> skuVOMap = skuService.getSkuVOList(skuIdSet, Collections.emptySet()).stream().collect(Collectors.toMap(SkuVO::getId, v -> v));
         Map<Integer, SkuStock> stockMap = skuStockService.getStockList(skuIdSet).stream().collect(Collectors.toMap(SkuStock::getSkuId, v -> v));
+        List<OrderItem> orderItemList = orderItemVOList.stream().map(ovo -> {
+                    ProductVO productVO = productVOMap.get(ovo.getSpuId());
+                    SkuVO skuVO = skuVOMap.get(ovo.getSkuId());
+                    SkuStock stock = stockMap.get(ovo.getSkuId());
 
-        for (OrderItemVO orderItemVO : orderItemVOList) {
-            ProductVO productVO = productVOMap.get(orderItemVO.getSpuId());
-            SkuVO skuVO = skuVOMap.get(orderItemVO.getSkuId());
-            SkuStock stock = stockMap.get(orderItemVO.getSkuId());
+                    if (ObjectUtils.isEmpty(productVO) || ObjectUtils.isEmpty(skuVO) || ObjectUtils.isEmpty(stock)) {
+                        throw new ServiceException("商品ID:" + ovo.getSpuId() + "商品规格ID:" + ovo.getSkuId() + ",商品:" + ovo.getSkuTitle() + ",下架或删除");
+                    }
 
-            if (ObjectUtils.isEmpty(productVO) || ObjectUtils.isEmpty(skuVO) || ObjectUtils.isEmpty(stock)) {
-                throw new ServiceException("商品ID:" + orderItemVO.getSpuId() +
-                        "商品规格ID:" + orderItemVO.getSkuId() + ",商品:" + orderItemVO.getSkuTitle() + ",下架或删除");
-            }
+                    if (ovo.getNum() > stock.getStock()) {
+                        throw new ServiceException("商品ID:" + ovo.getSpuId() + "商品规格ID:" + ovo.getSkuId() + ",商品:" + ovo.getSkuTitle() + ",库存不足");
+                    }
 
-            if (orderItemVO.getNum() > stock.getStock()) {
-                throw new ServiceException("商品ID:" + orderItemVO.getSpuId() +
-                        "商品规格ID:" + orderItemVO.getSkuId() + ",商品:" + orderItemVO.getSkuTitle() + ",库存不足");
-            }
-
-            stockList.add(buildSkuStockDTO(stock, orderItemVO));
-            OrderItem orderItem = orderConvert.orderItemVO2OrderItem(orderItemVO);
-            orderItem.setOrderNo(orderNo);
-            orderItem.setSkuParams(GsonUtil.obj2Json(orderItemVO.getSkuParams()));
-            orderItemList.add(orderItem);
-        }
+                    stockList.add(buildSkuStockDTO(stock, ovo));
+                    OrderItem orderItem = orderConvert.orderItemVO2OrderItem(ovo);
+                    orderItem.setOrderNo(orderNo);
+                    orderItem.setSkuParams(GsonUtil.obj2Json(ovo.getSkuParams()));
+                    return orderItem;
+                }
+        ).toList();
         /* 订单收货地址信息 */
         UserAddressVO userAddressVO = userAddressService.getAddressVO(form.getShippingAddressId());
         OrderShippingAddress orderAddress = orderConvert.userAddressVO2OrderAddress(userAddressVO);
@@ -237,10 +233,10 @@ public class OrderServiceImpl implements OrderService {
         Long total = orderMapper.countByParam(null, null, userInfoVO.getUserId(), null, status, Constants.IS_NOT_DELETE);
         List<Order> orderList = orderMapper.selectListByParam(null, null, userInfoVO.getUserId(), null, status, Constants.IS_NOT_DELETE, sort.getSortType(), pageNum, pageSize);
         Set<Long> orderNoSet = orderList.stream().map(Order::getOrderNo).collect(Collectors.toSet());
-        Map<Long, List<OrderItemVO>> orderItemVOMap = orderItemService.getOrderItemVOList(orderNoSet).stream().collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
+        Map<Long, List<OrderItemVO>> orderItemVOListMap = orderItemService.getOrderItemVOList(orderNoSet).stream().collect(Collectors.groupingBy(OrderItemVO::getOrderNo));
         List<OrderVO> orderVOList = orderList.stream().map(o -> {
                     OrderVO orderVO = orderConvert.order2OrderVO(o);
-                    orderVO.setOrderItemList(orderItemVOMap.get(orderVO.getOrderNo()));
+                    orderVO.setOrderItemList(orderItemVOListMap.get(orderVO.getOrderNo()));
                     return orderVO;
                 }
         ).toList();

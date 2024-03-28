@@ -40,11 +40,6 @@ public class CouponServiceImpl implements CouponService {
     @Override
     public List<CouponVO> getCouponVOList(Set<Integer> couponIdSet) {
         List<Coupon> couponList = CollectionUtils.isEmpty(couponIdSet) ? Collections.emptyList() : couponMapper.selectListByIdSet(couponIdSet);
-
-        if (CollectionUtils.isEmpty(couponList)) {
-            return Collections.emptyList();
-        }
-
         return couponList.stream().map(c -> couponConvert.coupon2CouponVO(c)).toList();
     }
 

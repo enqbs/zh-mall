@@ -25,11 +25,6 @@ public class SkuStockServiceImpl implements SkuStockService {
     @Override
     public List<SkuStockVO> getStockVOList(Set<Integer> skuIdSet) {
         List<SkuStock> stockList = CollectionUtils.isEmpty(skuIdSet) ? Collections.emptyList() : skuStockMapper.selectListBySkuIdSet(skuIdSet);
-
-        if (CollectionUtils.isEmpty(stockList)) {
-            return Collections.emptyList();
-        }
-
         return stockList.stream().map(s -> productConvert.stock2StockVO(s)).toList();
     }
 

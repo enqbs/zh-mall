@@ -25,11 +25,6 @@ public class OrderLogisticsInfoServiceImpl implements OrderLogisticsInfoService 
     @Override
     public List<OrderLogisticsInfoVO> getOrderLogisticsInfoVOList(Set<Long> orderNoSet) {
         List<OrderLogisticsInfo> orderLogisticsInfoList = CollectionUtils.isEmpty(orderNoSet) ? Collections.emptyList() : orderLogisticsInfoMapper.selectListByOrderNoSet(orderNoSet);
-
-        if (CollectionUtils.isEmpty(orderLogisticsInfoList)) {
-            return Collections.emptyList();
-        }
-
         return orderLogisticsInfoList.stream().map(o -> orderConvert.orderLogisticsInfo2OrderLogisticsInfoVO(o)).toList();
     }
 

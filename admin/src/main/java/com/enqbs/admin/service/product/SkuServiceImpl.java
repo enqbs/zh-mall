@@ -34,32 +34,13 @@ public class SkuServiceImpl implements SkuService {
     @Override
     public List<SkuVO> getSkuVOList(Set<Integer> spuIdSet) {
         List<Sku> skuList = CollectionUtils.isEmpty(spuIdSet) ? Collections.emptyList() : skuMapper.selectListBySpuIdSet(spuIdSet);
-
-        if (CollectionUtils.isEmpty(skuList)) {
-            return Collections.emptyList();
-        }
-
-        return skuList.stream().map(s -> {
-                    SkuVO skuVO = productConvert.sku2SkuVO(s);
-                    skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?
-                            Collections.emptyList() : GsonUtil.json2ArrayList(s.getParams(), SkuParamVO[].class)
-                    );
-                    return skuVO;
-                }
-        ).toList();
+        return skuList2SkuVOList(skuList);
     }
 
     @Override
     public List<SkuVO> getSkuVOList(Integer spuId) {
         List<Sku> skuList = skuMapper.selectListBySpuId(spuId);
-        return skuList.stream().map(s -> {
-                    SkuVO skuVO = productConvert.sku2SkuVO(s);
-                    skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?
-                            Collections.emptyList() : GsonUtil.json2ArrayList(s.getParams(), SkuParamVO[].class)
-                    );
-                    return skuVO;
-                }
-        ).toList();
+        return skuList2SkuVOList(skuList);
     }
 
     @Override
@@ -116,6 +97,17 @@ public class SkuServiceImpl implements SkuService {
         if (row <= 0) {
             throw new ServiceException("商品规格库存删除失败");
         }
+    }
+
+    private List<SkuVO> skuList2SkuVOList(List<Sku> skuList) {
+        return skuList.stream().map(s -> {
+                    SkuVO skuVO = productConvert.sku2SkuVO(s);
+                    skuVO.setParams(StringUtils.isEmpty(s.getParams()) ?
+                            Collections.emptyList() : GsonUtil.json2ArrayList(s.getParams(), SkuParamVO[].class)
+                    );
+                    return skuVO;
+                }
+        ).toList();
     }
 
 }
