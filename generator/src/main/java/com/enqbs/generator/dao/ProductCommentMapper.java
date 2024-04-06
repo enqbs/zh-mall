@@ -26,6 +26,6 @@ public interface ProductCommentMapper {
 
     Long countBySpuId(Integer spuId);
 
-    Integer existByIdAndUserId(Integer id, Integer userId);
+    Integer existByIdAndUserId(@Param("id") Integer id, @Param("userId") Integer userId);
 
 }

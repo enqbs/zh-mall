@@ -22,8 +22,7 @@ public interface SpuMapper {
 
     List<Spu> selectListByIdSet(@Param("idSet") Set<Integer> idSet);
 
-    List<Spu> selectListByCategoryIdAndLimit(@Param("productCategoryId") Integer productCategoryId,
-                                             @Param("limit") Integer limit);
+    List<Spu> selectListByCategoryIdAndLimit(@Param("productCategoryId") Integer productCategoryId, @Param("limit") Integer limit);
 
     List<Spu> selectListByParam(@Param("productCategoryId") Integer productCategoryId,
                                 @Param("saleableStatus") Integer saleableStatus,

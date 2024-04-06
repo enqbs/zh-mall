@@ -18,10 +18,8 @@ import org.redisson.api.RedissonClient;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -62,11 +60,6 @@ public class UserCouponServiceImpl implements UserCouponService {
     public List<UserCouponVO> getUserCouponVOList() {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
         List<UserCoupon> userCouponList = userCouponMapper.selectListByParam(userInfoVO.getUserId(), Constants.COUPON_UNUSED, Constants.IS_NOT_DELETE, SortEnum.DESC.getSortType(), null, null);
-
-        if (CollectionUtils.isEmpty(userCouponList)) {
-            return Collections.emptyList();
-        }
-
         List<UserCouponVO> userCouponVOList = userCouponList.stream().map(u -> userConvert.userCoupon2UserCouponVO(u)).collect(Collectors.toList());
         handleUserCouponVO(userCouponVOList);
         return userCouponVOList;

@@ -37,7 +37,6 @@ public class SpuServiceImpl implements SpuService {
     public PageUtil<ProductVO> productVOListPage(Integer categoryId, Integer saleableStatus, Integer newStatus,
                                                  Integer recommendStatus, Integer deleteStatus, SortEnum sort,
                                                  Integer pageNum, Integer pageSize) {
-
         Long total = spuMapper.countByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus);
         List<Spu> spuList = spuMapper.selectListByParam(categoryId, saleableStatus, newStatus, recommendStatus, deleteStatus, sort.getSortType(), pageNum, pageSize);
         Set<Integer> spuIdSet = spuList.stream().map(Spu::getId).collect(Collectors.toSet());
