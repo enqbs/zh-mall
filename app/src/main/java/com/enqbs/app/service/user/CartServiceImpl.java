@@ -50,31 +50,30 @@ public class CartServiceImpl implements CartService {
         List<Cart> cartList = redisMap.values().stream().map(v -> GsonUtil.json2Obj(v, Cart.class)).toList();
         Set<Integer> spuIdSet = cartList.stream().map(Cart::getSpuId).collect(Collectors.toSet());
 
-        if (CollectionUtils.isEmpty(spuIdSet)) {
-            return cartVO;
-        }
-        /* 批量获取商品 */
-        Map<Integer, ProductVO> productVOMap = spuService.getProductVOList(spuIdSet).stream().collect(Collectors.toMap(ProductVO::getId, v -> v));
+        if (!CollectionUtils.isEmpty(spuIdSet)) {
+            Map<Integer, ProductVO> productVOMap = spuService.getProductVOList(spuIdSet).stream().collect(Collectors.toMap(ProductVO::getId, v -> v));
 
-        for (Cart cart : cartList) {
-            ProductVO productVO = productVOMap.get(cart.getSpuId());
-            SkuVO skuVO = productVO.getSkuList().stream().filter(s -> cart.getSkuId().equals(s.getId())).toList().getFirst();
-            CartProductVO cartProductVO = buildCartProductVO(cart, productVO, skuVO);
-            cartProductVOList.add(cartProductVO);
+            for (Cart cart : cartList) {
+                ProductVO productVO = productVOMap.get(cart.getSpuId());
+                SkuVO skuVO = productVO.getSkuList().stream().filter(s -> cart.getSkuId().equals(s.getId())).toList().getFirst();
+                CartProductVO cartProductVO = buildCartProductVO(cart, productVO, skuVO);
+                cartProductVOList.add(cartProductVO);
 
-            if (cart.getSelected()) {
-                totalPrice = totalPrice.add(cartProductVO.getTotalPrice());     // 计算购物车选中商品总价
-            } else {
-                selectedAll = false;
+                if (cart.getSelected()) {
+                    totalPrice = totalPrice.add(cartProductVO.getTotalPrice());     // 计算购物车选中商品总价
+                } else {
+                    selectedAll = false;
+                }
+
+                totalQuantity += cart.getQuantity();
             }
 
-            totalQuantity += cart.getQuantity();
+            cartVO.setProductList(cartProductVOList);
+            cartVO.setSelectedAll(selectedAll);
+            cartVO.setTotalQuantity(totalQuantity);
+            cartVO.setTotalPrice(totalPrice);
         }
 
-        cartVO.setProductList(cartProductVOList);
-        cartVO.setSelectedAll(selectedAll);
-        cartVO.setTotalQuantity(totalQuantity);
-        cartVO.setTotalPrice(totalPrice);
         return cartVO;
     }
 

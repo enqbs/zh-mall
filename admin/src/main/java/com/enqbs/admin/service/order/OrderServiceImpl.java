@@ -71,18 +71,14 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderVO getOrderVO(Long orderNo) {
         Order order = orderMapper.selectByOrderNoOrUserIdOrStatusOrDeleteStatus(orderNo, null, null, Constants.IS_NOT_DELETE);
+        OrderVO orderVO = orderConvert.order2OrderVO(order);
 
-        if (ObjectUtils.isEmpty(order)) {
-            return null;
+        if (ObjectUtils.isNotEmpty(orderVO)) {
+            orderVO.setOrderItemList(orderItemService.getOrderItemVOList(orderNo));
+            orderVO.setAddress(orderAddressService.getOrderAddressVO(orderNo));
+            orderVO.setLogisticsInfo(orderLogisticsInfoService.getOrderLogisticsInfoVO(orderNo));
         }
 
-        List<OrderItemVO> orderItemVOList = orderItemService.getOrderItemVOList(orderNo);
-        OrderAddressVO orderAddressVO = orderAddressService.getOrderAddressVO(orderNo);
-        OrderLogisticsInfoVO orderLogisticsInfoVO = orderLogisticsInfoService.getOrderLogisticsInfoVO(orderNo);
-        OrderVO orderVO = orderConvert.order2OrderVO(order);
-        orderVO.setOrderItemList(orderItemVOList);
-        orderVO.setAddress(orderAddressVO);
-        orderVO.setLogisticsInfo(orderLogisticsInfoVO);
         return orderVO;
     }
 

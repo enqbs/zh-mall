@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Integer register(RegisterForm form) {
-        int exist = sysUserMapper.existByUsername(form.getUsername());
+        Integer exist = sysUserMapper.existByUsername(form.getUsername());
 
         if (ObjectUtils.isNotEmpty(exist)) {
             throw new ServiceException("用户已存在");

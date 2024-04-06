@@ -41,8 +41,7 @@ public class TokenServiceImpl implements TokenService {
     public String refreshToken(String token) {
         long expireTime = JwtUtil.getExpire(token);                 // JWT 过期时间
         long currentTime = System.currentTimeMillis() / 1000;       // 当前时间
-        long oneHour = 3600L;                                       // 一小时 3600 秒
-        return expireTime - currentTime <= oneHour ? getNewToken(token) : token;        // 过期时间小于1小时,返回新 token
+        return expireTime - currentTime <= 3600L ? getNewToken(token) : token;        // 过期时间小于1小时,返回新 token
     }
 
     @Override

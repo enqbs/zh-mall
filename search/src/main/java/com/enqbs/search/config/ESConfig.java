@@ -10,7 +10,7 @@ import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Configurable
@@ -27,13 +27,11 @@ public class ESConfig {
     }
 
     private HttpHost[] getHosts() {
-        List<HttpHost> hostList = new ArrayList<>();
-
-        for (String address : ESPramConfig.getAddress()) {
-            String[] strings = address.split(":");
-            hostList.add(new HttpHost(strings[0], Integer.parseInt(strings[1])));
-        }
-
+        List<HttpHost> hostList = Arrays.stream(ESPramConfig.getAddress()).map(a -> {
+                    String[] strings = a.split(":");
+                    return new HttpHost(strings[0], Integer.parseInt(strings[1]));
+                }
+        ).toList();
         return hostList.toArray(new HttpHost[] {});
     }
 

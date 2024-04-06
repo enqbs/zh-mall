@@ -52,14 +52,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberVO getMemberVO(Integer id) {
         User user = userMapper.selectByPrimaryKey(id);
+        MemberVO memberVO = memberConvert.user2MemberVO(user);
 
-        if (ObjectUtils.isEmpty(user)) {
-            return null;
+        if (ObjectUtils.isNotEmpty(memberVO)) {
+            memberVO.setLevelInfo(memberLevelService.getMemberLevelVO(user.getLevelId()));
         }
 
-        MemberLevelVO memberLevelVO = memberLevelService.getMemberLevelVO(user.getLevelId());
-        MemberVO memberVO = memberConvert.user2MemberVO(user);
-        memberVO.setLevelInfo(memberLevelVO);
         return memberVO;
     }
 

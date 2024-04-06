@@ -2,7 +2,6 @@ package com.enqbs.app.service.product;
 
 import com.enqbs.app.convert.ProductConvert;
 import com.enqbs.app.pojo.vo.ProductCategoryVO;
-import com.enqbs.app.pojo.vo.ProductVO;
 import com.enqbs.common.constant.Constants;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.RedisUtil;
@@ -37,14 +36,12 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public ProductCategoryVO getCategoryVO(Integer categoryId) {
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
+        ProductCategoryVO categoryVO = ObjectUtils.isEmpty(category) || Constants.IS_DELETE.equals(category.getDeleteStatus()) ? null : productConvert.category2CategoryVO(category);
 
-        if (ObjectUtils.isEmpty(category) || Constants.IS_DELETE.equals(category.getDeleteStatus())) {
-            return null;
+        if (ObjectUtils.isNotEmpty(categoryVO)) {
+            categoryVO.setProductList(spuService.getProductVOList(categoryId, null));
         }
 
-        List<ProductVO> productVOList = spuService.getProductVOList(categoryId, null);
-        ProductCategoryVO categoryVO = productConvert.category2CategoryVO(category);
-        categoryVO.setProductList(productVOList);
         return categoryVO;
     }
 

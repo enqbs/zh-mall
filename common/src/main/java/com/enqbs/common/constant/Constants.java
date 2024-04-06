@@ -46,13 +46,13 @@ public class Constants {
     /* redis key、script */
     public static final String REDIS_SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] then return redis.call('del', KEYS[1]) else return 0 end";
 
-    public static final String USER_REDIS_KEY = "user:token:%s";
+    public static final String USER_REDIS_KEY = "user:info:%s";
 
     public static final String USER_CART_REDIS_KEY = "user:cart:%s";
 
     public static final String USER_COUPON_LOCK = "user:coupon.lock:%s";
 
-    public static final String SYS_USER_REDIS_KEY = "sys:user:token:%s";
+    public static final String SYS_USER_REDIS_KEY = "sys:user:info:%s";
 
     public static final String PRODUCT_CATEGORY_LIST = "product:category:list";
 

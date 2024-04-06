@@ -26,15 +26,14 @@ public class SpuOverviewServiceImpl implements SpuOverviewService {
     @Override
     public SpuOverviewVO getOverviewVO(Integer spuId) {
         SpuOverview overview = spuOverviewMapper.selectByPrimaryKey(spuId);
+        SpuOverviewVO overviewVO = productConvert.overview2OverviewVO(overview);
 
-        if (ObjectUtils.isEmpty(overview)) {
-            return null;
+        if (ObjectUtils.isNotEmpty(overviewVO)) {
+            overviewVO.setPictures(StringUtils.isEmpty(overview.getPictures()) ?
+                    Collections.emptyList() : GsonUtil.json2ArrayList(overview.getPictures(), String[].class)
+            );
         }
 
-        SpuOverviewVO overviewVO = productConvert.overview2OverviewVO(overview);
-        overviewVO.setPictures(StringUtils.isEmpty(overview.getPictures()) ?
-                Collections.emptyList() : GsonUtil.json2ArrayList(overview.getPictures(), String[].class)
-        );
         return overviewVO;
     }
 

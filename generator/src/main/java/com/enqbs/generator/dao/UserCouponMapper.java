@@ -30,9 +30,7 @@ public interface UserCouponMapper {
                                        @Param("pageNum") Integer pageNum,
                                        @Param("pageSize") Integer pageSize);
 
-    Long countByParam(@Param("userId") Integer userId,
-                      @Param("status") Integer status,
-                      @Param("deleteStatus") Integer deleteStatus);
+    Long countByParam(@Param("userId") Integer userId, @Param("status") Integer status, @Param("deleteStatus") Integer deleteStatus);
 
     Integer existByCouponIdAndUserId(@Param("couponId") Integer couponId, @Param("userId") Integer userId);
 

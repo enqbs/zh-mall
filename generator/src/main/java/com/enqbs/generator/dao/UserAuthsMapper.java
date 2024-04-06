@@ -17,12 +17,8 @@ public interface UserAuthsMapper {
 
     int updateByPrimaryKey(UserAuths record);
 
-    UserAuths selectByParam(@Param("userId") Integer userId,
-                            @Param("identifier") String identifier,
-                            @Param("credential") String credential);
+    UserAuths selectByParam(@Param("userId") Integer userId, @Param("identifier") String identifier, @Param("credential") String credential);
 
-    Integer existByParam(@Param("userId") Integer userId,
-                         @Param("identifier") String identifier,
-                         @Param("credential") String credential);
+    Integer existByParam(@Param("userId") Integer userId, @Param("identifier") String identifier, @Param("credential") String credential);
 
 }

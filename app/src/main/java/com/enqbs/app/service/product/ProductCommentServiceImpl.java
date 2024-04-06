@@ -59,16 +59,13 @@ public class ProductCommentServiceImpl implements ProductCommentService {
     @Override
     public ProductCommentVO getCommentVO(Integer commentId) {
         ProductComment comment = productCommentMapper.selectByPrimaryKey(commentId);
+        ProductCommentVO commentVO = ObjectUtils.isEmpty(comment) || Constants.IS_DELETE.equals(comment.getDeleteStatus()) ? null : productConvert.comment2CommentVO(comment);
 
-        if (ObjectUtils.isEmpty(comment) || Constants.IS_DELETE.equals(comment.getDeleteStatus())) {
-            return null;
+        if (ObjectUtils.isNotEmpty(commentVO)) {
+            commentVO.setPictures(StringUtils.isEmpty(comment.getPictures()) ? Collections.emptyList() : GsonUtil.json2ArrayList(comment.getPictures(), String[].class));
+            commentVO.setReplyList(productCommentReplyService.getCommentReplyVOList(commentId));
         }
 
-        ProductCommentVO commentVO = productConvert.comment2CommentVO(comment);
-        commentVO.setPictures(StringUtils.isEmpty(comment.getPictures()) ?
-                Collections.emptyList() : GsonUtil.json2ArrayList(comment.getPictures(), String[].class)
-        );
-        commentVO.setReplyList(productCommentReplyService.getCommentReplyVOList(commentId));
         return commentVO;
     }
 

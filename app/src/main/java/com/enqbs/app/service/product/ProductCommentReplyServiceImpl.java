@@ -60,7 +60,7 @@ public class ProductCommentReplyServiceImpl implements ProductCommentReplyServic
     @Override
     public int delete(Integer replyId) {
         UserInfoVO userInfoVO = userService.getUserInfoVO();
-        int exist = productCommentReplyMapper.existByIdAndUserId(replyId, userInfoVO.getUserId());
+        Integer exist = productCommentReplyMapper.existByIdAndUserId(replyId, userInfoVO.getUserId());
 
         if (ObjectUtils.isEmpty(exist)) {
             throw new ServiceException("评论不存在");

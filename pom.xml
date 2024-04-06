@@ -12,9 +12,10 @@
     <groupId>com.enqbs</groupId>
     <artifactId>zh-mall</artifactId>
     <version>0.0.2</version>
+    <packaging>pom</packaging>
+
     <name>zh-mall</name>
     <description>zh-mall</description>
-    <packaging>pom</packaging>
 
     <modules>
         <module>common</module>

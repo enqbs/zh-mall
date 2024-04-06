@@ -4,6 +4,9 @@ import java.util.List;
 
 public interface SpuOverviewService {
 
+    /*
+    * 商品概述
+    * */
     List<String> getOverviewList(Integer spuId);
 
 }

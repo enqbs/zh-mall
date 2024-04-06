@@ -10,7 +10,6 @@ import org.springframework.util.CollectionUtils;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Setter
 public class LoginUser implements UserDetails {
@@ -62,9 +61,7 @@ public class LoginUser implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return CollectionUtils.isEmpty(permissionList) ?
-                simpleGrantedAuthorityList :
-                permissionList.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return CollectionUtils.isEmpty(permissionList) ? simpleGrantedAuthorityList : permissionList.stream().map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override

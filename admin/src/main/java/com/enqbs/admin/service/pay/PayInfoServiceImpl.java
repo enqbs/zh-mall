@@ -52,14 +52,12 @@ public class PayInfoServiceImpl implements PayInfoService {
     @Override
     public PayInfoVO getPayInfoVO(Long id) {
         PayInfo payInfo = payInfoMapper.selectByPrimaryKey(id);
+        PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(payInfo);
 
-        if (ObjectUtils.isEmpty(payInfo)) {
-            return null;
+        if (ObjectUtils.isNotEmpty(payInfoVO)) {
+            payInfoVO.setPayPlatform(payPlatformService.getPayPlatformVO(id));
         }
 
-        PayPlatformVO payPlatformVO = payPlatformService.getPayPlatformVO(id);
-        PayInfoVO payInfoVO = payConvert.payInfo2PayInfoVO(payInfo);
-        payInfoVO.setPayPlatform(payPlatformVO);
         return payInfoVO;
     }
 
