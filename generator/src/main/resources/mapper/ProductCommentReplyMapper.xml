@@ -17,7 +17,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, comment_id, user_id, nick_name, photo, to_user_id, to_nick_name, content, like,
+    id, comment_id, user_id, nick_name, photo, to_user_id, to_nick_name, content, `like`,
     delete_status, create_time, update_time
   </sql>
 

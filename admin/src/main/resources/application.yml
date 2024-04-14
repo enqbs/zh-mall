@@ -8,6 +8,10 @@ spring:
     name: admin
   profiles:
     active: dev
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: non_null
 
 mybatis:
   configuration:
@@ -24,3 +28,8 @@ secure:
       - /auth/login
     permit:
       - /favicon.ico
+
+logging:
+  config: classpath:logback-spring.xml
+  pattern:
+    dateformat: ${spring.jackson.date-format}
