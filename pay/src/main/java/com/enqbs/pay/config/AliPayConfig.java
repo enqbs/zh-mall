@@ -28,9 +28,6 @@ public class AliPayConfig {
 
     @Bean(name = "aliPayClient")
     public AlipayClient aliPayClient() {
-        /*
-         * ("https://openapi.alipay.com/gateway.do","app_id","your private_key","json","utf-8","alipay_public_key","RSA2");
-         * */
         return new DefaultAlipayClient(gateway, appId, appPrivateKey, "json", "utf-8", alipayPublicKey, "RSA2");
     }
 

@@ -1,29 +1,19 @@
 spring:
-  #  datasource:
-  #    driver-class-name: com.mysql.cj.jdbc.Driver
-  #    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
-  #    username: root
-  #    password: root
-  #    hikari:
-  #      minimum-idle: 12
-  #      maximum-pool-size: 24
-  #      connection-timeout: 60000
-  #    ShardingSphere-JDBC 配置主从同步
   shardingsphere:
     datasource:
-      names: master, slave_01
-      master:
+      names: m, s_1
+      m:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+        jdbc-url: jdbc:mysql://192.168.43.2:3306/zh_mall
         username: root
         password: root
         data-source-properties:
           useLocalSessionState: false
-      slave_01:
+      s_1:
         type: com.zaxxer.hikari.HikariDataSource
         driver-class-name: com.mysql.cj.jdbc.Driver
-        jdbc-url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+        jdbc-url: jdbc:mysql://192.168.43.3:3306/zh_mall
         username: root
         password: root
     rules:
@@ -31,14 +21,17 @@ spring:
         data-sources:
           readwrite_ds:
             static-strategy:
-              write-data-source-name: master
-              read-data-source-names: slave_01
+              write-data-source-name: m
+              read-data-source-names:
+                - s_1
             load-balancer-name: round_robin
         load-balancers:
           round_robin:
             type: ROUND_ROBIN
     props:
-      sql-show: true
+      sql-show: false
+
+zh-mall:
   redis:
     host: 192.168.43.2
     port: 6379
@@ -48,22 +41,6 @@ spring:
     port: 5672
     username: guest
     password: guest
-    virtual-host: /
-    publisher-confirm-type: correlated
-    publisher-returns: true
-    template:
-      mandatory: true
-    listener:
-      simple:
-        acknowledge-mode: manual
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 100MB
-
-redisson:
-  address: redis://192.168.43.2:6379
-  password: 6aafd6b8ff62b8b3b4c7fd82c0fd29da
 
 thread-pool:
   core-pool-size: 12
@@ -91,5 +68,5 @@ ali:
     app-private-key: your-app-private-key
     alipay-public-key: your-alipay-public-key
 
-logstash:
-  host: 192.168.43.2
+#logstash:
+#  host: 192.168.43.2

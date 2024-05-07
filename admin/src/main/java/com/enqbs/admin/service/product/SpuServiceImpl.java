@@ -61,16 +61,15 @@ public class SpuServiceImpl implements SpuService {
     @Override
     public ProductVO getProductVO(Integer spuId) {
         Spu spu = spuMapper.selectByPrimaryKey(spuId);
+        ProductVO productVO = productConvert.spu2ProductVO(spu);
 
-        if (ObjectUtils.isEmpty(spu)) {
-            return null;
+        if (ObjectUtils.isNotEmpty(productVO)) {
+            List<SkuVO> skuVOList = skuService.getSkuVOList(spuId);
+            handleSkuVOListAndSkuStockVO(skuVOList);
+            productVO.setSlide(spuSlideService.getSpuSlideList(spuId));
+            productVO.setSkuList(skuVOList);
         }
 
-        List<SkuVO> skuVOList = skuService.getSkuVOList(spuId);
-        handleSkuVOListAndSkuStockVO(skuVOList);
-        ProductVO productVO = productConvert.spu2ProductVO(spu);
-        productVO.setSlide(spuSlideService.getSpuSlideList(spuId));
-        productVO.setSkuList(skuVOList);
         return productVO;
     }
 

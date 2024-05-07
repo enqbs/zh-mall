@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "jwt")
-public class JwtPramConfig {
+@ConfigurationProperties(prefix = "secure.ignored")
+public class IgnoreUrlsProperties {
 
-    private String secret;      // token 密钥
+    private String[] anonymous;     // 只允许未登录访问的 url
 
-    private Integer expire;     // token 过期时间（天）
+    private String[] permit;        // 允许匿名访问的 url
 
 }

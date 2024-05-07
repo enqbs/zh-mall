@@ -1,8 +1,8 @@
 package com.enqbs.search.service.impl;
 
 import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
 import com.enqbs.common.util.PageUtil;
 import com.enqbs.search.constant.ESConstants;
 import com.enqbs.search.pojo.ESProduct;
@@ -11,7 +11,6 @@ import com.enqbs.search.service.ESProductService;
 import com.enqbs.search.service.ESService;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -26,39 +25,35 @@ public class ESProductServiceImpl implements ESProductService {
 
     @Override
     public PageUtil<ESProduct> search(String searchText, Integer pageNum, Integer pageSize) {
-        PageUtil<ESProduct> pageUtil = new PageUtil<>();
-        pageUtil.setNum(pageNum);
-        pageUtil.setSize(pageSize);
-
-        SearchResponse<ESProduct> response;
+        HitsMetadata<ESProduct> hitsMetadata;
 
         try {
-            response = esService.search(getSearchParam(searchText, pageNum, pageSize), ESProduct.class);
+            hitsMetadata = esService.search(getSearchParam(searchText, pageNum, pageSize), ESProduct.class).hits();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        List<ESProduct> productList = response.hits().hits().stream().map(Hit::source).collect(Collectors.toList());
-
-        if (CollectionUtils.isEmpty(productList)) {
-            return pageUtil;
-        }
-
-        pageUtil.setTotal(ObjectUtils.isEmpty(response.hits().total()) ? 0L : response.hits().total().value());
+        List<ESProduct> productList = hitsMetadata.hits().stream().map(Hit::source).collect(Collectors.toList());
+        PageUtil<ESProduct> pageUtil = new PageUtil<>();
+        pageUtil.setNum(pageNum);
+        pageUtil.setSize(pageSize);
+        pageUtil.setTotal(ObjectUtils.isEmpty(hitsMetadata.total()) ? 0L : hitsMetadata.total().value());
         pageUtil.setList(productList);
         return pageUtil;
     }
 
     @Override
     public void update(ESProduct product) {
-        if (ObjectUtils.isNotEmpty(getESProduct(product.getId()))) {
-            try {
+        try {
+            ESProduct esProduct = esService.get(ESConstants.INDEX_PRODUCT, String.valueOf(product.getId()), ESProduct.class).source();
+
+            if (ObjectUtils.isNotEmpty(esProduct)) {
                 esService.update(ESConstants.INDEX_PRODUCT, String.valueOf(product.getId()), product, ESProduct.class);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } else {
+                esService.index(ESConstants.INDEX_PRODUCT, String.valueOf(product.getId()), product);
             }
-        } else {
-            save(product);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -81,22 +76,6 @@ public class ESProductServiceImpl implements ESProductService {
         param.setPageNum(pageNum);
         param.setPageSize(pageSize);
         return param;
-    }
-
-    private ESProduct getESProduct(Integer spuId) {
-        try {
-            return esService.get(ESConstants.INDEX_PRODUCT, String.valueOf(spuId), ESProduct.class).source();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void save(ESProduct product) {
-        try {
-            esService.index(ESConstants.INDEX_PRODUCT, String.valueOf(product.getId()), product);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

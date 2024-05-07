@@ -41,14 +41,12 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Override
     public ProductCategoryVO getCategoryVO(Integer categoryId) {
         ProductCategory category = productCategoryMapper.selectByPrimaryKey(categoryId);
+        ProductCategoryVO categoryVO = ObjectUtils.isEmpty(category) || Constants.IS_DELETE.equals(category.getDeleteStatus()) ? null : productConvert.category2CategoryVO(category);
 
-        if (ObjectUtils.isEmpty(category) || Constants.IS_DELETE.equals(category.getDeleteStatus())) {
-            return null;
+        if (ObjectUtils.isNotEmpty(categoryVO)) {
+            categoryVO.setProductList(spuService.getProductVOList(categoryId, null));
         }
 
-        List<ProductVO> productVOList = spuService.getProductVOList(categoryId, null);
-        ProductCategoryVO categoryVO = productConvert.category2CategoryVO(category);
-        categoryVO.setProductList(productVOList);
         return categoryVO;
     }
 

@@ -30,7 +30,7 @@ public class PayController {
     @GetMapping("/alipay-page/{orderNo}")
     public ModelAndView aliPayPage(@PathVariable Long orderNo) {
         PayService payService = payFactory.getPayService(PayTypeEnum.ALIPAY_PC_PAGE);
-        String body = payService.createPay(PayTypeEnum.ALIPAY_PC_PAGE, orderNo, payInfoService.getPayAmount(orderNo));
+        String body = payService.createPay(PayTypeEnum.ALIPAY_PC_PAGE, orderNo, payInfoService.getAmount(orderNo));
         return new ModelAndView("alipay-page").addObject("body", body);
     }
 

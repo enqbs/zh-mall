@@ -6,6 +6,17 @@ spring:
     name: search
   profiles:
     active: dev
+  rabbitmq:
+    host: ${zh-mall.rabbitmq.host}
+    port: ${zh-mall.rabbitmq.port:5672}
+    username: ${zh-mall.rabbitmq.username}
+    password: ${zh-mall.rabbitmq.password}
+    virtual-host: /
+    template:
+      mandatory: true
+    listener:
+      simple:
+        acknowledge-mode: manual
   jackson:
     time-zone: Asia/Shanghai
     date-format: yyyy-MM-dd HH:mm:ss

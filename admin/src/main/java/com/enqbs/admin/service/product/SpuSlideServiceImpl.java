@@ -34,15 +34,14 @@ public class SpuSlideServiceImpl implements SpuSlideService {
     @Override
     public SpuSlideVO getSpuSlideVO(Integer spuId) {
         SpuSlide spuSlide = spuSlideMapper.selectByPrimaryKey(spuId);
+        SpuSlideVO spuSlideVO = productConvert.spuSlide2SpuSlideVO(spuSlide);
 
-        if (ObjectUtils.isEmpty(spuSlide)) {
-            return null;
+        if (ObjectUtils.isNotEmpty(spuSlideVO)) {
+            spuSlideVO.setPictures(StringUtils.isEmpty(spuSlide.getPictures()) ?
+                    Collections.emptyList() : GsonUtil.json2ArrayList(spuSlide.getPictures(), String[].class)
+            );
         }
 
-        SpuSlideVO spuSlideVO = productConvert.spuSlide2SpuSlideVO(spuSlide);
-        spuSlideVO.setPictures(StringUtils.isEmpty(spuSlide.getPictures()) ?
-                Collections.emptyList() : GsonUtil.json2ArrayList(spuSlide.getPictures(), String[].class)
-        );
         return spuSlideVO;
     }
 

@@ -26,15 +26,14 @@ public class SpuSpecServiceImpl implements SpuSpecService {
     @Override
     public SpuSpecVO getSpuSpecVO(Integer spuId) {
         SpuSpec spuSpec = spuSpecMapper.selectByPrimaryKey(spuId);
+        SpuSpecVO spuSpecVO = productConvert.spuSpec2SpuSpecVO(spuSpec);
 
-        if (ObjectUtils.isEmpty(spuSpec)) {
-            return null;
+        if (ObjectUtils.isNotEmpty(spuSpecVO)) {
+            spuSpecVO.setPictures(StringUtils.isEmpty(spuSpec.getPictures()) ?
+                    Collections.emptyList() : GsonUtil.json2ArrayList(spuSpec.getPictures(), String[].class)
+            );
         }
 
-        SpuSpecVO spuSpecVO = productConvert.spuSpec2SpuSpecVO(spuSpec);
-        spuSpecVO.setPictures(StringUtils.isEmpty(spuSpec.getPictures()) ?
-                Collections.emptyList() : GsonUtil.json2ArrayList(spuSpec.getPictures(), String[].class)
-        );
         return spuSpecVO;
     }
 

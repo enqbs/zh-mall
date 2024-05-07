@@ -6,13 +6,12 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.JwtUtil;
 import com.enqbs.common.util.RedisUtil;
-import com.enqbs.security.config.JwtPramConfig;
+import com.enqbs.security.config.JwtProperties;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -30,11 +29,11 @@ public class TokenServiceImpl implements TokenService {
     private RedisUtil redisUtil;
 
     @Resource
-    private JwtPramConfig jwtPramConfig;
+    private JwtProperties jwtProperties;
 
     @Override
     public String getToken(LoginUser loginUser) {
-        return JwtUtil.createToken(loginUser.getUserType(), loginUser.getUserToken(), jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
+        return JwtUtil.createToken(loginUser.getUserType(), loginUser.getUserToken(), jwtProperties.getExpire(), jwtProperties.getSecret());
     }
 
     @Override
@@ -47,8 +46,7 @@ public class TokenServiceImpl implements TokenService {
     public Future<String> refreshToken(String token) {
         long expireTime = JwtUtil.getExpire(token);                 // JWT 过期时间
         long currentTime = System.currentTimeMillis() / 1000;       // 当前时间
-        long oneHour = 3600L;                                       // 一小时 3600 秒
-        return CompletableFuture.completedFuture(expireTime - currentTime <= oneHour ? getNewToken(token) : token);     // 过期时间小于1小时,返回新 token
+        return CompletableFuture.completedFuture(expireTime - currentTime <= 3600L ? getNewToken(token) : token);     // 过期时间小于1小时,返回新 token
     }
 
     @Override
@@ -74,7 +72,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public boolean verifierToken(String token) {
         try {
-            JwtUtil.verifierToken(token, jwtPramConfig.getSecret());
+            JwtUtil.verifierToken(token, jwtProperties.getSecret());
             return true;
         } catch (Exception e) {
             if (e instanceof TokenExpiredException) {
@@ -98,8 +96,8 @@ public class TokenServiceImpl implements TokenService {
     private String getNewToken(String token) {
         String userToken = getUserToken(token);
         return StringUtils.isNotEmpty(userToken) ?
-                JwtUtil.createToken(Constants.USER_TOKEN, userToken, jwtPramConfig.getExpire(), jwtPramConfig.getSecret()) :
-                JwtUtil.createToken(Constants.SYS_USER_TOKEN, getSysUserToken(token), jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
+                JwtUtil.createToken(Constants.USER_TOKEN, userToken, jwtProperties.getExpire(), jwtProperties.getSecret()) :
+                JwtUtil.createToken(Constants.SYS_USER_TOKEN, getSysUserToken(token), jwtProperties.getExpire(), jwtProperties.getSecret());
     }
 
     private String getUserToken(String token) {

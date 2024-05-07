@@ -28,23 +28,13 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public List<OrderItemVO> getOrderItemVOList(Long orderNo) {
         List<OrderItem> orderItemList = orderItemMapper.selectListByOrderNo(orderNo);
-        return orderItemList.stream().map(o -> {
-                    OrderItemVO orderItemVO = orderConvert.orderItem2OrderItemVO(o);
-                    orderItemVO.setSkuParams(GsonUtil.json2ArrayList(o.getSkuParams(), SkuParamVO[].class));
-                    return orderItemVO;
-                }
-        ).collect(Collectors.toList());
+        return orderItemList2OrderItemVOList(orderItemList);
     }
 
     @Override
     public List<OrderItemVO> getOrderItemVOList(Set<Long> orderNoSet) {
         List<OrderItem> orderItemList = CollectionUtils.isEmpty(orderNoSet) ? Collections.emptyList() : orderItemMapper.selectListByOrderNoSet(orderNoSet);
-        return orderItemList.stream().map(o -> {
-                    OrderItemVO orderItemVO = orderConvert.orderItem2OrderItemVO(o);
-                    orderItemVO.setSkuParams(GsonUtil.json2ArrayList(o.getSkuParams(), SkuParamVO[].class));
-                    return orderItemVO;
-                }
-        ).collect(Collectors.toList());
+        return orderItemList2OrderItemVOList(orderItemList);
     }
 
     @Override
@@ -54,6 +44,15 @@ public class OrderItemServiceImpl implements OrderItemService {
         if (row <= 0) {
             throw new ServiceException("订单号:" + orderNo + ",订单项保存失败");
         }
+    }
+
+    private List<OrderItemVO> orderItemList2OrderItemVOList(List<OrderItem> orderItemList) {
+        return orderItemList.stream().map(o -> {
+                    OrderItemVO orderItemVO = orderConvert.orderItem2OrderItemVO(o);
+                    orderItemVO.setSkuParams(GsonUtil.json2ArrayList(o.getSkuParams(), SkuParamVO[].class));
+                    return orderItemVO;
+                }
+        ).collect(Collectors.toList());
     }
 
 }

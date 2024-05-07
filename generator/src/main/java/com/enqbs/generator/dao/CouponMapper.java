@@ -23,7 +23,7 @@ public interface CouponMapper {
 
     int updateByDeductQuantity(@Param("couponId") Integer couponId, @Param("quantity") Integer quantity);
 
-    List<Coupon> selectListByCouponIdSet(@Param("idSet") Set<Integer> idSet);
+    List<Coupon> selectListByIdSet(@Param("idSet") Set<Integer> idSet);
 
     List<Coupon> selectListByParam(@Param("productId") Integer productId,
                                    @Param("startDate") Date startDate,

@@ -35,7 +35,7 @@ public class PayInfoServiceImpl implements PayInfoService {
     private RabbitMQService rabbitMQService;
 
     @Override
-    public BigDecimal getPayAmount(Long orderNo) {
+    public BigDecimal getAmount(Long orderNo) {
         OrderVO orderVO = orderService.getOrderVO(orderNo);
         PayInfo payInfo = payInfoMapper.selectByOrderNoOrStatusOrDeleteStatus(orderNo, PayStatusEnum.NOT_PAY.getCode(), Constants.IS_NOT_DELETE);
 

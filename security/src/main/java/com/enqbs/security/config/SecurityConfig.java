@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 public class SecurityConfig {
 
     @Resource
-    private IgnoreUrlsConfig ignoreUrlsConfig;
+    private IgnoreUrlsProperties ignoreUrlsProperties;
 
     @Resource
     private AuthenticationEntryPoint authenticationEntryPoint;
@@ -38,18 +38,18 @@ public class SecurityConfig {
             return http
                     .csrf(AbstractHttpConfigurer::disable)
                     .sessionManagement(s -> s
-                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)     // 不需要 session
+                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)             // 不需要 session
                     )
                     .authorizeRequests(a -> a
-                            .antMatchers(ignoreUrlsConfig.getAnonymous()).anonymous()   // 只允许未登录访问 url
-                            .antMatchers(ignoreUrlsConfig.getPermit()).permitAll()      // 允许匿名访问 url
-                            .anyRequest().authenticated()                               // 所有接口拦截
+                            .antMatchers(ignoreUrlsProperties.getAnonymous()).anonymous()       // 只允许未登录访问 url
+                            .antMatchers(ignoreUrlsProperties.getPermit()).permitAll()          // 允许匿名访问 url
+                            .anyRequest().authenticated()                                       // 所有接口拦截
                     )
                     .exceptionHandling(e -> e
-                            .authenticationEntryPoint(authenticationEntryPoint)         // 自定义认证异常处理
-                            .accessDeniedHandler(accessDeniedHandler)                   // 自定义授权异常处理
+                            .authenticationEntryPoint(authenticationEntryPoint)                 // 自定义认证异常处理
+                            .accessDeniedHandler(accessDeniedHandler)                           // 自定义授权异常处理
                     )
-                    .addFilterBefore(jwtAuthenticationTokenFilter,                      // 自定义过滤器
+                    .addFilterBefore(jwtAuthenticationTokenFilter,                              // 自定义过滤器
                             UsernamePasswordAuthenticationFilter.class
                     )
                     .build();
