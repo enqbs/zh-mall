@@ -1,6 +1,6 @@
 # 项目简介
 
-zh-mall 是本人曾经的毕业设计加以优化、改进而来的电商类项目，包含了商城、搜索、后台管理系统。现如今作为个人开源项目长期维护、升级。经过不断打磨，项目核心功能完善。
+zh-mall 是本人曾经的毕业设计加以优化、改进而来的电商类项目。包含了商城、搜索、后台管理系统。现如今作为个人开源项目长期维护、升级。经过不断打磨，项目核心功能完善。
 
 doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有接口。前端写的不好暂不开源。
 
@@ -38,15 +38,15 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 
 | 项目分支                                             | JDK 版本  | Spring Boot 版本 |
 |--------------------------------------------------|---------|----------------|
-| main                                             | JDK 21  | 3.2.4          |
+| main                                             | JDK 21  | 3.2.5          |
 | [2.x](https://github.com/enqbs/zh-mall/tree/2.x) | JDK 1.8 | 2.7.18         |
 
 # 技术选择
 
 | 技术                      | 说明             | 版本                |
 |-------------------------|----------------|-------------------|
-| Spring Boot             | 容器管理、MVC       | 3.2.4             |
-| Spring Security         | 认证、授权          | 6.2.3             |
+| Spring Boot             | 容器管理、MVC       | 3.2.5             |
+| Spring Security         | 认证、授权          | 6.2.4             |
 | MyBatis                 | ORM            | 3.5.14            |
 | MyBatis-Generator       | 代码生成插件         | 1.3.7             |
 | MySQL                   | 数据库            | 8.0.31            |
@@ -54,7 +54,7 @@ doc/Postman 文件夹中的 json 文件导入 Postman 能得到项目的所有�
 | RabbitMQ                | 消息队列           | 3.12.7-management |
 | Canal                   | 数据库增量日志解析工具    | deployer-1.1.7    |
 | ~~ShardingSphere-JDBC~~ | ~~读写分离、数据分片~~  | ~~5.3.1~~         |
-| AliPay-SDK-V2           | 支付宝开源开发工具      | 4.39.2.ALL        |
+| AliPay-SDK-V2           | 支付宝开源开发工具      | 4.39.42.ALL       |
 | ~~AliPay-SDK-V3~~       | ~~支付宝开源开发工具~~  | ~~2.8.0.ALL~~     |
 | AliYun-OSS              | 阿里云对象存储        | 3.17.4            |
 | JWT                     | Json Web Token | -                 |
@@ -87,6 +87,7 @@ zh-mall
 ├─common        // 公共模块
 ├─doc
 │  ├─Canal          // Canal 配置文件
+│  ├─Logback        // Logback 配置文件
 │  ├─Logstash       // Logstash 配置文件
 │  ├─MySQL          // SQL 文件
 │  └─Postman        // 测试接口
