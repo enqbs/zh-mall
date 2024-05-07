@@ -6,6 +6,45 @@ spring:
     name: app
   profiles:
     active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${zh-mall.mysql.host}:${zh-mall.mysql.port:3306}/${zh-mall.mysql.dbname}
+    username: ${zh-mall.mysql.username}
+    password: ${zh-mall.mysql.password}
+    hikari:
+      minimum-idle: 12
+      maximum-pool-size: 24
+      connection-timeout: 60000
+  data:
+    redis:
+      host: ${zh-mall.redis.host}
+      port: ${zh-mall.redis.port:6379}
+      password: ${zh-mall.redis.password}
+  rabbitmq:
+    host: ${zh-mall.rabbitmq.host}
+    port: ${zh-mall.rabbitmq.port:5672}
+    username: ${zh-mall.rabbitmq.username}
+    password: ${zh-mall.rabbitmq.password}
+    virtual-host: /
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      mandatory: true
+    listener:
+      simple:
+        acknowledge-mode: manual
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+  jackson:
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: non_null
+
+redisson:
+  address: redis://${zh-mall.redis.host}:${zh-mall.redis.port:6379}
+  password: ${zh-mall.redis.password}
 
 mybatis:
   configuration:
@@ -27,3 +66,8 @@ secure:
       - /product/**
       - /coupon/**
       - /pay/**
+
+logging:
+  config: classpath:logback-spring.xml
+  pattern:
+    dateformat: ${spring.jackson.date-format}

@@ -17,7 +17,7 @@ import java.util.List;
 public class ESConfig {
 
     @Resource
-    private ESPramConfig ESPramConfig;
+    private ESProperties ESProperties;
 
     @Bean
     public ElasticsearchClient esClient() {
@@ -27,7 +27,7 @@ public class ESConfig {
     }
 
     private HttpHost[] getHosts() {
-        List<HttpHost> hostList = Arrays.stream(ESPramConfig.getAddress()).map(a -> {
+        List<HttpHost> hostList = Arrays.stream(ESProperties.getAddress()).map(a -> {
                     String[] strings = a.split(":");
                     return new HttpHost(strings[0], Integer.parseInt(strings[1]));
                 }

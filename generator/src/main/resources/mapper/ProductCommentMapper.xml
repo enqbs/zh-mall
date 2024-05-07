@@ -20,7 +20,7 @@
 
   <sql id="Base_Column_List">
     id, spu_id, order_no, user_id, nick_name, photo, sku_title, content, pictures,
-    star, like, delete_status, create_time, update_time
+    star, `like`, delete_status, create_time, update_time
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -223,7 +223,7 @@
   </select>
 
   <select id="countBySpuId" parameterType="java.lang.Integer" resultType="java.lang.Long">
-    select count(*) from tb_product_commentwhere
+    select count(*) from tb_product_comment
     where
     <if test="spuId != null">
       spu_id = #{spuId,jdbcType=INTEGER} and

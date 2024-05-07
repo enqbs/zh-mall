@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration  scan="true" scanPeriod="10 seconds">
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-    <springProperty name="APP_NAME" scope="context" source="spring.application.name" defaultValue="SpringBoot"/>
-    <springProperty name="LOG_STASH_HOST" scope="context" source="logstash.host" defaultValue="localhost"/>
-    <springProperty name="ENABLE_INNER_LOG" scope="context" source="logstash.enableInnerLog" defaultValue="false"/>
+    <springProperty name="APP_NAME" scope="context" source="spring.application.name" defaultValue="spring-boot-application"/>
+    <springProperty name="LOGS_PATH" scope="context" source="logging.file.path" defaultValue="logs" />
+    <!-- <property name="LOGS_PATH" value="logs" /> -->
 
     <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -13,96 +13,76 @@
         </encoder>
     </appender>
 
-    <!-- logstash 读取 info 级别日志 -->
-    <appender name="LOG_STASH_INFO" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <!-- 保存 info 级别日志 -->
+    <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <destination>${LOG_STASH_HOST}:5044</destination>
-        <addDefaultStatusListener>${ENABLE_INNER_LOG}</addDefaultStatusListener>
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <pattern>
-                    <pattern>
-                        {
-                        "project": "zh-mall",
-                        "server": "${APP_NAME}",
-                        "level": "%level",
-                        "pid": "${PID}",
-                        "thread": "%thread",
-                        "class": "%logger",
-                        "message": "%message"
-                        }
-                    </pattern>
-                </pattern>
-            </providers>
+        <!-- 保存的日志文件名 -->
+        <file>${LOGS_PATH}/info/${APP_NAME}.log</file>
+        <!-- 保存的日志文件内容格式 -->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} --- [${APP_NAME}] [%thread] %logger : %msg%n</pattern>
         </encoder>
+        <!-- 归档日志文件名格式 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_PATH}/info/${APP_NAME}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
     </appender>
 
-    <!-- logstash 读取 warn 级别日志 -->
-    <appender name="LOG_STASH_WARN" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <!-- 保存 warn 级别日志 -->
+    <appender name="FILE_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>WARN</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <destination>${LOG_STASH_HOST}:5045</destination>
-        <addDefaultStatusListener>${ENABLE_INNER_LOG}</addDefaultStatusListener>
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <pattern>
-                    <pattern>
-                        {
-                        "project": "zh-mall",
-                        "server": "${APP_NAME}",
-                        "level": "%level",
-                        "pid": "${PID}",
-                        "thread": "%thread",
-                        "class": "%logger",
-                        "message": "%message",
-                        "stack_trace": "%exception{36}"
-                        }
-                    </pattern>
-                </pattern>
-            </providers>
+        <file>${LOGS_PATH}/warn/${APP_NAME}.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} --- [${APP_NAME}] [%thread] %logger : %msg%n</pattern>
         </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_PATH}/warn/${APP_NAME}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
     </appender>
 
-    <!-- logstash 读取 error 级别日志 -->
-    <appender name="LOG_STASH_ERROR" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+    <!-- 保存 error 级别日志 -->
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <destination>${LOG_STASH_HOST}:5046</destination>
-        <addDefaultStatusListener>${ENABLE_INNER_LOG}</addDefaultStatusListener>
-        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <pattern>
-                    <pattern>
-                        {
-                        "project": "zh-mall",
-                        "server": "${APP_NAME}",
-                        "level": "%level",
-                        "pid": "${PID}",
-                        "thread": "%thread",
-                        "class": "%logger",
-                        "message": "%message",
-                        "stack_trace": "%exception{36}"
-                        }
-                    </pattern>
-                </pattern>
-            </providers>
+        <file>${LOGS_PATH}/error/${APP_NAME}.log</file>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} --- [${APP_NAME}] [%thread] %logger : %msg%n</pattern>
         </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_PATH}/error/${APP_NAME}-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
     </appender>
 
-    <root level="INFO">
+    <root level="info">
         <appender-ref ref="STDOUT" />
-        <appender-ref ref="LOG_STASH_INFO" />
-        <appender-ref ref="LOG_STASH_WARN" />
-        <appender-ref ref="LOG_STASH_ERROR" />
+        <appender-ref ref="FILE_INFO" />
+        <appender-ref ref="FILE_WARN" />
+        <appender-ref ref="FILE_ERROR" />
     </root>
 </configuration>

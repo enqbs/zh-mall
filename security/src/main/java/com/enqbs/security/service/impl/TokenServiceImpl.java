@@ -6,7 +6,7 @@ import com.enqbs.common.exception.ServiceException;
 import com.enqbs.common.util.GsonUtil;
 import com.enqbs.common.util.JwtUtil;
 import com.enqbs.common.util.RedisUtil;
-import com.enqbs.security.config.JwtPramConfig;
+import com.enqbs.security.config.JwtProperties;
 import com.enqbs.security.pojo.LoginUser;
 import com.enqbs.security.service.TokenService;
 import jakarta.annotation.Resource;
@@ -25,11 +25,11 @@ public class TokenServiceImpl implements TokenService {
     private RedisUtil redisUtil;
 
     @Resource
-    private JwtPramConfig jwtPramConfig;
+    private JwtProperties jwtProperties;
 
     @Override
     public String getToken(LoginUser loginUser) {
-        return JwtUtil.createToken(loginUser.getUserType(), loginUser.getUserToken(), jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
+        return JwtUtil.createToken(loginUser.getUserType(), loginUser.getUserToken(), jwtProperties.getExpire(), jwtProperties.getSecret());
     }
 
     @Override
@@ -67,7 +67,7 @@ public class TokenServiceImpl implements TokenService {
     @Override
     public boolean verifierToken(String token) {
         try {
-            JwtUtil.verifierToken(token, jwtPramConfig.getSecret());
+            JwtUtil.verifierToken(token, jwtProperties.getSecret());
             return true;
         } catch (Exception e) {
             if (e instanceof TokenExpiredException) {
@@ -91,8 +91,8 @@ public class TokenServiceImpl implements TokenService {
     private String getNewToken(String token) {
         String userToken = getUserToken(token);
         return StringUtils.isNotEmpty(userToken) ?
-                JwtUtil.createToken(Constants.USER_TOKEN, userToken, jwtPramConfig.getExpire(), jwtPramConfig.getSecret()) :
-                JwtUtil.createToken(Constants.SYS_USER_TOKEN, getSysUserToken(token), jwtPramConfig.getExpire(), jwtPramConfig.getSecret());
+                JwtUtil.createToken(Constants.USER_TOKEN, userToken, jwtProperties.getExpire(), jwtProperties.getSecret()) :
+                JwtUtil.createToken(Constants.SYS_USER_TOKEN, getSysUserToken(token), jwtProperties.getExpire(), jwtProperties.getSecret());
     }
 
     private String getUserToken(String token) {

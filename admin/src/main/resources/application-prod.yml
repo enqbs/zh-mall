@@ -1,26 +1,14 @@
-spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.43.2:3306/zh_mall?serverTimezone=UTC&allowMultiQueries=true
+zh-mall:
+  mysql:
+    host: 127.0.0.1
+    port: 3306
     username: root
     password: root
-    hikari:
-      minimum-idle: 12
-      maximum-pool-size: 24
-      connection-timeout: 60000
-  data:
-    redis:
-      host: 192.168.43.2
-      port: 6379
-      password: redis-password
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    default-property-inclusion: non_null
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      max-request-size: 100MB
+    dbname: zh_mall
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: 6aafd6b8ff62b8b3b4c7fd82c0fd29da
 
 ali:
   oss:
@@ -30,5 +18,5 @@ ali:
     access-key-secret: your-access-key-secret
     bucket: your-bucket
 
-logstash:
-  host: 192.168.43.2
+#logstash:
+#  host: 127.0.0.1

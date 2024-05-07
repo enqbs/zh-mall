@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "elastic")
-public class ESPramConfig {
+public class ESProperties {
 
     private String[] address;
 

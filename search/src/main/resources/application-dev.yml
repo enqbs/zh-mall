@@ -1,23 +1,13 @@
-spring:
+zh-mall:
   rabbitmq:
-    host: 192.168.43.2
+    host: 127.0.0.1
     port: 5672
     username: guest
     password: guest
-    virtual-host: /
-    template:
-      mandatory: true
-    listener:
-      simple:
-        acknowledge-mode: manual
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
-    default-property-inclusion: non_null
 
 elastic:
   address:
-    - 192.168.43.2:9200
+    - 127.0.0.1:9200
 
-logstash:
-  host: 192.168.43.2
+#logstash:
+#  host: 127.0.0.1

@@ -20,7 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Resource
-    private IgnoreUrlsConfig ignoreUrlsConfig;
+    private IgnoreUrlsProperties ignoreUrlsProperties;
 
     @Resource
     private AuthenticationEntryPoint authenticationEntryPoint;
@@ -40,8 +40,8 @@ public class SecurityConfig {
                             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)             // 不需要 session
                     )
                     .authorizeHttpRequests(a -> a
-                            .requestMatchers(ignoreUrlsConfig.getAnonymous()).anonymous()       // 只允许未登录访问 url
-                            .requestMatchers(ignoreUrlsConfig.getPermit()).permitAll()          // 允许匿名访问 url
+                            .requestMatchers(ignoreUrlsProperties.getAnonymous()).anonymous()   // 只允许未登录访问 url
+                            .requestMatchers(ignoreUrlsProperties.getPermit()).permitAll()      // 允许匿名访问 url
                             .anyRequest().authenticated()                                       // 所有接口拦截
                     )
                     .exceptionHandling(e -> e
