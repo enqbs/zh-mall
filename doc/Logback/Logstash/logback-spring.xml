@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <springProperty name="APP_NAME" scope="context" source="spring.application.name" defaultValue="spring-boot-application"/>
+    <springProperty name="LOGSTASH_HOST" scope="context" source="logstash.host" defaultValue="localhost"/>
+    <springProperty name="ENABLE_INNER_LOG" scope="context" source="logstash.enableInnerLog" defaultValue="false"/>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- logstash 读取 info 级别日志 -->
+    <appender name="LOGSTASH_INFO" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <destination>${LOGSTASH_HOST}:5044</destination>
+        <addDefaultStatusListener>${ENABLE_INNER_LOG}</addDefaultStatusListener>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "project": "zh-mall",
+                        "server": "${APP_NAME}",
+                        "level": "%level",
+                        "pid": "${PID}",
+                        "thread": "%thread",
+                        "class": "%logger",
+                        "message": "%message"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- logstash 读取 warn 级别日志 -->
+    <appender name="LOGSTASH_WARN" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <destination>${LOGSTASH_HOST}:5045</destination>
+        <addDefaultStatusListener>${ENABLE_INNER_LOG}</addDefaultStatusListener>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "project": "zh-mall",
+                        "server": "${APP_NAME}",
+                        "level": "%level",
+                        "pid": "${PID}",
+                        "thread": "%thread",
+                        "class": "%logger",
+                        "message": "%message",
+                        "stack_trace": "%exception{36}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- logstash 读取 error 级别日志 -->
+    <appender name="LOGSTASH_ERROR" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <destination>${LOGSTASH_HOST}:5046</destination>
+        <addDefaultStatusListener>${ENABLE_INNER_LOG}</addDefaultStatusListener>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <pattern>
+                    <pattern>
+                        {
+                        "project": "zh-mall",
+                        "server": "${APP_NAME}",
+                        "level": "%level",
+                        "pid": "${PID}",
+                        "thread": "%thread",
+                        "class": "%logger",
+                        "message": "%message",
+                        "stack_trace": "%exception{36}"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="LOGSTASH_INFO" />
+        <appender-ref ref="LOGSTASH_WARN" />
+        <appender-ref ref="LOGSTASH_ERROR" />
+    </root>
+</configuration>
