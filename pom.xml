@@ -12,9 +12,9 @@
     <groupId>com.enqbs</groupId>
     <artifactId>zh-mall</artifactId>
     <version>0.0.1</version>
+    <packaging>pom</packaging>
     <name>zh-mall</name>
     <description>zh-mall</description>
-    <packaging>pom</packaging>
 
     <modules>
         <module>common</module>
@@ -39,24 +39,10 @@
         <redisson.version>3.19.1</redisson.version>
         <ali-pay.version>4.39.2.ALL</ali-pay.version>
         <ali-oss.version>3.17.2</ali-oss.version>
-        <shardingsphere-jdbc-core-spring-boot-starter.version>5.2.0</shardingsphere-jdbc-core-spring-boot-starter.version>
+        <shardingsphere-jdbc.version>5.2.0</shardingsphere-jdbc.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
 
     <dependencyManagement>
         <dependencies>
@@ -113,7 +99,7 @@
             <dependency>
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
-                <version>${shardingsphere-jdbc-core-spring-boot-starter.version}</version>
+                <version>${shardingsphere-jdbc.version}</version>
             </dependency>
 
             <!-- mapstruct -->
@@ -151,5 +137,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
 </project>
