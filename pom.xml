@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.4</version>
+        <version>3.2.5</version>
         <relativePath/>
     </parent>
 
@@ -13,7 +13,6 @@
     <artifactId>zh-mall</artifactId>
     <version>0.0.2</version>
     <packaging>pom</packaging>
-
     <name>zh-mall</name>
     <description>zh-mall</description>
 
@@ -38,25 +37,11 @@
         <java-jwt.version>4.4.0</java-jwt.version>
         <logstash-logback-encoder.version>7.4</logstash-logback-encoder.version>
         <redisson.version>3.27.2</redisson.version>
-        <ali-pay-v2.version>4.39.2.ALL</ali-pay-v2.version>
+        <ali-pay-v2.version>4.39.42.ALL</ali-pay-v2.version>
         <ali-oss.version>3.17.4</ali-oss.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-    </dependencies>
 
     <dependencyManagement>
         <dependencies>
@@ -144,5 +129,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 
 </project>
